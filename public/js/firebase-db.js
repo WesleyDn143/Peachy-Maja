@@ -33,7 +33,7 @@ const DB = {
     // Seed default settings if empty
     if (!localStorage.getItem('peachy_settings')) {
       const defaultSettings = {
-        price_per_order: 20,
+        price_per_order: 15,
         preorders_open: true,
         pickup_location: "Main Kiosk / Booth, Cebu City",
         gcash_number: "0917-123-4567",
@@ -53,8 +53,8 @@ const DB = {
           customerPhone: '0917-123-4567',
           customerEmail: 'juan@example.com',
           quantity: 5,
-          unitPrice: 20,
-          totalAmount: 100,
+          unitPrice: 15,
+          totalAmount: 75,
           fulfillmentType: 'pickup',
           preferredDate: 'Tomorrow',
           preferredTime: '11:00 AM - 1:00 PM',
@@ -80,8 +80,8 @@ const DB = {
       ...order,
       id: orderId,
       orderRef: orderRef,
-      unitPrice: 20,
-      totalAmount: order.quantity * 20,
+      unitPrice: order.unitPrice || 15,
+      totalAmount: order.totalAmount || (order.quantity * (order.unitPrice || 15)),
       paymentStatus: order.paymentMethod === 'gcash' ? 'pending_verification' : 'pending',
       status: 'Pre-Order Received',
       createdAt: new Date().toISOString(),
@@ -203,7 +203,7 @@ const DB = {
     if (this.isLive && this.dbInstance) {
       const snapshot = await this.dbInstance.ref('settings').once('value');
       return snapshot.val() || {
-        price_per_order: 20,
+        price_per_order: 15,
         preorders_open: true,
         pickup_location: "Main Kiosk / Booth, Cebu City",
         gcash_number: "0917-123-4567",

@@ -106,7 +106,7 @@
     <div class="container">
       <div class="footer-bottom">
         <div>© 2026 Peachy Maja. Handcrafted with love by Seann, Mell, & Marlo in Cebu.</div>
-        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Pre-Order (₱20)</a></div>
+        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Pre-Order (₱15)</a></div>
       </div>
     </div>
   </footer>
@@ -272,11 +272,11 @@
                 <img src="/images/classic_maja.jpg" alt="Peachy Maja Blanca" style="width: 52px; height: 52px; border-radius: var(--radius-sm); object-fit: cover;">
                 <div>
                   <div style="font-weight: 800; font-size: 1.05rem; color: var(--dark-brown);">Peachy Maja Blanca</div>
-                  <div style="font-size: 0.85rem; color: var(--text-muted);">Quantity: ${order.quantity} Tub(s) × ₱20.00 each</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">Quantity: ${order.quantity} Tub(s) × ₱${(order.unitPrice || 15).toFixed(2)} each</div>
                 </div>
               </div>
               <div style="font-weight: 800; font-size: 1.2rem; color: var(--orange-accent);">
-                ₱${(order.totalAmount || order.quantity * 20).toFixed(2)}
+                ₱${(order.totalAmount || order.quantity * (order.unitPrice || 15)).toFixed(2)}
               </div>
             </div>
 

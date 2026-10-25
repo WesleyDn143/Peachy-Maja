@@ -99,7 +99,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
             <div>
               <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Customer Pre-Orders</h1>
-              <p style="color: var(--text-muted); font-size: 0.95rem;">Live incoming pre-orders (₱20 each) powered by Firebase Realtime Database.</p>
+              <p style="color: var(--text-muted); font-size: 0.95rem;">Live incoming pre-orders (₱15 each) powered by Firebase Realtime Database.</p>
             </div>
             <div style="display: flex; gap: 0.75rem;">
               <button onclick="exportToCSV()" class="btn btn-secondary btn-sm">📥 Export to CSV / Excel</button>
@@ -153,7 +153,7 @@
                   <th>Ref #</th>
                   <th>Customer Name</th>
                   <th>Contact Phone</th>
-                  <th>Quantity (₱20 ea)</th>
+                  <th>Quantity (₱15 ea)</th>
                   <th>Total</th>
                   <th>Fulfillment / Schedule</th>
                   <th>Payment</th>
@@ -179,7 +179,7 @@
             <form onsubmit="handleSaveSettings(event)">
               <div class="form-group">
                 <label class="form-label">Price Per Order (₱)</label>
-                <input type="number" id="cfgPrice" class="form-control" value="20" required>
+                <input type="number" id="cfgPrice" class="form-control" value="15" required>
               </div>
 
               <div class="form-group">
@@ -293,7 +293,7 @@
       const totalOrders = orders.length;
       const totalTubs = orders.reduce((sum, o) => sum + (o.quantity || 1), 0);
       const pending = orders.filter(o => o.status !== 'Completed' && o.status !== 'Cancelled').length;
-      const revenue = orders.filter(o => o.status !== 'Cancelled').reduce((sum, o) => sum + (o.totalAmount || (o.quantity * 20)), 0);
+      const revenue = orders.filter(o => o.status !== 'Cancelled').reduce((sum, o) => sum + (o.totalAmount || (o.quantity * (o.unitPrice || 15))), 0);
 
       document.getElementById('statTotalOrders').textContent = totalOrders;
       document.getElementById('statTotalTubs').textContent = totalTubs;
@@ -316,7 +316,7 @@
           <td><strong style="font-size: 0.95rem;">${o.customerName}</strong></td>
           <td><a href="tel:${o.customerPhone}" style="color: var(--orange-accent); font-weight: 600;">${o.customerPhone}</a></td>
           <td><span style="font-weight: 800; font-size: 1rem; color: var(--dark-brown);">${o.quantity} order(s)</span></td>
-          <td style="font-weight: 800; color: var(--orange-accent);">₱${(o.totalAmount || o.quantity * 20).toFixed(2)}</td>
+          <td style="font-weight: 800; color: var(--orange-accent);">₱${(o.totalAmount || o.quantity * (o.unitPrice || 15)).toFixed(2)}</td>
           <td>
             <div style="font-size: 0.85rem;">
               <strong>${o.fulfillmentType === 'pickup' ? '📍 Pickup' : '🛵 Delivery'}</strong>
@@ -388,8 +388,8 @@
           <div><strong>Customer Name:</strong> ${order.customerName}</div>
           <div><strong>Contact Phone:</strong> <a href="tel:${order.customerPhone}" style="color: var(--orange-accent);">${order.customerPhone}</a></div>
           ${order.customerEmail ? `<div><strong>Email:</strong> ${order.customerEmail}</div>` : ''}
-          <div><strong>Total Quantity:</strong> ${order.quantity} Tub(s) at ₱20 each</div>
-          <div><strong>Total Amount:</strong> <span style="font-weight: 800; color: var(--orange-accent); font-size: 1.1rem;">₱${(order.totalAmount || order.quantity * 20).toFixed(2)}</span></div>
+          <div><strong>Total Quantity:</strong> ${order.quantity} Tub(s) at ₱${order.unitPrice || 15} each</div>
+          <div><strong>Total Amount:</strong> <span style="font-weight: 800; color: var(--orange-accent); font-size: 1.1rem;">₱${(order.totalAmount || order.quantity * (order.unitPrice || 15)).toFixed(2)}</span></div>
           <div><strong>Fulfillment:</strong> ${order.fulfillmentType === 'pickup' ? 'Pickup (Booth)' : 'Delivery'}</div>
           ${order.deliveryAddress ? `<div><strong>Delivery Address:</strong> ${order.deliveryAddress}</div>` : ''}
           <div><strong>Target Date & Time:</strong> ${order.preferredDate} (${order.preferredTime})</div>
