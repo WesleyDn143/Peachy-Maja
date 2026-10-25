@@ -1,8 +1,0 @@
-﻿node_modules/
-peachy_maja.db
-*.db
-server/
-.system_generated/
-*.log
-test_suite.js
-package-lock.json

@@ -1,5 +1,5 @@
 @echo off
-title Peachy Maja ? Auto Git Push
+title Peachy Maja ? Auto Push
 color 0A
 
 echo.
@@ -10,22 +10,19 @@ echo.
 
 cd /d "%~dp0"
 
-echo [1/4] Staging all changes...
+echo [1/3] Staging all changes...
 git add -A
 
 echo.
-echo [2/4] Committing with timestamp...
-for /f "tokens=2 delims==/" %%a in ('wmic os get localdatetime /value') do set DT=%%a
-set DATESTR=%DT:~0,4%-%DT:~4,2%-%DT:~6,2%
-set TIMESTR=%DT:~8,2%:%DT:~10,2%
-git commit -m "Auto-update: %DATESTR% %TIMESTR%"
+echo [2/3] Committing with timestamp...
+for /f %%i in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmm"') do set DT=%%i
+git commit -m "Auto-update %DT%"
+if %errorlevel% NEQ 0 (
+  echo    (No new changes to commit - skipping)
+)
 
 echo.
-echo [3/4] Pulling latest from GitHub (sync first)...
-git pull origin main --rebase
-
-echo.
-echo [4/4] Pushing to GitHub...
+echo [3/3] Pushing to GitHub...
 git push origin main
 
 echo.
@@ -39,8 +36,7 @@ if %errorlevel% == 0 (
     color 0C
     echo  ==========================================
     echo    ERROR: Push failed.
-    echo    Try running: git pull origin main
-    echo    Then double-click this file again.
+    echo    Close this window and try again.
     echo  ==========================================
 )
 
