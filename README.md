@@ -131,11 +131,11 @@ Website/
     ├── css/
     │   └── styles.css         # Responsive Vanilla CSS design system
     ├── js/
-    │   ├── app.js             # Core UI, modals & toasts
-    │   └── cart.js            # Shopping Cart & slide-over drawer
+    │   ├── app.js             # Core UI, notifications & mobile drawer
+    │   ├── firebase-config.js # Firebase credentials & connection
+    │   └── firebase-db.js     # Realtime database operations
     └── images/                # Authentic Maja Blanca photography
-        ├── hero_maja.jpg
-        ├── classic_maja.jpg
-        ├── special_maja.jpg
-        └── family_maja.jpg
+        ├── hero_maja.png
+        ├── classic_maja.png
+        └── classic_maja_without_background.png
 ```
