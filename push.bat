@@ -10,17 +10,22 @@ echo.
 
 cd /d "%~dp0"
 
-echo [1/3] Staging all changes...
+echo [1/4] Staging all changes...
 git add -A
 
 echo.
-echo [2/3] Committing with timestamp...
-for /f "tokens=1-5 delims=/ " %%a in ("%date%") do set DATESTR=%%c-%%b-%%a
-for /f "tokens=1-2 delims=: " %%a in ("%time%") do set TIMESTR=%%a:%%b
+echo [2/4] Committing with timestamp...
+for /f "tokens=2 delims==/" %%a in ('wmic os get localdatetime /value') do set DT=%%a
+set DATESTR=%DT:~0,4%-%DT:~4,2%-%DT:~6,2%
+set TIMESTR=%DT:~8,2%:%DT:~10,2%
 git commit -m "Auto-update: %DATESTR% %TIMESTR%"
 
 echo.
-echo [3/3] Pushing to GitHub...
+echo [3/4] Pulling latest from GitHub (sync first)...
+git pull origin main --rebase
+
+echo.
+echo [4/4] Pushing to GitHub...
 git push origin main
 
 echo.
@@ -33,7 +38,9 @@ if %errorlevel% == 0 (
 ) else (
     color 0C
     echo  ==========================================
-    echo    ERROR: Push failed. Check credentials.
+    echo    ERROR: Push failed.
+    echo    Try running: git pull origin main
+    echo    Then double-click this file again.
     echo  ==========================================
 )
 

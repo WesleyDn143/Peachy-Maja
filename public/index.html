@@ -394,6 +394,7 @@
             <li><a href="/track.html">Track Pre-Order</a></li>
             <li><a href="/about.html">About the Founders</a></li>
             <li><a href="/contact.html">Contact Us</a></li>
+            <li><a href="/admin.html">Admin Login</a></li>
           </ul>
         </div>
 
@@ -420,6 +421,7 @@
 
       <div class="footer-bottom">
         <div>© 2026 Peachy Maja. All rights reserved. Handcrafted with love in Cebu.</div>
+        <div><a href="/admin.html" style="color: var(--primary-peach);">Admin Access</a></div>
       </div>
     </div>
   </footer>
@@ -538,9 +540,10 @@
         // Redirect to tracking / confirmation page
         window.location.href = `/track.html?ref=${encodeURIComponent(savedOrder.orderRef)}&contact=${encodeURIComponent(phone)}&new=1`;
       } catch (err) {
-        console.error('Submission notice', err);
-        const fallbackRef = 'PM-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-        window.location.href = `/track.html?ref=${encodeURIComponent(fallbackRef)}&contact=${encodeURIComponent(phone)}&new=1`;
+        console.error('Error submitting pre-order', err);
+        alert('Failed to save pre-order. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = '<span>Submit Pre-Order Now</span>';
       }
     }
 
