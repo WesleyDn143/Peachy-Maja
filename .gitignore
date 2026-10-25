@@ -1,0 +1,4 @@
+node_modules/
+peachy_maja.db
+.system_generated/
+*.log

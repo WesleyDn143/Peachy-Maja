@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Peachy Maja</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    body { background-color: #F8F5F0; }
+  </style>
+</head>
+<body>
+
+
+
+  <!-- Admin Login Screen (Shown when not authenticated) -->
+  <div id="adminLoginScreen" style="display: none; min-height: 85vh; padding: 4rem 1.5rem; align-items: center; justify-content: center;">
+    <div class="card" style="max-width: 440px; margin: 0 auto; box-shadow: var(--shadow-lg);">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" style="height: 60px; margin: 0 auto 0.75rem;">
+        <h1 style="font-size: 1.4rem; font-weight: 800; color: var(--dark-brown);">Admin Dashboard Login</h1>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Sign in to view customer pre-orders & manage batches.</p>
+      </div>
+
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Administrator Email</label>
+          <input type="email" id="adminEmail" class="form-control" required value="admin@peachymaja.ph">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="adminPassword" class="form-control" required placeholder="••••••••">
+        </div>
+        <button type="submit" id="adminLoginBtn" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Sign In as Admin
+        </button>
+      </form>
+
+      <div style="margin-top: 1.25rem; padding: 0.75rem; background: var(--light-peach); border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--dark-brown);">
+        🔑 <strong>Default Admin Access:</strong><br>
+        Email: <code>admin@peachymaja.ph</code><br>
+        Password: <code>PeachyMaja2026!</code>
+      </div>
+
+      <div id="adminLoginAlert" style="display: none; margin-top: 1rem; padding: 0.75rem; border-radius: var(--radius-sm); background: var(--danger-bg); color: var(--danger-red); font-size: 0.88rem; font-weight: 600;"></div>
+      
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <a href="/" style="font-size: 0.85rem; color: var(--text-muted);">← Return to Storefront</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authenticated Admin Workspace -->
+  <div id="adminWorkspace" style="display: none;">
+    <!-- Admin Top Nav -->
+    <header style="background: var(--white); border-bottom: 1px solid var(--peach-border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <a href="/" target="_blank" title="View Storefront">
+          <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" style="height: 42px;">
+        </a>
+        <div>
+          <div style="font-weight: 800; font-size: 1.15rem; color: var(--dark-brown);">Peachy Maja Pre-Order Admin</div>
+          <div id="dbStatusBadge" style="font-size: 0.75rem; color: var(--success-green); font-weight: 700; text-transform: uppercase;">
+            ● Realtime Connected
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 1.25rem;">
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm">
+          <span>View Storefront</span> ↗
+        </a>
+        <button onclick="handleAdminLogout()" class="btn btn-sm" style="background: #F8D7DA; color: #842029; border: 1px solid #F5C2C7;">
+          Sign Out
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-layout">
+      <!-- Admin Sidebar Navigation -->
+      <aside class="admin-sidebar">
+        <div class="admin-nav-item active" onclick="switchAdminTab('preorders', this)">
+          <span>📋</span> Customer Pre-Orders
+        </div>
+        <div class="admin-nav-item" onclick="switchAdminTab('settings', this)">
+          <span>⚙️</span> Batch & Store Settings
+        </div>
+      </aside>
+
+      <!-- Admin Main Panel -->
+      <main class="admin-main">
+        
+        <!-- 1. PRE-ORDERS TAB -->
+        <section id="tabPreorders">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Customer Pre-Orders</h1>
+              <p style="color: var(--text-muted); font-size: 0.95rem;">Live incoming pre-orders (₱20 each) powered by Firebase Realtime Database.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+              <button onclick="exportToCSV()" class="btn btn-secondary btn-sm">📥 Export to CSV / Excel</button>
+            </div>
+          </div>
+
+          <!-- Stats Overview -->
+          <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
+            <div class="stat-card">
+              <div class="stat-title">Total Pre-Orders</div>
+              <div class="stat-value" id="statTotalOrders">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Total Tubs Reserved</div>
+              <div class="stat-value" id="statTotalTubs" style="color: var(--orange-accent);">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Pending Fulfillment</div>
+              <div class="stat-value" id="statPendingOrders" style="color: var(--warning-yellow);">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Estimated Revenue</div>
+              <div class="stat-value" id="statTotalRevenue" style="color: var(--success-green);">₱0.00</div>
+            </div>
+          </div>
+
+          <!-- Search & Status Filter -->
+          <div class="shop-toolbar" style="margin-bottom: 1.5rem;">
+            <div class="search-input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="orderSearchInput" class="search-input" placeholder="Search by Customer Name, Phone, or Ref #..." oninput="filterOrdersList()">
+            </div>
+            <div>
+              <select id="orderStatusFilter" class="sort-select" onchange="filterOrdersList()">
+                <option value="All">All Statuses</option>
+                <option value="Pre-Order Received">Pre-Order Received</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Preparing Batch">Preparing Batch</option>
+                <option value="Ready for Pickup / Out for Delivery">Ready / Out</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Pre-orders Table -->
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Ref #</th>
+                  <th>Customer Name</th>
+                  <th>Contact Phone</th>
+                  <th>Quantity (₱20 ea)</th>
+                  <th>Total</th>
+                  <th>Fulfillment / Schedule</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="preordersTableBody">
+                <!-- Injected via Realtime Listener -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 2. SETTINGS TAB -->
+        <section id="tabSettings" style="display: none;">
+          <div style="margin-bottom: 1.5rem;">
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Store & Batch Settings</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Configure your pre-order status, pickup booth, and GCash account.</p>
+          </div>
+
+          <div class="card" style="max-width: 600px;">
+            <form onsubmit="handleSaveSettings(event)">
+              <div class="form-group">
+                <label class="form-label">Price Per Order (₱)</label>
+                <input type="number" id="cfgPrice" class="form-control" value="20" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Pickup Booth / Kiosk Location</label>
+                <input type="text" id="cfgPickupLoc" class="form-control" value="Main Kiosk / Booth, Cebu City" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">GCash Mobile Number</label>
+                <input type="text" id="cfgGCashNumber" class="form-control" value="0917-123-4567" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">GCash Account Name</label>
+                <input type="text" id="cfgGCashName" class="form-control" value="Mell C. / Seann L. (Peachy Maja)" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Batch Cooking Schedule Notice</label>
+                <input type="text" id="cfgSchedule" class="form-control" value="Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM." required>
+              </div>
+
+              <button type="submit" id="saveSettingsBtn" class="btn btn-primary">
+                Save Store Settings
+              </button>
+            </form>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Order Details / Edit Notes Modal -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal-content" style="max-width: 580px; padding: 2rem;">
+      <button class="modal-close-btn" onclick="closeOrderModal()">×</button>
+      <div id="orderModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="/js/firebase-config.js"></script>
+  <script src="/js/firebase-db.js"></script>
+  <script src="/js/app.js"></script>
+
+  <script>
+    let allPreOrders = [];
+
+    function checkAdminAuth() {
+      const isLogged = localStorage.getItem('peachy_admin_logged');
+      if (isLogged === 'true') {
+        document.getElementById('adminLoginScreen').style.display = 'none';
+        document.getElementById('adminWorkspace').style.display = 'block';
+        initAdminData();
+      } else {
+        document.getElementById('adminLoginScreen').style.display = 'flex';
+        document.getElementById('adminWorkspace').style.display = 'none';
+      }
+    }
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      const alert = document.getElementById('adminLoginAlert');
+      const btn = document.getElementById('adminLoginBtn');
+
+      alert.style.display = 'none';
+      btn.disabled = true;
+
+      const result = await DB.adminLogin(email, password);
+      if (result.success) {
+        localStorage.setItem('peachy_admin_logged', 'true');
+        checkAdminAuth();
+      } else {
+        alert.textContent = result.message || 'Invalid administrator credentials.';
+        alert.style.display = 'block';
+      }
+      btn.disabled = false;
+    }
+
+    function handleAdminLogout() {
+      localStorage.removeItem('peachy_admin_logged');
+      window.location.reload();
+    }
+
+    function switchAdminTab(tab, el) {
+      document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
+      if (el) el.classList.add('active');
+
+      document.getElementById('tabPreorders').style.display = tab === 'preorders' ? 'block' : 'none';
+      document.getElementById('tabSettings').style.display = tab === 'settings' ? 'block' : 'none';
+
+      if (tab === 'settings') loadSettingsForm();
+    }
+
+    function initAdminData() {
+      // Connect to Realtime Listener
+      DB.listenToPreOrders((orders) => {
+        allPreOrders = orders;
+        renderOrders(allPreOrders);
+        updateStats(allPreOrders);
+      });
+    }
+
+    function updateStats(orders) {
+      const totalOrders = orders.length;
+      const totalTubs = orders.reduce((sum, o) => sum + (o.quantity || 1), 0);
+      const pending = orders.filter(o => o.status !== 'Completed' && o.status !== 'Cancelled').length;
+      const revenue = orders.filter(o => o.status !== 'Cancelled').reduce((sum, o) => sum + (o.totalAmount || (o.quantity * 20)), 0);
+
+      document.getElementById('statTotalOrders').textContent = totalOrders;
+      document.getElementById('statTotalTubs').textContent = totalTubs;
+      document.getElementById('statPendingOrders').textContent = pending;
+      document.getElementById('statTotalRevenue').textContent = `₱${revenue.toFixed(2)}`;
+    }
+
+    function renderOrders(orders) {
+      const tbody = document.getElementById('preordersTableBody');
+      if (!tbody) return;
+
+      if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">No pre-orders recorded yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><strong style="color: var(--dark-brown); font-size: 0.95rem;">${o.orderRef}</strong></td>
+          <td><strong style="font-size: 0.95rem;">${o.customerName}</strong></td>
+          <td><a href="tel:${o.customerPhone}" style="color: var(--orange-accent); font-weight: 600;">${o.customerPhone}</a></td>
+          <td><span style="font-weight: 800; font-size: 1rem; color: var(--dark-brown);">${o.quantity} order(s)</span></td>
+          <td style="font-weight: 800; color: var(--orange-accent);">₱${(o.totalAmount || o.quantity * 20).toFixed(2)}</td>
+          <td>
+            <div style="font-size: 0.85rem;">
+              <strong>${o.fulfillmentType === 'pickup' ? '📍 Pickup' : '🛵 Delivery'}</strong>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">${o.preferredDate} (${o.preferredTime})</div>
+          </td>
+          <td>
+            <span style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">${o.paymentMethod === 'gcash' ? '📱 GCash' : '💵 Cash'}</span>
+          </td>
+          <td>
+            <select onchange="handleStatusChange('${o.id}', this.value)" style="padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--peach-border); font-size: 0.82rem; font-weight: 700; background: var(--cream-bg);">
+              <option value="Pre-Order Received" ${o.status === 'Pre-Order Received' ? 'selected' : ''}>Pre-Order Received</option>
+              <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+              <option value="Preparing Batch" ${o.status === 'Preparing Batch' ? 'selected' : ''}>Preparing Batch</option>
+              <option value="Ready for Pickup / Out for Delivery" ${o.status === 'Ready for Pickup / Out for Delivery' ? 'selected' : ''}>Ready / Out</option>
+              <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
+              <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn btn-secondary btn-sm" onclick="viewOrder('${o.id}')" title="View Full Details">View</button>
+              <button class="btn btn-sm" style="background: #FCE8E6; color: var(--danger-red); border: 1px solid #FAD2CF;" onclick="deleteOrder('${o.id}')" title="Delete">✕</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterOrdersList() {
+      const search = document.getElementById('orderSearchInput').value.trim().toLowerCase();
+      const status = document.getElementById('orderStatusFilter').value;
+
+      let filtered = allPreOrders;
+      if (status !== 'All') {
+        filtered = filtered.filter(o => o.status === status);
+      }
+      if (search) {
+        filtered = filtered.filter(o =>
+          (o.orderRef && o.orderRef.toLowerCase().includes(search)) ||
+          (o.customerName && o.customerName.toLowerCase().includes(search)) ||
+          (o.customerPhone && o.customerPhone.includes(search))
+        );
+      }
+      renderOrders(filtered);
+    }
+
+    async function handleStatusChange(orderId, newStatus) {
+      await DB.updatePreOrderStatus(orderId, newStatus);
+      if (window.showToast) window.showToast('Pre-order status updated!', 'success');
+    }
+
+    function viewOrder(orderId) {
+      const order = allPreOrders.find(o => o.id === orderId);
+      if (!order) return;
+
+      const modal = document.getElementById('orderModal');
+      const content = document.getElementById('orderModalContent');
+
+      content.innerHTML = `
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 0.25rem;">
+          ${order.orderRef}
+        </h2>
+        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Submitted: ${new Date(order.createdAt).toLocaleString()}
+        </div>
+
+        <div style="background: var(--cream-bg); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--peach-border); margin-bottom: 1.25rem; font-size: 0.92rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <div><strong>Customer Name:</strong> ${order.customerName}</div>
+          <div><strong>Contact Phone:</strong> <a href="tel:${order.customerPhone}" style="color: var(--orange-accent);">${order.customerPhone}</a></div>
+          ${order.customerEmail ? `<div><strong>Email:</strong> ${order.customerEmail}</div>` : ''}
+          <div><strong>Total Quantity:</strong> ${order.quantity} Tub(s) at ₱20 each</div>
+          <div><strong>Total Amount:</strong> <span style="font-weight: 800; color: var(--orange-accent); font-size: 1.1rem;">₱${(order.totalAmount || order.quantity * 20).toFixed(2)}</span></div>
+          <div><strong>Fulfillment:</strong> ${order.fulfillmentType === 'pickup' ? 'Pickup (Booth)' : 'Delivery'}</div>
+          ${order.deliveryAddress ? `<div><strong>Delivery Address:</strong> ${order.deliveryAddress}</div>` : ''}
+          <div><strong>Target Date & Time:</strong> ${order.preferredDate} (${order.preferredTime})</div>
+          <div><strong>Payment Method:</strong> ${order.paymentMethod === 'gcash' ? 'GCash' : 'Cash'}</div>
+          ${order.notes ? `<div><strong>Customer Notes:</strong> <em>"${order.notes}"</em></div>` : ''}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Add Note / Status Message for Customer</label>
+          <input type="text" id="orderModalNotes" class="form-control" value="${order.statusNotes || ''}" placeholder="e.g. Your pre-order is freshly cooked and ready for pickup!">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button class="btn btn-secondary" onclick="closeOrderModal()">Close</button>
+          <button class="btn btn-primary" onclick="saveOrderNotes('${order.id}')">Save Message</button>
+        </div>
+      `;
+
+      modal.classList.add('open');
+    }
+
+    async function saveOrderNotes(id) {
+      const notes = document.getElementById('orderModalNotes').value.trim();
+      const order = allPreOrders.find(o => o.id === id);
+      if (order) {
+        await DB.updatePreOrderStatus(id, order.status, notes);
+        if (window.showToast) window.showToast('Status message saved!', 'success');
+        closeOrderModal();
+      }
+    }
+
+    function closeOrderModal() {
+      document.getElementById('orderModal').classList.remove('open');
+    }
+
+    async function deleteOrder(id) {
+      if (!confirm('Are you sure you want to delete this pre-order?')) return;
+      await DB.deletePreOrder(id);
+      if (window.showToast) window.showToast('Pre-order deleted', 'info');
+    }
+
+    function exportToCSV() {
+      if (allPreOrders.length === 0) {
+        alert('No pre-orders to export.');
+        return;
+      }
+
+      const headers = ['Order Ref', 'Customer Name', 'Phone', 'Email', 'Quantity', 'Total Amount', 'Fulfillment', 'Delivery Address', 'Preferred Date', 'Time Window', 'Payment Method', 'Status', 'Notes', 'Created At'];
+      const rows = allPreOrders.map(o => [
+        `"${o.orderRef || ''}"`,
+        `"${o.customerName || ''}"`,
+        `"${o.customerPhone || ''}"`,
+        `"${o.customerEmail || ''}"`,
+        o.quantity || 1,
+        o.totalAmount || (o.quantity * 20),
+        `"${o.fulfillmentType || ''}"`,
+        `"${(o.deliveryAddress || '').replace(/"/g, '""')}"`,
+        `"${o.preferredDate || ''}"`,
+        `"${o.preferredTime || ''}"`,
+        `"${o.paymentMethod || ''}"`,
+        `"${o.status || ''}"`,
+        `"${(o.notes || '').replace(/"/g, '""')}"`,
+        `"${o.createdAt || ''}"`
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `Peachy_Maja_PreOrders_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    async function loadSettingsForm() {
+      const s = await DB.getSettings();
+      if (s) {
+        if (s.price_per_order) document.getElementById('cfgPrice').value = s.price_per_order;
+        if (s.pickup_location) document.getElementById('cfgPickupLoc').value = s.pickup_location;
+        if (s.gcash_number) document.getElementById('cfgGCashNumber').value = s.gcash_number;
+        if (s.gcash_name) document.getElementById('cfgGCashName').value = s.gcash_name;
+        if (s.batch_schedule) document.getElementById('cfgSchedule').value = s.batch_schedule;
+      }
+    }
+
+    async function handleSaveSettings(e) {
+      e.preventDefault();
+      const settings = {
+        price_per_order: parseFloat(document.getElementById('cfgPrice').value) || 20,
+        pickup_location: document.getElementById('cfgPickupLoc').value.trim(),
+        gcash_number: document.getElementById('cfgGCashNumber').value.trim(),
+        gcash_name: document.getElementById('cfgGCashName').value.trim(),
+        batch_schedule: document.getElementById('cfgSchedule').value.trim(),
+        preorders_open: true
+      };
+
+      await DB.saveSettings(settings);
+      if (window.showToast) window.showToast('Store & Batch settings saved to Firebase!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', checkAdminAuth);
+  </script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Pre-Order — Peachy Maja</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="/" class="brand-logo-link">
+        <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja Logo" class="brand-logo-img">
+        <div class="brand-text">
+          <span class="brand-title">Peachy Maja</span>
+          <span class="brand-subtitle">Homemade Desserts</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/#preorderSection" class="nav-link">Order</a></li>
+          <li><a href="/track.html" class="nav-link active">Track</a></li>
+          <li><a href="/about.html" class="nav-link">About</a></li>
+          <li><a href="/contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="/#preorderSection" class="btn btn-primary btn-sm">
+          <span>Order Now</span>
+        </a>
+        <a href="/admin.html" class="btn-icon" title="Admin Portal" aria-label="Admin Portal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="/" class="mobile-nav-link">Home <span>→</span></a>
+    <a href="/#preorderSection" class="mobile-nav-link">Order <span>→</span></a>
+    <a href="/track.html" class="mobile-nav-link active">Track <span>→</span></a>
+    <a href="/about.html" class="mobile-nav-link">About <span>→</span></a>
+    <a href="/contact.html" class="mobile-nav-link">Contact <span>→</span></a>
+    <a href="/admin.html" class="mobile-nav-link" style="color: var(--orange-accent);">Admin <span>⚙️</span></a>
+  </div>
+
+  <main class="section section-cream" style="min-height: 80vh;">
+    <div class="container" style="max-width: 860px;">
+      
+      <!-- New Order Confirmation Alert Banner -->
+      <div id="newOrderBanner" style="display: none; background: #E8F5E9; border: 2px solid #A5D6A7; border-radius: var(--radius-lg); padding: 1.5rem 2rem; margin-bottom: 2rem; text-align: center;">
+        <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🎉</div>
+        <h2 style="color: #2E7D32; font-weight: 800; font-size: 1.5rem; margin-bottom: 0.4rem;">Order Placed Successfully!</h2>
+        <p style="color: #1B5E20; font-size: 0.95rem; margin-bottom: 0.5rem;">
+          Thank you for ordering with Peachy Maja! We've received your order and we'll prepare your fresh batch with love.
+        </p>
+        <p style="color: #4CAF50; font-size: 0.82rem; font-weight: 700;">
+          Save your Order Reference below to check your order anytime.
+        </p>
+      </div>
+
+      <!-- Tracking Search Box -->
+      <div class="card" style="margin-bottom: 2rem;">
+        <h1 class="card-title" style="font-size: 1.35rem;">
+          <span>🔍</span> Track Pre-Order Status
+        </h1>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Enter your Order Reference Number and the Phone Number used during checkout to check your order progress.
+        </p>
+
+        <form onsubmit="searchOrder(event)" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: flex-end;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="trackRef">Order Reference <span class="req">*</span></label>
+            <input type="text" id="trackRef" class="form-control" placeholder="e.g. PM-20261025-XXXX" required style="text-transform: uppercase;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="trackContact">Phone Number <span class="req">*</span></label>
+            <input type="text" id="trackContact" class="form-control" placeholder="Phone used in pre-order" required>
+          </div>
+          <button type="submit" id="trackSubmitBtn" class="btn btn-primary" style="height: 48px;">
+            Track Order
+          </button>
+        </form>
+
+        <div id="trackSearchError" style="display: none; margin-top: 1rem; padding: 0.75rem 1rem; background: var(--danger-bg); border-radius: var(--radius-sm); color: var(--danger-red); font-size: 0.88rem; font-weight: 600;"></div>
+      </div>
+
+      <!-- Live Order Result Container -->
+      <div id="orderResultContainer" style="display: none;"></div>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>© 2026 Peachy Maja. Handcrafted with love by Seann, Mell, & Marlo in Cebu.</div>
+        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Pre-Order (₱20)</a> | <a href="/admin.html" style="color: #CBB4A2;">Admin Access</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="/js/firebase-config.js"></script>
+  <script src="/js/firebase-db.js"></script>
+  <script src="/js/app.js"></script>
+
+  <script>
+    const STATUS_STAGES = [
+      { key: 'Pre-Order Received', label: 'Received', icon: '📝' },
+      { key: 'Confirmed', label: 'Confirmed', icon: '✓' },
+      { key: 'Preparing Batch', label: 'Cooking Batch', icon: '🥣' },
+      { key: 'Ready for Pickup / Out for Delivery', label: 'Ready / Out', icon: '🛵' },
+      { key: 'Completed', label: 'Completed', icon: '🎉' }
+    ];
+
+    async function searchOrder(e) {
+      if (e) e.preventDefault();
+      const ref = document.getElementById('trackRef').value.trim();
+      const contact = document.getElementById('trackContact').value.trim();
+      const errorDiv = document.getElementById('trackSearchError');
+      const resultContainer = document.getElementById('orderResultContainer');
+      const btn = document.getElementById('trackSubmitBtn');
+
+      errorDiv.style.display = 'none';
+      if (!ref || !contact) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Searching...';
+
+      try {
+        const result = await DB.getPreOrderByRef(ref, contact);
+
+        if (!result.success || !result.order) {
+          errorDiv.textContent = result.message || 'Unable to find pre-order. Please double-check your reference and contact number.';
+          errorDiv.style.display = 'block';
+          resultContainer.style.display = 'none';
+          btn.disabled = false;
+          btn.textContent = 'Track Order';
+          return;
+        }
+
+        renderOrderResult(result.order);
+        resultContainer.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Track Order';
+
+      } catch (err) {
+        console.error(err);
+        errorDiv.textContent = 'Unable to check your order right now. Please try again.';
+        errorDiv.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Track Order';
+      }
+    }
+
+    function renderOrderResult(order) {
+      const resultContainer = document.getElementById('orderResultContainer');
+      const isCancelled = order.status === 'Cancelled';
+      let activeIndex = 0;
+      if (!isCancelled) {
+        const found = STATUS_STAGES.findIndex(s => s.key === order.status);
+        activeIndex = found >= 0 ? found : 0;
+      }
+
+      const progressPercent = isCancelled ? 0 : (activeIndex / (STATUS_STAGES.length - 1)) * 100;
+      const dateStr = new Date(order.createdAt).toLocaleString('en-US', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      });
+
+      resultContainer.innerHTML = `
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--peach-border); padding-bottom: 1.25rem;">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--orange-accent); text-transform: uppercase;">
+                Pre-Order Reference
+              </div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--dark-brown);">
+                ${order.orderRef}
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">
+                Placed on ${dateStr}
+              </div>
+            </div>
+
+            <div style="text-align: right;">
+              <span class="status-badge ${isCancelled ? 'status-cancelled' : 'status-preparing'}" style="font-size: 0.95rem; padding: 0.4rem 1rem;">
+                ${order.status}
+              </span>
+              <div style="margin-top: 6px; font-size: 0.82rem; color: var(--text-muted);">
+                Payment: <strong>${order.paymentMethod === 'gcash' ? 'GCash' : 'Cash'}</strong>
+              </div>
+            </div>
+          </div>
+
+          ${isCancelled ? `
+            <div style="margin: 2rem 0; padding: 1.5rem; background: var(--danger-bg); border-radius: var(--radius-md); text-align: center; color: var(--danger-red);">
+              <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem;">Pre-Order Cancelled</h3>
+              <p style="font-size: 0.9rem;">${order.statusNotes || 'This pre-order was cancelled. Please contact Peachy Maja support if you have questions.'}</p>
+            </div>
+          ` : `
+            <!-- Stepper Progress Bar -->
+            <div style="margin: 2.5rem 0 3rem;">
+              <div class="tracking-stepper">
+                <div class="stepper-progress" style="width: ${progressPercent}%;"></div>
+                ${STATUS_STAGES.map((stage, idx) => {
+                  let cls = '';
+                  if (idx < activeIndex) cls = 'completed';
+                  else if (idx === activeIndex) cls = 'active';
+
+                  return `
+                    <div class="step-node ${cls}">
+                      <div class="node-icon">${stage.icon}</div>
+                      <div class="node-label">${stage.label}</div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              ${order.statusNotes ? `
+                <div style="margin-top: 1rem; padding: 0.85rem 1.2rem; background: var(--light-peach); border-radius: var(--radius-md); font-size: 0.9rem; color: var(--dark-brown);">
+                  💬 <strong>Owner Update:</strong> ${order.statusNotes}
+                </div>
+              ` : ''}
+            </div>
+          `}
+
+          <!-- Customer and Delivery Info -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem; background: var(--cream-bg); border-radius: var(--radius-md); border: 1px solid var(--peach-border); margin-bottom: 1.5rem;">
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--orange-accent); text-transform: uppercase; margin-bottom: 0.3rem;">Customer</div>
+              <div style="font-weight: 800; font-size: 1.1rem; color: var(--dark-brown);">${order.customerName}</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">${order.customerPhone}</div>
+              ${order.customerEmail ? `<div style="font-size: 0.85rem; color: var(--text-muted);">${order.customerEmail}</div>` : ''}
+            </div>
+
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--orange-accent); text-transform: uppercase; margin-bottom: 0.3rem;">Fulfillment & Schedule</div>
+              <div style="font-weight: 800; font-size: 1rem; color: var(--dark-brown);">
+                ${order.fulfillmentType === 'pickup' ? '📍 Pickup (Main Booth)' : '🛵 Local Delivery'}
+              </div>
+              <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
+                Scheduled: <strong>${order.preferredDate}</strong> (${order.preferredTime})
+              </div>
+              ${order.deliveryAddress ? `
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                  Address: ${order.deliveryAddress}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- Order Summary -->
+          <div style="border: 1px solid var(--peach-border); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; background: var(--white);">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="/images/classic_maja.jpg" alt="Peachy Maja Blanca" style="width: 52px; height: 52px; border-radius: var(--radius-sm); object-fit: cover;">
+                <div>
+                  <div style="font-weight: 800; font-size: 1.05rem; color: var(--dark-brown);">Peachy Maja Blanca</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">Quantity: ${order.quantity} Tub(s) × ₱20.00 each</div>
+                </div>
+              </div>
+              <div style="font-weight: 800; font-size: 1.2rem; color: var(--orange-accent);">
+                ₱${(order.totalAmount || order.quantity * 20).toFixed(2)}
+              </div>
+            </div>
+
+            ${order.notes ? `
+              <div style="padding: 0.75rem 1.25rem; background: var(--cream-bg); font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--peach-border);">
+                <strong>Notes:</strong> "${order.notes}"
+              </div>
+            ` : ''}
+          </div>
+
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end;">
+            <button onclick="window.print()" class="btn btn-secondary btn-sm">🖨️ Print Receipt</button>
+            <button onclick="searchOrder()" class="btn btn-primary btn-sm">🔄 Refresh Live Status</button>
+          </div>
+        </div>
+      `;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+      const contact = urlParams.get('contact');
+      const isNew = urlParams.get('new');
+
+      if (isNew) {
+        document.getElementById('newOrderBanner').style.display = 'block';
+      }
+
+      if (ref) document.getElementById('trackRef').value = ref;
+      if (contact) document.getElementById('trackContact').value = contact;
+
+      if (ref && contact) {
+        searchOrder();
+      }
+    });
+  </script>
+</body>
+</html>
