@@ -34,7 +34,63 @@ window.showToast = function(message, type = 'success') {
   }, 3500);
 };
 
-// Mobile Hamburger Navigation
+// Active Navigation Highlight & ScrollSpy
+function initNavHighlight() {
+  const preorderSection = document.getElementById('preorderSection');
+  const homeLinks = document.querySelectorAll('a[href="/"], a[href="/index.html"]');
+  const orderLinks = document.querySelectorAll('a[href="#preorderSection"], a[href="/#preorderSection"]');
+
+  function setOrderActive(isOrder) {
+    if (isOrder) {
+      homeLinks.forEach(l => l.classList.remove('active'));
+      orderLinks.forEach(l => {
+        if (l.classList.contains('nav-link') || l.classList.contains('mobile-nav-link')) {
+          l.classList.add('active');
+        }
+      });
+    } else {
+      orderLinks.forEach(l => l.classList.remove('active'));
+      homeLinks.forEach(l => {
+        if (l.classList.contains('nav-link') || l.classList.contains('mobile-nav-link')) {
+          l.classList.add('active');
+        }
+      });
+    }
+  }
+
+  // Check initial hash
+  if (window.location.hash === '#preorderSection') {
+    setOrderActive(true);
+  }
+
+  // ScrollSpy on homepage
+  if (preorderSection) {
+    window.addEventListener('scroll', () => {
+      const rect = preorderSection.getBoundingClientRect();
+      if (rect.top <= 250 && rect.bottom >= 200) {
+        setOrderActive(true);
+      } else if (window.scrollY < 200) {
+        setOrderActive(false);
+      }
+    }, { passive: true });
+  }
+
+  // Click handler for Order links
+  orderLinks.forEach(l => {
+    l.addEventListener('click', () => {
+      setOrderActive(true);
+    });
+  });
+
+  // Click handler for Home links
+  homeLinks.forEach(l => {
+    l.addEventListener('click', () => {
+      setOrderActive(false);
+    });
+  });
+}
+
+// Mobile Hamburger Navigation & DOM Init
 document.addEventListener('DOMContentLoaded', () => {
   const hamburger = document.getElementById('hamburgerBtn');
   const mobileNav = document.getElementById('mobileNav');
@@ -53,4 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  initNavHighlight();
 });

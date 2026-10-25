@@ -35,7 +35,7 @@ const DB = {
       const defaultSettings = {
         price_per_order: 15,
         preorders_open: true,
-        pickup_location: "Main Kiosk / Booth, Cebu City",
+        pickup_location: "Main Kiosk / Booth, Carmen, Davao del Norte",
         gcash_number: "0917-123-4567",
         gcash_name: "Mell C. / Seann L. (Peachy Maja)",
         batch_schedule: "Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM."
@@ -205,7 +205,7 @@ const DB = {
       return snapshot.val() || {
         price_per_order: 15,
         preorders_open: true,
-        pickup_location: "Main Kiosk / Booth, Cebu City",
+        pickup_location: "Main Kiosk / Booth, Carmen, Davao del Norte",
         gcash_number: "0917-123-4567",
         gcash_name: "Mell C. / Seann L. (Peachy Maja)"
       };

@@ -31,11 +31,11 @@
 
       <nav>
         <ul class="nav-links">
-          <li><a href="/" class="nav-link active">Home</a></li>
-          <li><a href="#preorderSection" class="nav-link">Order</a></li>
-          <li><a href="/track.html" class="nav-link">Track</a></li>
-          <li><a href="/about.html" class="nav-link">About</a></li>
-          <li><a href="/contact.html" class="nav-link">Contact</a></li>
+          <li><a href="/" class="nav-link active" id="navLinkHome">Home</a></li>
+          <li><a href="#preorderSection" class="nav-link" id="navLinkOrder">Order</a></li>
+          <li><a href="/track.html" class="nav-link" id="navLinkTrack">Track</a></li>
+          <li><a href="/about.html" class="nav-link" id="navLinkAbout">About</a></li>
+          <li><a href="/contact.html" class="nav-link" id="navLinkContact">Contact</a></li>
         </ul>
       </nav>
 
@@ -52,8 +52,8 @@
 
   <!-- Mobile Navigation Drawer -->
   <div class="mobile-nav" id="mobileNav">
-    <a href="/" class="mobile-nav-link active">Home <span>→</span></a>
-    <a href="#preorderSection" class="mobile-nav-link">Order <span>→</span></a>
+    <a href="/" class="mobile-nav-link active" id="mobileNavLinkHome">Home <span>→</span></a>
+    <a href="#preorderSection" class="mobile-nav-link" id="mobileNavLinkOrder">Order <span>→</span></a>
     <a href="/track.html" class="mobile-nav-link">Track <span>→</span></a>
     <a href="/about.html" class="mobile-nav-link">About <span>→</span></a>
     <a href="/contact.html" class="mobile-nav-link">Contact <span>→</span></a>
@@ -209,13 +209,13 @@
                 <div style="display: flex; align-items: center; gap: 1.5rem;">
                   <div class="qty-control" style="padding: 6px 10px;">
                     <button type="button" class="qty-btn" onclick="adjustQty(-1)" style="width: 34px; height: 34px; font-size: 1.1rem;">−</button>
-                    <input type="number" id="orderQty" value="2" min="1" max="100" style="width: 50px; border: none; background: transparent; text-align: center; font-weight: 800; font-size: 1.1rem; color: var(--dark-brown);" oninput="recalcTotal()">
+                    <input type="number" id="orderQty" value="1" min="1" max="100" style="width: 50px; border: none; background: transparent; text-align: center; font-weight: 800; font-size: 1.1rem; color: var(--dark-brown);" oninput="recalcTotal()">
                     <button type="button" class="qty-btn" onclick="adjustQty(1)" style="width: 34px; height: 34px; font-size: 1.1rem;">+</button>
                   </div>
 
                   <div style="text-align: right;">
                     <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Total Amount</div>
-                    <div id="calcTotalDisplay" style="font-size: 1.6rem; font-weight: 800; color: var(--orange-accent);">₱30.00</div>
+                    <div id="calcTotalDisplay" style="font-size: 1.6rem; font-weight: 800; color: var(--orange-accent);">₱15.00</div>
                   </div>
                 </div>
               </div>
@@ -243,7 +243,7 @@
                   <input type="radio" name="fulfillment_type" value="pickup" checked>
                   <div class="radio-card-content">
                     <div class="radio-card-title">Pickup</div>
-                    <div class="radio-card-desc">Main Booth / Kiosk, Cebu City (FREE)</div>
+                    <div class="radio-card-desc">Main Booth / Kiosk, Carmen, Davao del Norte (FREE)</div>
                   </div>
                 </label>
 
@@ -251,14 +251,14 @@
                   <input type="radio" name="fulfillment_type" value="delivery">
                   <div class="radio-card-content">
                     <div class="radio-card-title">Local Delivery</div>
-                    <div class="radio-card-desc">Direct delivery within Cebu City area</div>
+                    <div class="radio-card-desc">Direct delivery within Carmen, Davao del Norte area</div>
                   </div>
                 </label>
               </div>
 
               <div id="deliveryAddressBlock" style="display: none; margin-bottom: 1.25rem;">
                 <label class="form-label" for="deliveryAddr">Delivery Address <span class="req">*</span></label>
-                <textarea id="deliveryAddr" class="form-control" rows="2" placeholder="Complete street address, building, or landmark in Cebu..."></textarea>
+                <textarea id="deliveryAddr" class="form-control" rows="2" placeholder="Complete street address, barangay, or landmark in Carmen..."></textarea>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
@@ -399,7 +399,7 @@
         <div>
           <h4 class="footer-heading">Business Hours</h4>
           <ul class="footer-links" style="font-size: 0.88rem; color: #CBB4A2;">
-            <li>📍 <strong>Location:</strong> Main Kiosk / Booth, Cebu City</li>
+            <li>📍 <strong>Location:</strong> Main Kiosk / Booth, Carmen, Davao del Norte</li>
             <li>⏰ <strong>Hours:</strong> Mon – Sat: 9:00 AM – 6:00 PM</li>
             <li>📞 <strong>Phone:</strong> +63 917 123 4567</li>
             <li>✉️ <strong>Email:</strong> orders@peachymaja.ph</li>
@@ -418,7 +418,7 @@
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 Peachy Maja. All rights reserved. Handcrafted with love in Cebu.</div>
+        <div>© 2026 Peachy Maja. All rights reserved. Handcrafted with love in Carmen, Davao del Norte.</div>
       </div>
     </div>
   </footer>

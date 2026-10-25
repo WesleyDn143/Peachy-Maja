@@ -1,6 +1,6 @@
 # 🍑 Peachy Maja — Full E-Commerce Website
 
-A modern, responsive, customer-facing e-commerce web application for **Peachy Maja**, a student-owned Maja Blanca dessert business founded by **Seann Li**, **Mell Cordevilla**, and **Marlo Tiempo** in Cebu City, Philippines.
+A modern, responsive, customer-facing e-commerce web application for **Peachy Maja**, a student-owned Maja Blanca dessert business founded by **Seann Li**, **Mell Cordevilla**, and **Marlo Tiempo** in Carmen, Davao del Norte, Philippines.
 
 ---
 
