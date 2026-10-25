@@ -1,7 +1,28 @@
 [build]
   publish = "public"
 
-# Clean routing and header optimizations for Netlify
+# Pretty routing redirects so /admin works seamlessly without .html
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/track"
+  to = "/track.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 200
+
+# Security and cache headers
 [[headers]]
   for = "/*"
   [headers.values]
