@@ -182,18 +182,18 @@
               
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="custName">Your Full Name <span class="req">*</span></label>
+                  <label class="form-label" for="custName">Full Name <span class="req">*</span></label>
                   <input type="text" id="custName" class="form-control" placeholder="e.g. Maria Santos" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="custPhone">Phone / Mobile Number <span class="req">*</span></label>
+                  <label class="form-label" for="custPhone">Phone Number <span class="req">*</span></label>
                   <input type="tel" id="custPhone" class="form-control" placeholder="e.g. 0917-123-4567" required>
                 </div>
               </div>
 
               <div class="form-group" style="margin-top: 1rem; margin-bottom: 0;">
-                <label class="form-label" for="custEmail">Email Address (Optional — for order updates)</label>
+                <label class="form-label" for="custEmail">Email (Optional)</label>
                 <input type="email" id="custEmail" class="form-control" placeholder="maria@example.com">
               </div>
             </div>
@@ -203,7 +203,7 @@
             <!-- 2. Quantity & Total Calculator -->
             <div style="margin-bottom: 2rem;">
               <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span style="color: var(--orange-accent);">2.</span> How Many Orders Would You Like? (₱15 Each)
+                <span style="color: var(--orange-accent);">2.</span> Quantity (<span id="qtyHeaderPrice">₱15 each</span>)
               </h3>
 
               <div style="background: var(--cream-bg); border: 1px solid var(--peach-border); border-radius: var(--radius-md); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;">
@@ -223,7 +223,7 @@
                   </div>
 
                   <div style="text-align: right;">
-                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Total Amount</div>
+                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Total</div>
                     <div id="calcTotalDisplay" style="font-size: 1.6rem; font-weight: 800; color: var(--orange-accent);">₱15.00</div>
                   </div>
                 </div>
@@ -244,7 +244,7 @@
             <!-- 3. Fulfillment & Timing -->
             <div style="margin-bottom: 2rem;">
               <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span style="color: var(--orange-accent);">3.</span> Pickup / Delivery Preference
+                <span style="color: var(--orange-accent);">3.</span> Pickup or Delivery
               </h3>
 
               <div class="radio-options-grid" style="margin-bottom: 1.25rem;">
@@ -259,15 +259,15 @@
                 <label class="radio-card" id="radioDelivery" onclick="selectFulfillment('delivery')">
                   <input type="radio" name="fulfillment_type" value="delivery">
                   <div class="radio-card-content">
-                    <div class="radio-card-title">Local Delivery</div>
-                    <div class="radio-card-desc">Direct delivery within Carmen, Davao del Norte area</div>
+                    <div class="radio-card-title">Delivery</div>
+                    <div class="radio-card-desc">Direct delivery within Carmen, Davao del Norte</div>
                   </div>
                 </label>
               </div>
 
               <div id="deliveryAddressBlock" style="display: none; margin-bottom: 1.25rem;">
                 <label class="form-label" for="deliveryAddr">Delivery Address <span class="req">*</span></label>
-                <textarea id="deliveryAddr" class="form-control" rows="2" placeholder="Complete street address, barangay, or landmark in Carmen..."></textarea>
+                <textarea id="deliveryAddr" class="form-control" rows="2" placeholder="Street, barangay, or landmark in Carmen..."></textarea>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
@@ -277,7 +277,7 @@
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="prefTime">Preferred Time Window <span class="req">*</span></label>
+                  <label class="form-label" for="prefTime">Preferred Time <span class="req">*</span></label>
                   <select id="prefTime" class="form-control" required>
                     <option value="Morning (9:00 AM – 12:00 PM)">Morning (9:00 AM – 12:00 PM)</option>
                     <option value="Afternoon (1:00 PM – 4:00 PM)">Afternoon (1:00 PM – 4:00 PM)</option>
@@ -292,15 +292,15 @@
             <!-- 4. Payment Method -->
             <div style="margin-bottom: 2rem;">
               <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span style="color: var(--orange-accent);">4.</span> Payment Preference
+                <span style="color: var(--orange-accent);">4.</span> Payment Method
               </h3>
 
               <div class="radio-options-grid">
                 <label class="radio-card active" id="radioCash" onclick="selectPayment('cash_pickup')">
                   <input type="radio" name="payment_method" value="cash_pickup" checked>
                   <div class="radio-card-content">
-                    <div class="radio-card-title">Cash upon Pickup / Delivery</div>
-                    <div class="radio-card-desc">Pay exact amount when you receive your order</div>
+                    <div class="radio-card-title">Cash</div>
+                    <div class="radio-card-desc">Pay upon pickup or delivery</div>
                   </div>
                 </label>
 
@@ -327,12 +327,12 @@
 
             <!-- 5. Special Notes -->
             <div class="form-group" style="margin-bottom: 2rem;">
-              <label class="form-label" for="orderNotes">Special Instructions / Requests (Optional)</label>
-              <input type="text" id="orderNotes" class="form-control" placeholder="e.g. Extra latik, please notify 15 mins before, etc.">
+              <label class="form-label" for="orderNotes">Notes (Optional)</label>
+              <input type="text" id="orderNotes" class="form-control" placeholder="Any special requests or instructions...">
             </div>
 
             <button type="submit" id="submitPreOrderBtn" class="btn btn-primary btn-block btn-lg" style="font-size: 1.15rem; padding: 1.1rem;">
-              <span>Submit Pre-Order Now</span>
+              <span>Submit Pre-Order</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </button>
           </form>
@@ -575,6 +575,8 @@
           document.querySelectorAll('.dynamic-unit-desc').forEach(el => {
             el.textContent = `₱${currentUnitPrice} per order • Freshly cooked & chilled`;
           });
+          const qHead = document.getElementById('qtyHeaderPrice');
+          if (qHead) qHead.textContent = `₱${currentUnitPrice} each`;
           const qBtn1 = document.getElementById('qBtn1');
           const qBtn2 = document.getElementById('qBtn2');
           const qBtn3 = document.getElementById('qBtn3');
