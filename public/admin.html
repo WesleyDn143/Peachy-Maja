@@ -184,17 +184,17 @@
 
               <div class="form-group">
                 <label class="form-label">Pickup Booth / Kiosk Location</label>
-                <input type="text" id="cfgPickupLoc" class="form-control" value="Main Kiosk / Booth, Carmen, Davao del Norte" required>
+                <input type="text" id="cfgPickupLoc" class="form-control" value="Purok 1 Barangay Asuncion, Carmen, Davao del Norte" required>
               </div>
 
               <div class="form-group">
                 <label class="form-label">GCash Mobile Number</label>
-                <input type="text" id="cfgGCashNumber" class="form-control" value="0917-123-4567" required>
+                <input type="text" id="cfgGCashNumber" class="form-control" value="09292467993" required>
               </div>
 
               <div class="form-group">
                 <label class="form-label">GCash Account Name</label>
-                <input type="text" id="cfgGCashName" class="form-control" value="Mell C. / Seann L. (Peachy Maja)" required>
+                <input type="text" id="cfgGCashName" class="form-control" value="WE***Y SE**N L." required>
               </div>
 
               <div class="form-group">
@@ -238,6 +238,7 @@
         document.getElementById('adminLoginScreen').style.display = 'none';
         document.getElementById('adminWorkspace').style.display = 'block';
         initAdminData();
+        loadSettingsForm();
       } else {
         document.getElementById('adminLoginScreen').style.display = 'flex';
         document.getElementById('adminWorkspace').style.display = 'none';
@@ -478,8 +479,13 @@
 
     async function handleSaveSettings(e) {
       e.preventDefault();
+      const btn = document.getElementById('saveSettingsBtn');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
       const settings = {
-        price_per_order: parseFloat(document.getElementById('cfgPrice').value) || 20,
+        price_per_order: parseFloat(document.getElementById('cfgPrice').value) || 15,
         pickup_location: document.getElementById('cfgPickupLoc').value.trim(),
         gcash_number: document.getElementById('cfgGCashNumber').value.trim(),
         gcash_name: document.getElementById('cfgGCashName').value.trim(),
@@ -487,8 +493,20 @@
         preorders_open: true
       };
 
-      await DB.saveSettings(settings);
-      if (window.showToast) window.showToast('Store & Batch settings saved to Firebase!', 'success');
+      try {
+        await DB.saveSettings(settings);
+        btn.textContent = '✓ Settings Saved!';
+        if (window.showToast) window.showToast('Store & Batch settings saved successfully!', 'success');
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }, 2200);
+      } catch (err) {
+        console.error('Failed to save settings:', err);
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        alert('Could not save settings: ' + err.message);
+      }
     }
 
     document.addEventListener('DOMContentLoaded', checkAdminAuth);

@@ -35,9 +35,9 @@ const DB = {
       const defaultSettings = {
         price_per_order: 15,
         preorders_open: true,
-        pickup_location: "Main Kiosk / Booth, Carmen, Davao del Norte",
-        gcash_number: "0917-123-4567",
-        gcash_name: "Mell C. / Seann L. (Peachy Maja)",
+        pickup_location: "Purok 1 Barangay Asuncion, Carmen, Davao del Norte",
+        gcash_number: "09292467993",
+        gcash_name: "WE***Y SE**N L.",
         batch_schedule: "Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM."
       };
       localStorage.setItem('peachy_settings', JSON.stringify(defaultSettings));
@@ -201,26 +201,71 @@ const DB = {
   // Get Store Settings
   async getSettings() {
     if (this.isLive && this.dbInstance) {
-      const snapshot = await this.dbInstance.ref('settings').once('value');
-      return snapshot.val() || {
-        price_per_order: 15,
-        preorders_open: true,
-        pickup_location: "Main Kiosk / Booth, Carmen, Davao del Norte",
-        gcash_number: "0917-123-4567",
-        gcash_name: "Mell C. / Seann L. (Peachy Maja)"
-      };
-    } else {
-      return JSON.parse(localStorage.getItem('peachy_settings') || '{}');
+      try {
+        const snapshot = await this.dbInstance.ref('settings').once('value');
+        const val = snapshot.val();
+        if (val) return val;
+      } catch (e) {
+        console.warn('Error reading settings from Firebase:', e);
+      }
     }
+    const local = localStorage.getItem('peachy_settings');
+    if (local) {
+      try { return JSON.parse(local); } catch (e) {}
+    }
+    return {
+      price_per_order: 15,
+      preorders_open: true,
+      pickup_location: "Purok 1 Barangay Asuncion, Carmen, Davao del Norte",
+      gcash_number: "09292467993",
+      gcash_name: "WE***Y SE**N L.",
+      batch_schedule: "Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM."
+    };
   },
 
-  // Save Store Settings
+  // Save Store Settings (syncs to localStorage + Firebase)
   async saveSettings(settings) {
+    localStorage.setItem('peachy_settings', JSON.stringify(settings));
     if (this.isLive && this.dbInstance) {
       await this.dbInstance.ref('settings').set(settings);
-    } else {
-      localStorage.setItem('peachy_settings', JSON.stringify(settings));
     }
+    window.dispatchEvent(new CustomEvent('settings-updated', { detail: settings }));
+  },
+
+  // Realtime Listener for Store Settings (used across customer pages & admin)
+  listenToSettings(callback) {
+    // 1. Initial cached or default values
+    let current = null;
+    try {
+      current = JSON.parse(localStorage.getItem('peachy_settings') || 'null');
+    } catch (e) {}
+
+    const defaults = {
+      price_per_order: 15,
+      preorders_open: true,
+      pickup_location: "Purok 1 Barangay Asuncion, Carmen, Davao del Norte",
+      gcash_number: "09292467993",
+      gcash_name: "WE***Y SE**N L.",
+      batch_schedule: "Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM."
+    };
+
+    callback(current || defaults);
+
+    // 2. Realtime listener if Firebase is connected
+    if (this.isLive && this.dbInstance) {
+      this.dbInstance.ref('settings').on('value', (snap) => {
+        const data = snap.val();
+        if (data) {
+          localStorage.setItem('peachy_settings', JSON.stringify(data));
+          callback(data);
+        }
+      });
+    }
+
+    // 3. Local custom event listener
+    window.addEventListener('settings-updated', (e) => {
+      if (e.detail) callback(e.detail);
+    });
   },
 
   // Admin Authentication

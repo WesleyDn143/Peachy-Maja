@@ -124,7 +124,7 @@
                 </div>
                 <div>
                   <div style="font-weight: 700; font-size: 0.95rem; color: var(--dark-brown);">Pickup Location</div>
-                  <div style="font-size: 0.88rem; color: var(--text-muted);">Main Booth / Kiosk, Carmen, Davao del Norte, Philippines</div>
+                  <div style="font-size: 0.88rem; color: var(--text-muted);" id="contactPickupLocation">Purok 1 Barangay Asuncion, Carmen, Davao del Norte</div>
                 </div>
               </div>
 
@@ -133,8 +133,8 @@
                   ⏰
                 </div>
                 <div>
-                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--dark-brown);">Business Hours</div>
-                  <div style="font-size: 0.88rem; color: var(--text-muted);">Monday to Saturday: 9:00 AM – 6:00 PM (Closed Sundays)</div>
+                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--dark-brown);">Batch Cooking Schedule</div>
+                  <div style="font-size: 0.88rem; color: var(--text-muted);" id="contactSchedule">Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM.</div>
                 </div>
               </div>
 
@@ -143,8 +143,8 @@
                   📞
                 </div>
                 <div>
-                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--dark-brown);">Direct Phone & SMS</div>
-                  <div style="font-size: 0.88rem; color: var(--text-muted);">+63 917 123 4567 (Mell / Seann)</div>
+                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--dark-brown);">Direct Phone & GCash</div>
+                  <div style="font-size: 0.88rem; color: var(--text-muted);" id="contactPhone">09292467993 (WE***Y SE**N L.)</div>
                 </div>
               </div>
 
@@ -166,7 +166,7 @@
             <div style="display: flex; flex-direction: column; gap: 1rem; font-size: 0.88rem;">
               <div>
                 <strong>Q: How do pre-orders work?</strong>
-                <p style="color: var(--text-muted); margin-top: 2px;">Submit your name, phone number, and desired quantity of ₱15 orders. We cook your order fresh in our daily batch for your preferred pickup date!</p>
+                <p style="color: var(--text-muted); margin-top: 2px;" id="contactFaqPreorder">Submit your name, phone number, and desired quantity of ₱15 orders. We cook your order fresh in our daily batch for your preferred pickup date!</p>
               </div>
               <div>
                 <strong>Q: How long does Maja Blanca stay fresh?</strong>
@@ -174,7 +174,7 @@
               </div>
               <div>
                 <strong>Q: How can I pay with GCash?</strong>
-                <p style="color: var(--text-muted); margin-top: 2px;">Send your payment to 0917-123-4567 and send us your reference number or screenshot.</p>
+                <p style="color: var(--text-muted); margin-top: 2px;" id="contactFaqGcash">Send your payment to 09292467993 (WE***Y SE**N L.) and save your reference number.</p>
               </div>
             </div>
           </div>
@@ -201,6 +201,37 @@
   <script src="/js/app.js"></script>
 
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof DB !== 'undefined' && DB.listenToSettings) {
+        DB.listenToSettings((settings) => {
+          if (!settings) return;
+          const locEl = document.getElementById('contactPickupLocation');
+          if (locEl && settings.pickupLocation) locEl.textContent = settings.pickupLocation;
+
+          const schedEl = document.getElementById('contactSchedule');
+          if (schedEl && settings.batchSchedule) schedEl.textContent = settings.batchSchedule;
+
+          const phoneEl = document.getElementById('contactPhone');
+          if (phoneEl) {
+            let phoneStr = settings.gcashNumber || '09292467993';
+            if (settings.gcashName) phoneStr += ` (${settings.gcashName})`;
+            phoneEl.textContent = phoneStr;
+          }
+
+          const faqPre = document.getElementById('contactFaqPreorder');
+          if (faqPre && settings.price) {
+            faqPre.textContent = `Submit your name, phone number, and desired quantity of ₱${settings.price} orders. We cook your order fresh in our daily batch for your preferred pickup date!`;
+          }
+
+          const faqGcash = document.getElementById('contactFaqGcash');
+          if (faqGcash && settings.gcashNumber) {
+            let gName = settings.gcashName ? ` (${settings.gcashName})` : '';
+            faqGcash.textContent = `Send your payment to ${settings.gcashNumber}${gName} and save your reference number.`;
+          }
+        });
+      }
+    });
+
     async function submitInquiry(e) {
       e.preventDefault();
       const btn = document.getElementById('contactSubmitBtn');

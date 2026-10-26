@@ -136,7 +136,7 @@
               Peachy Maja Blanca
             </h3>
             <div style="font-size: 2rem; font-weight: 800; color: var(--orange-accent); margin-bottom: 1rem;">
-              ₱15.00 <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">/ single-serve tub</span>
+              <span class="dynamic-price">₱15.00</span> <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">/ single-serve tub</span>
             </div>
             <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.25rem;">
               Freshly cooked every morning using pure coconut milk, whole sweet corn kernels, and crowned with crispy fragrant coconut latik. Sweet, savory, and silky smooth.
@@ -161,6 +161,15 @@
           <p class="section-subtitle">
             Because our Maja Blanca is cooked fresh daily in limited batches, we accept pre-orders to ensure your orders are reserved and freshly prepared.
           </p>
+        </div>
+
+        <!-- Live Batch Schedule Notice -->
+        <div id="batchScheduleBox" style="background: linear-gradient(135deg, #FFF0E5, #FFE8D6); border: 1.5px solid var(--primary-peach); border-radius: var(--radius-md); padding: 1rem 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <span style="font-size: 1.6rem; flex-shrink: 0;">⏰</span>
+          <div>
+            <div style="font-weight: 800; font-size: 0.95rem; color: var(--dark-brown);">Fresh Batch Schedule</div>
+            <div id="batchScheduleText" style="font-size: 0.88rem; color: var(--orange-accent); font-weight: 700;">Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM.</div>
+          </div>
         </div>
 
         <div class="card" style="box-shadow: var(--shadow-lg); border: 2px solid var(--soft-peach); padding: 2.5rem;">
@@ -202,7 +211,7 @@
                   <img src="/images/classic_maja_without_background.png" alt="Peachy Maja Blanca Tub" style="width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(217, 91, 22, 0.15));">
                   <div>
                     <div style="font-weight: 800; font-size: 1.15rem; color: var(--dark-brown);">Peachy Maja Blanca Tub</div>
-                    <div style="font-size: 0.88rem; color: var(--text-muted);">₱15 per order • Freshly cooked & chilled</div>
+                    <div class="dynamic-unit-desc" style="font-size: 0.88rem; color: var(--text-muted);">₱15 per order • Freshly cooked & chilled</div>
                   </div>
                 </div>
 
@@ -222,11 +231,11 @@
 
               <!-- Quick quantity buttons -->
               <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="setQty(1)">1 Order (₱15)</button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="setQty(2)">2 Orders (₱30)</button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="setQty(3)">3 Orders (₱45)</button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="setQty(5)">5 Orders (₱75)</button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="setQty(10)">10 Orders (₱150)</button>
+                <button type="button" id="qBtn1" class="btn btn-secondary btn-sm" onclick="setQty(1)">1 Order (₱15)</button>
+                <button type="button" id="qBtn2" class="btn btn-secondary btn-sm" onclick="setQty(2)">2 Orders (₱30)</button>
+                <button type="button" id="qBtn3" class="btn btn-secondary btn-sm" onclick="setQty(3)">3 Orders (₱45)</button>
+                <button type="button" id="qBtn5" class="btn btn-secondary btn-sm" onclick="setQty(5)">5 Orders (₱75)</button>
+                <button type="button" id="qBtn10" class="btn btn-secondary btn-sm" onclick="setQty(10)">10 Orders (₱150)</button>
               </div>
             </div>
 
@@ -243,7 +252,7 @@
                   <input type="radio" name="fulfillment_type" value="pickup" checked>
                   <div class="radio-card-content">
                     <div class="radio-card-title">Pickup</div>
-                    <div class="radio-card-desc">Main Booth / Kiosk, Carmen, Davao del Norte (FREE)</div>
+                    <div class="radio-card-desc" id="pickupOptionDesc">Purok 1 Barangay Asuncion, Carmen, Davao del Norte (FREE)</div>
                   </div>
                 </label>
 
@@ -299,7 +308,7 @@
                   <input type="radio" name="payment_method" value="gcash">
                   <div class="radio-card-content">
                     <div class="radio-card-title">GCash</div>
-                    <div class="radio-card-desc">Fast payment via 0917-123-4567</div>
+                    <div class="radio-card-desc" id="gcashRadioDesc">Fast payment via 09292467993</div>
                   </div>
                 </label>
               </div>
@@ -308,7 +317,7 @@
               <div id="gcashBox" class="gcash-notice-box" style="margin-top: 1rem;">
                 <div class="gcash-header">📱 GCash Payment Details</div>
                 <p style="font-size: 0.88rem; color: #1E3A8A; margin-bottom: 0.4rem;">
-                  Send to: <strong>0917-123-4567</strong> (Mell C. / Seann L.)
+                  Send to: <strong id="gcashNumberDisplay">09292467993</strong> (<span id="gcashNameDisplay">WE***Y SE**N L.</span>)
                 </p>
                 <p style="font-size: 0.82rem; color: #4B5563;">
                   After submitting your pre-order, you'll receive your reference number. You can verify and track your pre-order status anytime!
@@ -399,9 +408,9 @@
         <div>
           <h4 class="footer-heading">Business Hours</h4>
           <ul class="footer-links" style="font-size: 0.88rem; color: #CBB4A2;">
-            <li>📍 <strong>Location:</strong> Main Kiosk / Booth, Carmen, Davao del Norte</li>
-            <li>⏰ <strong>Hours:</strong> Mon – Sat: 9:00 AM – 6:00 PM</li>
-            <li>📞 <strong>Phone:</strong> +63 917 123 4567</li>
+            <li id="footerLocationText">📍 <strong>Location:</strong> Purok 1 Barangay Asuncion, Carmen, Davao del Norte</li>
+            <li id="footerHoursText">⏰ <strong>Hours:</strong> Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM.</li>
+            <li id="footerPhoneText">📞 <strong>Phone / GCash:</strong> 09292467993</li>
             <li>✉️ <strong>Email:</strong> orders@peachymaja.ph</li>
           </ul>
         </div>
@@ -434,6 +443,7 @@
   <script>
     let selectedFulfillment = 'pickup';
     let selectedPayment = 'cash_pickup';
+    let currentUnitPrice = 15;
 
     function setQty(val) {
       document.getElementById('orderQty').value = val;
@@ -452,7 +462,7 @@
       const el = document.getElementById('orderQty');
       let val = parseInt(el.value, 10) || 1;
       if (val < 1) val = 1;
-      const total = val * 15;
+      const total = val * currentUnitPrice;
       document.getElementById('calcTotalDisplay').textContent = `₱${total.toFixed(2)}`;
     }
 
@@ -522,8 +532,8 @@
           customerPhone: phone,
           customerEmail: email,
           quantity: qty,
-          unitPrice: 15,
-          totalAmount: qty * 15,
+          unitPrice: currentUnitPrice,
+          totalAmount: qty * currentUnitPrice,
           fulfillmentType: selectedFulfillment,
           deliveryAddress: deliveryAddress,
           preferredDate: date,
@@ -553,6 +563,60 @@
         dateInput.value = tomorrow.toISOString().split('T')[0];
         dateInput.min = new Date().toISOString().split('T')[0];
       }
+
+      // Connect to Live Settings from Admin
+      DB.listenToSettings((s) => {
+        if (!s) return;
+        if (s.price_per_order) {
+          currentUnitPrice = parseFloat(s.price_per_order) || 15;
+          document.querySelectorAll('.dynamic-price').forEach(el => {
+            el.textContent = `₱${currentUnitPrice.toFixed(2)}`;
+          });
+          document.querySelectorAll('.dynamic-unit-desc').forEach(el => {
+            el.textContent = `₱${currentUnitPrice} per order • Freshly cooked & chilled`;
+          });
+          const qBtn1 = document.getElementById('qBtn1');
+          const qBtn2 = document.getElementById('qBtn2');
+          const qBtn3 = document.getElementById('qBtn3');
+          const qBtn5 = document.getElementById('qBtn5');
+          const qBtn10 = document.getElementById('qBtn10');
+          if (qBtn1) qBtn1.textContent = `1 Order (₱${currentUnitPrice})`;
+          if (qBtn2) qBtn2.textContent = `2 Orders (₱${currentUnitPrice * 2})`;
+          if (qBtn3) qBtn3.textContent = `3 Orders (₱${currentUnitPrice * 3})`;
+          if (qBtn5) qBtn5.textContent = `5 Orders (₱${currentUnitPrice * 5})`;
+          if (qBtn10) qBtn10.textContent = `10 Orders (₱${currentUnitPrice * 10})`;
+          recalcTotal();
+        }
+
+        if (s.pickup_location) {
+          const opt = document.getElementById('pickupOptionDesc');
+          if (opt) opt.textContent = `${s.pickup_location} (FREE)`;
+          const footLoc = document.getElementById('footerLocationText');
+          if (footLoc) footLoc.innerHTML = `📍 <strong>Location:</strong> ${s.pickup_location}`;
+        }
+
+        if (s.gcash_number) {
+          const rDesc = document.getElementById('gcashRadioDesc');
+          if (rDesc) rDesc.textContent = `Fast payment via ${s.gcash_number}`;
+          const gNum = document.getElementById('gcashNumberDisplay');
+          if (gNum) gNum.textContent = s.gcash_number;
+          const footPhone = document.getElementById('footerPhoneText');
+          if (footPhone) footPhone.innerHTML = `📞 <strong>Phone / GCash:</strong> ${s.gcash_number}`;
+        }
+
+        if (s.gcash_name) {
+          const gName = document.getElementById('gcashNameDisplay');
+          if (gName) gName.textContent = s.gcash_name;
+        }
+
+        if (s.batch_schedule) {
+          const sched = document.getElementById('batchScheduleText');
+          if (sched) sched.textContent = s.batch_schedule;
+          const footHours = document.getElementById('footerHoursText');
+          if (footHours) footHours.innerHTML = `⏰ <strong>Hours:</strong> ${s.batch_schedule}`;
+        }
+      });
+
       recalcTotal();
     });
   </script>
