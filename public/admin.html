@@ -86,8 +86,14 @@
         <div class="admin-nav-item active" onclick="switchAdminTab('preorders', this)">
           <span>📋</span> Customer Pre-Orders
         </div>
+        <div class="admin-nav-item" onclick="switchAdminTab('stock', this)">
+          <span>📦</span> Stock Manager
+        </div>
         <div class="admin-nav-item" onclick="switchAdminTab('settings', this)">
           <span>⚙️</span> Batch & Store Settings
+        </div>
+        <div class="admin-nav-item" onclick="switchAdminTab('backup', this)">
+          <span>💾</span> Data Backup
         </div>
       </aside>
 
@@ -168,7 +174,112 @@
           </div>
         </section>
 
-        <!-- 2. SETTINGS TAB -->
+        <!-- 2. STOCK MANAGER TAB -->
+        <section id="tabStock" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Batch Stock Manager</h1>
+              <p style="color: var(--text-muted); font-size: 0.95rem;">Track batch capacity (default 24 pcs) minus reserved customer orders saved in Firebase.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+              <button onclick="resetBatchStock(24)" class="btn btn-secondary btn-sm">🔄 Reset for Today's Batch (24 pcs)</button>
+            </div>
+          </div>
+
+          <!-- Stock Metric Overview -->
+          <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
+            <div class="stat-card">
+              <div class="stat-title">Batch Stock Capacity</div>
+              <div class="stat-value" id="stockMetricInitial">24 pcs</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Configured initial stock</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Total Orders (Firebase)</div>
+              <div class="stat-value" id="stockMetricOrdered" style="color: var(--orange-accent);">0 tubs</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Reserved order quantity</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Remaining Stock</div>
+              <div class="stat-value" id="stockMetricRemaining" style="color: var(--success-green);">24 pcs</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Capacity − Firebase orders</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Stock Status</div>
+              <div class="stat-value" id="stockMetricStatus" style="font-size: 1.5rem; color: var(--success-green);">In Stock</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;" id="stockMetricPercent">100% available</div>
+            </div>
+          </div>
+
+          <!-- Visual Stock Progress Bar -->
+          <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div style="font-weight: 700; color: var(--dark-brown); font-size: 0.95rem;">Batch Inventory Meter</div>
+              <div id="stockProgressLabel" style="font-weight: 750; color: var(--orange-accent); font-size: 0.9rem;">24 / 24 pcs remaining</div>
+            </div>
+            <div style="background: #F1ECE6; border-radius: 999px; height: 16px; overflow: hidden; position: relative;">
+              <div id="stockProgressBar" style="background: linear-gradient(90deg, #10B981, #059669); height: 100%; width: 100%; transition: width 0.4s ease, background 0.4s ease; border-radius: 999px;"></div>
+            </div>
+          </div>
+
+          <!-- Stock Controls Card & Deduction List Grid -->
+          <div style="display: grid; grid-template-columns: 380px 1fr; gap: 1.5rem; align-items: flex-start;">
+            <!-- Stock Control Card -->
+            <div class="card">
+              <h2 class="card-title" style="font-size: 1.15rem; margin-bottom: 1rem;">
+                <span>⚙️</span> Set Batch Stock
+              </h2>
+              <form onsubmit="handleSaveStock(event)">
+                <div class="form-group">
+                  <label class="form-label">Initial Batch Capacity (pcs)</label>
+                  <input type="number" id="inputBatchCapacity" class="form-control" value="24" min="1" max="1000" required>
+                  <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block;">Saved to Firebase. Remaining stock = Capacity − Total Firebase orders.</span>
+                </div>
+
+                <div style="margin-bottom: 1.25rem;">
+                  <label class="form-label" style="font-size: 0.82rem; margin-bottom: 0.5rem;">Quick Presets:</label>
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setCapacityPreset(24)">24 pcs (Standard)</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setCapacityPreset(36)">36 pcs</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setCapacityPreset(48)">48 pcs (Double)</button>
+                  </div>
+                </div>
+
+                <button type="submit" id="saveStockBtn" class="btn btn-primary btn-block">
+                  Update Stock Capacity
+                </button>
+              </form>
+            </div>
+
+            <!-- Orders Deducting from Stock -->
+            <div class="card">
+              <h2 class="card-title" style="font-size: 1.15rem; margin-bottom: 0.5rem;">
+                <span>📋</span> Orders Deducting from Batch Stock
+              </h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                Live list of customer orders in Firebase counting against the batch stock (excluding Cancelled).
+              </p>
+
+              <div class="table-wrap" style="max-height: 380px; overflow-y: auto;">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Ref #</th>
+                      <th>Customer</th>
+                      <th>Qty (Tubs)</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="stockOrdersTableBody">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. SETTINGS TAB -->
         <section id="tabSettings" style="display: none;">
           <div style="margin-bottom: 1.5rem;">
             <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Store & Batch Settings</h1>
@@ -209,6 +320,85 @@
           </div>
         </section>
 
+        <!-- 4. DATA BACKUP TAB -->
+        <section id="tabBackup" style="display: none;">
+          <div style="margin-bottom: 1.5rem;">
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Data Backup & Restore</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Export full Firebase database backups and restore records safely.</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Export / Backup Card -->
+            <div class="card">
+              <h2 class="card-title" style="font-size: 1.2rem; margin-bottom: 0.75rem;">
+                <span>📥</span> Create & Download Backup
+              </h2>
+              <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
+                Downloads a complete snapshot of all customer pre-orders, store settings, stock configuration, and inquiries in formatted JSON.
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <button type="button" onclick="downloadFullBackup()" id="btnDownloadBackup" class="btn btn-primary btn-lg" style="justify-content: center;">
+                  <span>💾 Download Full Database Backup (JSON)</span>
+                </button>
+                <button type="button" onclick="exportToCSV()" class="btn btn-secondary" style="justify-content: center;">
+                  <span>📊 Export All Orders to CSV / Excel</span>
+                </button>
+              </div>
+
+              <div style="margin-top: 1.25rem; padding: 0.85rem 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border); font-size: 0.82rem; color: var(--dark-brown);">
+                💡 <strong>Safety Tip:</strong> Keep regular backups downloaded to your computer to preserve order records offline.
+              </div>
+            </div>
+
+            <!-- Restore Backup Card -->
+            <div class="card">
+              <h2 class="card-title" style="font-size: 1.2rem; margin-bottom: 0.75rem;">
+                <span>📤</span> Restore from Backup File
+              </h2>
+              <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
+                Upload a previously saved <code>peachy_maja_backup_*.json</code> file to restore orders, store settings, and stock data to Firebase.
+              </p>
+
+              <div class="form-group">
+                <label class="form-label">Select Backup File (.json)</label>
+                <input type="file" id="backupFileInput" accept=".json" class="form-control" style="padding: 8px;">
+              </div>
+
+              <button type="button" onclick="handleRestoreBackup()" id="btnRestoreBackup" class="btn btn-sm" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; font-weight: 700; width: 100%; padding: 0.75rem;">
+                ⚠️ Restore Database from Selected File
+              </button>
+
+              <div id="restoreStatusBox" style="display: none; margin-top: 1rem; padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;"></div>
+            </div>
+          </div>
+
+          <!-- Quick Database Snapshot Info -->
+          <div class="card">
+            <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 1rem;">
+              <span>📊</span> Live Database Summary
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-size: 0.9rem;">
+              <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
+                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Orders in Database</div>
+                <div id="backupStatOrders" style="font-size: 1.4rem; font-weight: 800; color: var(--dark-brown); margin-top: 4px;">0</div>
+              </div>
+              <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
+                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Current Stock Limit</div>
+                <div id="backupStatStock" style="font-size: 1.4rem; font-weight: 800; color: var(--orange-accent); margin-top: 4px;">24 pcs</div>
+              </div>
+              <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
+                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Price per Order</div>
+                <div id="backupStatPrice" style="font-size: 1.4rem; font-weight: 800; color: var(--success-green); margin-top: 4px;">₱15.00</div>
+              </div>
+              <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
+                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Firebase Sync</div>
+                <div id="backupStatSync" style="font-size: 1.1rem; font-weight: 800; color: var(--success-green); margin-top: 6px;">● Online</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
@@ -231,6 +421,7 @@
 
   <script>
     let allPreOrders = [];
+    let currentStock = { initial_stock: 24 };
 
     function checkAdminAuth() {
       const isLogged = localStorage.getItem('peachy_admin_logged');
@@ -238,6 +429,7 @@
         document.getElementById('adminLoginScreen').style.display = 'none';
         document.getElementById('adminWorkspace').style.display = 'block';
         initAdminData();
+        initStockData();
         loadSettingsForm();
       } else {
         document.getElementById('adminLoginScreen').style.display = 'flex';
@@ -276,9 +468,13 @@
       if (el) el.classList.add('active');
 
       document.getElementById('tabPreorders').style.display = tab === 'preorders' ? 'block' : 'none';
+      document.getElementById('tabStock').style.display = tab === 'stock' ? 'block' : 'none';
       document.getElementById('tabSettings').style.display = tab === 'settings' ? 'block' : 'none';
+      document.getElementById('tabBackup').style.display = tab === 'backup' ? 'block' : 'none';
 
+      if (tab === 'stock') updateStockManagerView();
       if (tab === 'settings') loadSettingsForm();
+      if (tab === 'backup') updateBackupSummaryView();
     }
 
     function initAdminData() {
@@ -287,7 +483,149 @@
         allPreOrders = orders;
         renderOrders(allPreOrders);
         updateStats(allPreOrders);
+        updateStockManagerView();
       });
+    }
+
+    function initStockData() {
+      if (typeof DB !== 'undefined' && DB.listenToStock) {
+        DB.listenToStock((stock) => {
+          if (stock && stock.initial_stock) {
+            currentStock = stock;
+            updateStockManagerView();
+          }
+        });
+      }
+    }
+
+    function updateStockManagerView() {
+      const initialCapacity = parseInt(currentStock.initial_stock, 10) || 24;
+      
+      // Calculate active orders in Firebase (excluding Cancelled)
+      const activeOrders = allPreOrders.filter(o => o.status !== 'Cancelled');
+      const totalOrdered = activeOrders.reduce((sum, o) => sum + (parseInt(o.quantity, 10) || 1), 0);
+      const remainingStock = Math.max(0, initialCapacity - totalOrdered);
+      const percentLeft = initialCapacity > 0 ? Math.round((remainingStock / initialCapacity) * 100) : 0;
+
+      // Update stat cards
+      const mInitial = document.getElementById('stockMetricInitial');
+      const mOrdered = document.getElementById('stockMetricOrdered');
+      const mRemaining = document.getElementById('stockMetricRemaining');
+      const mStatus = document.getElementById('stockMetricStatus');
+      const mPercent = document.getElementById('stockMetricPercent');
+      const inputCap = document.getElementById('inputBatchCapacity');
+
+      if (mInitial) mInitial.textContent = `${initialCapacity} pcs`;
+      if (mOrdered) mOrdered.textContent = `${totalOrdered} tubs`;
+      if (mRemaining) mRemaining.textContent = `${remainingStock} pcs`;
+      if (inputCap && document.activeElement !== inputCap) inputCap.value = initialCapacity;
+
+      // Status indicator & progress styling
+      const bar = document.getElementById('stockProgressBar');
+      const progLabel = document.getElementById('stockProgressLabel');
+      if (progLabel) {
+        progLabel.textContent = `${remainingStock} / ${initialCapacity} pcs remaining (${percentLeft}%)`;
+      }
+
+      if (remainingStock === 0) {
+        if (mStatus) {
+          mStatus.textContent = 'Sold Out';
+          mStatus.style.color = 'var(--danger-red)';
+        }
+        if (mRemaining) mRemaining.style.color = 'var(--danger-red)';
+        if (bar) {
+          bar.style.width = '0%';
+          bar.style.background = 'var(--danger-red)';
+        }
+      } else if (remainingStock <= 5) {
+        if (mStatus) {
+          mStatus.textContent = 'Low Stock';
+          mStatus.style.color = 'var(--warning-yellow)';
+        }
+        if (mRemaining) mRemaining.style.color = 'var(--warning-yellow)';
+        if (bar) {
+          bar.style.width = `${percentLeft}%`;
+          bar.style.background = 'linear-gradient(90deg, #F59E0B, #D97706)';
+        }
+      } else {
+        if (mStatus) {
+          mStatus.textContent = 'In Stock';
+          mStatus.style.color = 'var(--success-green)';
+        }
+        if (mRemaining) mRemaining.style.color = 'var(--success-green)';
+        if (bar) {
+          bar.style.width = `${percentLeft}%`;
+          bar.style.background = 'linear-gradient(90deg, #10B981, #059669)';
+        }
+      }
+
+      if (mPercent) mPercent.textContent = `${percentLeft}% available for orders`;
+
+      // Render deduction list
+      const tbody = document.getElementById('stockOrdersTableBody');
+      if (tbody) {
+        if (activeOrders.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">No active orders deducting from current batch.</td></tr>';
+        } else {
+          tbody.innerHTML = activeOrders.map(o => `
+            <tr>
+              <td><strong style="color: var(--dark-brown); font-size: 0.9rem;">${o.orderRef}</strong></td>
+              <td>${o.customerName}</td>
+              <td><strong style="color: var(--orange-accent);">${o.quantity} tub(s)</strong></td>
+              <td><span style="font-size: 0.8rem; color: var(--text-muted);">${o.preferredDate || 'N/A'}</span></td>
+              <td><span style="font-size: 0.8rem; font-weight: 700; color: var(--dark-brown);">${o.status}</span></td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      updateBackupSummaryView();
+    }
+
+    function setCapacityPreset(val) {
+      const input = document.getElementById('inputBatchCapacity');
+      if (input) input.value = val;
+    }
+
+    async function handleSaveStock(e) {
+      e.preventDefault();
+      const btn = document.getElementById('saveStockBtn');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.textContent = 'Saving Stock...';
+
+      const cap = parseInt(document.getElementById('inputBatchCapacity').value, 10) || 24;
+      try {
+        currentStock = {
+          initial_stock: cap,
+          last_updated: new Date().toISOString()
+        };
+        await DB.saveStock(currentStock);
+        btn.textContent = '✓ Stock Saved!';
+        if (window.showToast) window.showToast(`Batch capacity saved at ${cap} pcs!`, 'success');
+        updateStockManagerView();
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }, 2000);
+      } catch (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        alert('Could not save stock: ' + err.message);
+      }
+    }
+
+    async function resetBatchStock(val = 24) {
+      if (!confirm(`Reset batch capacity to ${val} pcs for today's fresh batch?`)) return;
+      currentStock = {
+        initial_stock: val,
+        last_updated: new Date().toISOString()
+      };
+      await DB.saveStock(currentStock);
+      document.getElementById('inputBatchCapacity').value = val;
+      updateStockManagerView();
+      if (window.showToast) window.showToast(`Stock reset to ${val} pcs!`, 'success');
     }
 
     function updateStats(orders) {
@@ -445,7 +783,7 @@
         `"${o.customerPhone || ''}"`,
         `"${o.customerEmail || ''}"`,
         o.quantity || 1,
-        o.totalAmount || (o.quantity * 20),
+        o.totalAmount || (o.quantity * (o.unitPrice || 15)),
         `"${o.fulfillmentType || ''}"`,
         `"${(o.deliveryAddress || '').replace(/"/g, '""')}"`,
         `"${o.preferredDate || ''}"`,
@@ -464,6 +802,111 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+
+    async function downloadFullBackup() {
+      const btn = document.getElementById('btnDownloadBackup');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.textContent = 'Preparing Backup...';
+
+      try {
+        const backup = await DB.getFullBackup();
+        const jsonStr = JSON.stringify(backup, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const now = new Date();
+        const dateStr = now.toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        a.href = url;
+        a.download = `peachy_maja_backup_${dateStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        if (window.showToast) window.showToast('Full database backup downloaded!', 'success');
+      } catch (err) {
+        console.error(err);
+        alert('Backup download failed: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    async function handleRestoreBackup() {
+      const fileInput = document.getElementById('backupFileInput');
+      const statusBox = document.getElementById('restoreStatusBox');
+      const btn = document.getElementById('btnRestoreBackup');
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Please select a .json backup file first.');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!parsed.data) {
+            throw new Error('Invalid backup structure. Missing "data" container.');
+          }
+
+          const orderCount = parsed.data.preorders ? (Array.isArray(parsed.data.preorders) ? parsed.data.preorders.length : Object.keys(parsed.data.preorders).length) : 0;
+          if (!confirm(`Found ${orderCount} order(s) in this backup. Restore and synchronize to Firebase database?`)) {
+            return;
+          }
+
+          btn.disabled = true;
+          btn.textContent = 'Restoring Database...';
+          statusBox.style.display = 'block';
+          statusBox.style.background = 'var(--cream-bg)';
+          statusBox.style.color = 'var(--dark-brown)';
+          statusBox.textContent = 'Restoring database records to Firebase...';
+
+          await DB.restoreDatabase(parsed);
+
+          statusBox.style.background = 'var(--success-bg)';
+          statusBox.style.color = 'var(--success-green)';
+          statusBox.textContent = `✓ Successfully restored ${orderCount} orders and settings from backup!`;
+          if (window.showToast) window.showToast('Database restore complete!', 'success');
+          fileInput.value = '';
+          updateBackupSummaryView();
+          updateStockManagerView();
+        } catch (err) {
+          console.error(err);
+          statusBox.style.display = 'block';
+          statusBox.style.background = 'var(--danger-bg)';
+          statusBox.style.color = 'var(--danger-red)';
+          statusBox.textContent = 'Restore failed: ' + err.message;
+        } finally {
+          btn.disabled = false;
+          btn.textContent = '⚠️ Restore Database from Selected File';
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    function updateBackupSummaryView() {
+      const bOrders = document.getElementById('backupStatOrders');
+      const bStock = document.getElementById('backupStatStock');
+      const bPrice = document.getElementById('backupStatPrice');
+      const bSync = document.getElementById('backupStatSync');
+
+      if (bOrders) bOrders.textContent = allPreOrders.length;
+      if (bStock) bStock.textContent = `${currentStock.initial_stock || 24} pcs`;
+      if (bPrice) {
+        const p = document.getElementById('cfgPrice');
+        bPrice.textContent = `₱${(p ? p.value : '15')}.00`;
+      }
+      if (bSync) {
+        bSync.textContent = DB.isLive ? '● Online (Firebase)' : '○ Local Storage';
+        bSync.style.color = DB.isLive ? 'var(--success-green)' : 'var(--orange-accent)';
+      }
     }
 
     async function loadSettingsForm() {

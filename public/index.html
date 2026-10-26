@@ -202,9 +202,14 @@
 
             <!-- 2. Quantity & Total Calculator -->
             <div style="margin-bottom: 2rem;">
-              <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span style="color: var(--orange-accent);">2.</span> Quantity (<span id="qtyHeaderPrice">₱15 each</span>)
-              </h3>
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark-brown); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="color: var(--orange-accent);">2.</span> Quantity (<span id="qtyHeaderPrice">₱15 each</span>)
+                </h3>
+                <span id="custStockBadge" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; font-size: 0.82rem; font-weight: 700; padding: 4px 12px; border-radius: 999px;">
+                  <span>⚡</span> <span id="custStockRemainingText">24 tubs left in today's batch</span>
+                </span>
+              </div>
 
               <div style="background: var(--cream-bg); border: 1px solid var(--peach-border); border-radius: var(--radius-md); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;">
                 <div style="display: flex; align-items: center; gap: 1.25rem;">
@@ -618,6 +623,61 @@
           if (footHours) footHours.innerHTML = `⏰ <strong>Hours:</strong> ${s.batch_schedule}`;
         }
       });
+
+      // Connect to Live Stock & Orders for Realtime Capacity
+      let liveCapacity = 24;
+      let liveOrderedTubs = 0;
+
+      function updateStockDisplay() {
+        const remaining = Math.max(0, liveCapacity - liveOrderedTubs);
+        const badge = document.getElementById('custStockBadge');
+        const text = document.getElementById('custStockRemainingText');
+
+        if (text) {
+          if (remaining === 0) {
+            text.textContent = `Batch fully reserved! Pre-ordering for next batch`;
+            if (badge) {
+              badge.style.background = '#FEE2E2';
+              badge.style.color = '#991B1B';
+              badge.style.borderColor = '#FCA5A5';
+            }
+          } else if (remaining <= 5) {
+            text.textContent = `Only ${remaining} of ${liveCapacity} tubs left!`;
+            if (badge) {
+              badge.style.background = '#FEF3C7';
+              badge.style.color = '#92400E';
+              badge.style.borderColor = '#FCD34D';
+            }
+          } else {
+            text.textContent = `${remaining} of ${liveCapacity} tubs left in batch`;
+            if (badge) {
+              badge.style.background = '#ECFDF5';
+              badge.style.color = '#065F46';
+              badge.style.borderColor = '#A7F3D0';
+            }
+          }
+        }
+      }
+
+      if (typeof DB !== 'undefined' && DB.listenToStock) {
+        DB.listenToStock((stk) => {
+          if (stk && stk.initial_stock) {
+            liveCapacity = parseInt(stk.initial_stock, 10) || 24;
+            updateStockDisplay();
+          }
+        });
+      }
+
+      if (typeof DB !== 'undefined' && DB.listenToPreOrders) {
+        DB.listenToPreOrders((orders) => {
+          if (Array.isArray(orders)) {
+            liveOrderedTubs = orders
+              .filter(o => o.status !== 'Cancelled')
+              .reduce((sum, o) => sum + (parseInt(o.quantity, 10) || 1), 0);
+            updateStockDisplay();
+          }
+        });
+      }
 
       recalcTotal();
     });

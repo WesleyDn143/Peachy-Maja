@@ -43,6 +43,15 @@ const DB = {
       localStorage.setItem('peachy_settings', JSON.stringify(defaultSettings));
     }
 
+    // Seed default stock (24 pcs) if empty
+    if (!localStorage.getItem('peachy_stock')) {
+      const defaultStock = {
+        initial_stock: 24,
+        last_updated: new Date().toISOString()
+      };
+      localStorage.setItem('peachy_stock', JSON.stringify(defaultStock));
+    }
+
     // Seed sample pre-order if empty
     if (!localStorage.getItem('peachy_preorders')) {
       const sampleOrders = [
@@ -266,6 +275,159 @@ const DB = {
     window.addEventListener('settings-updated', (e) => {
       if (e.detail) callback(e.detail);
     });
+  },
+
+  // Get Stock Data
+  async getStock() {
+    if (this.isLive && this.dbInstance) {
+      try {
+        const snap = await this.dbInstance.ref('stock').once('value');
+        const val = snap.val();
+        if (val) return val;
+      } catch (e) {
+        console.warn('Error reading stock from Firebase:', e);
+      }
+    }
+    const local = localStorage.getItem('peachy_stock');
+    if (local) {
+      try { return JSON.parse(local); } catch (e) {}
+    }
+    return {
+      initial_stock: 24,
+      last_updated: new Date().toISOString()
+    };
+  },
+
+  // Save Stock Data
+  async saveStock(stockData) {
+    localStorage.setItem('peachy_stock', JSON.stringify(stockData));
+    if (this.isLive && this.dbInstance) {
+      try {
+        await this.dbInstance.ref('stock').set(stockData);
+      } catch (e) {
+        console.warn('Firebase saveStock error:', e);
+      }
+    }
+    window.dispatchEvent(new CustomEvent('stock-updated', { detail: stockData }));
+  },
+
+  // Realtime Stock Listener
+  listenToStock(callback) {
+    let current = null;
+    try {
+      current = JSON.parse(localStorage.getItem('peachy_stock') || 'null');
+    } catch (e) {}
+
+    const defaults = {
+      initial_stock: 24,
+      last_updated: new Date().toISOString()
+    };
+    callback(current || defaults);
+
+    if (this.isLive && this.dbInstance) {
+      this.dbInstance.ref('stock').on('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          localStorage.setItem('peachy_stock', JSON.stringify(val));
+          callback(val);
+        }
+      });
+    }
+
+    window.addEventListener('stock-updated', (e) => {
+      if (e.detail) callback(e.detail);
+    });
+  },
+
+  // Full Database Backup
+  async getFullBackup() {
+    const backup = {
+      backupDate: new Date().toISOString(),
+      version: '1.0',
+      source: 'Peachy Maja E-Commerce Database',
+      data: {
+        preorders: {},
+        settings: {},
+        stock: {},
+        inquiries: {}
+      }
+    };
+
+    if (this.isLive && this.dbInstance) {
+      try {
+        const [ordersSnap, settingsSnap, stockSnap, inqSnap] = await Promise.all([
+          this.dbInstance.ref('preorders').once('value'),
+          this.dbInstance.ref('settings').once('value'),
+          this.dbInstance.ref('stock').once('value'),
+          this.dbInstance.ref('inquiries').once('value')
+        ]);
+        backup.data.preorders = ordersSnap.val() || {};
+        backup.data.settings = settingsSnap.val() || {};
+        backup.data.stock = stockSnap.val() || {};
+        backup.data.inquiries = inqSnap.val() || {};
+      } catch (err) {
+        console.warn('Firebase full backup failed, reading local storage:', err);
+      }
+    }
+
+    // Ensure fallback data if empty
+    if (!backup.data.preorders || Object.keys(backup.data.preorders).length === 0) {
+      const localOrders = JSON.parse(localStorage.getItem('peachy_preorders') || '[]');
+      backup.data.preorders = localOrders;
+    }
+    if (!backup.data.settings || Object.keys(backup.data.settings).length === 0) {
+      backup.data.settings = JSON.parse(localStorage.getItem('peachy_settings') || '{}');
+    }
+    if (!backup.data.stock || Object.keys(backup.data.stock).length === 0) {
+      backup.data.stock = JSON.parse(localStorage.getItem('peachy_stock') || '{"initial_stock":24}');
+    }
+
+    return backup;
+  },
+
+  // Restore Database Backup
+  async restoreDatabase(backupPayload) {
+    if (!backupPayload || !backupPayload.data) {
+      throw new Error('Invalid backup file format. Expected "data" property.');
+    }
+    const data = backupPayload.data;
+
+    // 1. Restore local storage
+    if (data.preorders) {
+      const ordersArray = Array.isArray(data.preorders)
+        ? data.preorders
+        : Object.keys(data.preorders).map(k => ({ id: k, ...data.preorders[k] }));
+      localStorage.setItem('peachy_preorders', JSON.stringify(ordersArray));
+      window.dispatchEvent(new CustomEvent('preorders-updated', { detail: ordersArray }));
+    }
+    if (data.settings) {
+      localStorage.setItem('peachy_settings', JSON.stringify(data.settings));
+      window.dispatchEvent(new CustomEvent('settings-updated', { detail: data.settings }));
+    }
+    if (data.stock) {
+      localStorage.setItem('peachy_stock', JSON.stringify(data.stock));
+      window.dispatchEvent(new CustomEvent('stock-updated', { detail: data.stock }));
+    }
+
+    // 2. Restore to Firebase if live
+    if (this.isLive && this.dbInstance) {
+      const promises = [];
+      if (data.preorders) {
+        promises.push(this.dbInstance.ref('preorders').set(data.preorders));
+      }
+      if (data.settings) {
+        promises.push(this.dbInstance.ref('settings').set(data.settings));
+      }
+      if (data.stock) {
+        promises.push(this.dbInstance.ref('stock').set(data.stock));
+      }
+      if (data.inquiries) {
+        promises.push(this.dbInstance.ref('inquiries').set(data.inquiries));
+      }
+      await Promise.all(promises);
+    }
+
+    return { success: true };
   },
 
   // Admin Authentication
