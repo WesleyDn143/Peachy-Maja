@@ -22,29 +22,23 @@
     <div class="card" style="max-width: 440px; margin: 0 auto; box-shadow: var(--shadow-lg);">
       <div style="text-align: center; margin-bottom: 1.5rem;">
         <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" style="height: 60px; margin: 0 auto 0.75rem;">
-        <h1 style="font-size: 1.4rem; font-weight: 800; color: var(--dark-brown);">Admin Dashboard Login</h1>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Sign in to view customer pre-orders & manage batches.</p>
+        <h1 style="font-size: 1.4rem; font-weight: 800; color: var(--dark-brown);">Admin Login</h1>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Sign in to view orders and manage store settings.</p>
       </div>
 
       <form onsubmit="handleAdminLogin(event)">
         <div class="form-group">
-          <label class="form-label">Administrator Email</label>
-          <input type="email" id="adminEmail" class="form-control" required value="admin@peachymaja.ph">
+          <label class="form-label">Email</label>
+          <input type="email" id="adminEmail" class="form-control" required placeholder="admin@peachymaja.ph">
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" id="adminPassword" class="form-control" required placeholder="••••••••">
+          <input type="password" id="adminPassword" class="form-control" required placeholder="Enter password">
         </div>
         <button type="submit" id="adminLoginBtn" class="btn btn-primary btn-block" style="margin-top: 1rem;">
-          Sign In as Admin
+          Sign In
         </button>
       </form>
-
-      <div style="margin-top: 1.25rem; padding: 0.75rem; background: var(--light-peach); border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--dark-brown);">
-        🔑 <strong>Default Admin Access:</strong><br>
-        Email: <code>admin@peachymaja.ph</code><br>
-        Password: <code>PeachyMaja2026!</code>
-      </div>
 
       <div id="adminLoginAlert" style="display: none; margin-top: 1rem; padding: 0.75rem; border-radius: var(--radius-sm); background: var(--danger-bg); color: var(--danger-red); font-size: 0.88rem; font-weight: 600;"></div>
       
@@ -63,9 +57,9 @@
           <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" style="height: 42px;">
         </a>
         <div>
-          <div style="font-weight: 800; font-size: 1.15rem; color: var(--dark-brown);">Peachy Maja Pre-Order Admin</div>
-          <div id="dbStatusBadge" style="font-size: 0.75rem; color: var(--success-green); font-weight: 700; text-transform: uppercase;">
-            ● Realtime Connected
+          <div style="font-weight: 800; font-size: 1.15rem; color: var(--dark-brown);">Peachy Maja Admin</div>
+          <div id="dbStatusBadge" style="font-size: 0.75rem; color: var(--success-green); font-weight: 700;">
+            ● Online
           </div>
         </div>
       </div>
@@ -84,13 +78,13 @@
       <!-- Admin Sidebar Navigation -->
       <aside class="admin-sidebar">
         <div class="admin-nav-item active" onclick="switchAdminTab('preorders', this)">
-          <span>📋</span> Customer Pre-Orders
+          <span>📋</span> Orders
         </div>
         <div class="admin-nav-item" onclick="switchAdminTab('stock', this)">
           <span>📦</span> Stock Manager
         </div>
         <div class="admin-nav-item" onclick="switchAdminTab('settings', this)">
-          <span>⚙️</span> Batch & Store Settings
+          <span>⚙️</span> Settings
         </div>
         <div class="admin-nav-item" onclick="switchAdminTab('backup', this)">
           <span>💾</span> Data Backup
@@ -104,11 +98,11 @@
         <section id="tabPreorders">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
             <div>
-              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Customer Pre-Orders</h1>
-              <p style="color: var(--text-muted); font-size: 0.95rem;">Live incoming pre-orders (₱15 each) powered by Firebase Realtime Database.</p>
+              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Customer Orders</h1>
+              <p style="color: var(--text-muted); font-size: 0.95rem;">View and manage incoming customer pre-orders.</p>
             </div>
             <div style="display: flex; gap: 0.75rem;">
-              <button onclick="exportToCSV()" class="btn btn-secondary btn-sm">📥 Export to CSV / Excel</button>
+              <button onclick="exportToCSV()" class="btn btn-secondary btn-sm">📥 Export Orders</button>
             </div>
           </div>
 
@@ -178,30 +172,30 @@
         <section id="tabStock" style="display: none;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
             <div>
-              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Batch Stock Manager</h1>
-              <p style="color: var(--text-muted); font-size: 0.95rem;">Track batch capacity (default 24 pcs) minus reserved customer orders saved in Firebase.</p>
+              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Stock Manager</h1>
+              <p style="color: var(--text-muted); font-size: 0.95rem;">Manage batch capacity and view remaining orders.</p>
             </div>
             <div style="display: flex; gap: 0.75rem;">
-              <button onclick="resetBatchStock(24)" class="btn btn-secondary btn-sm">🔄 Reset for Today's Batch (24 pcs)</button>
+              <button onclick="resetBatchStock(24)" class="btn btn-secondary btn-sm">🔄 Reset to 24 pcs</button>
             </div>
           </div>
 
           <!-- Stock Metric Overview -->
           <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
             <div class="stat-card">
-              <div class="stat-title">Batch Stock Capacity</div>
+              <div class="stat-title">Batch Capacity</div>
               <div class="stat-value" id="stockMetricInitial">24 pcs</div>
-              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Configured initial stock</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Initial stock for batch</div>
             </div>
             <div class="stat-card">
-              <div class="stat-title">Total Orders (Firebase)</div>
+              <div class="stat-title">Orders Reserved</div>
               <div class="stat-value" id="stockMetricOrdered" style="color: var(--orange-accent);">0 tubs</div>
-              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Reserved order quantity</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Tubs ordered by customers</div>
             </div>
             <div class="stat-card">
               <div class="stat-title">Remaining Stock</div>
               <div class="stat-value" id="stockMetricRemaining" style="color: var(--success-green);">24 pcs</div>
-              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Capacity − Firebase orders</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Tubs available for orders</div>
             </div>
             <div class="stat-card">
               <div class="stat-title">Stock Status</div>
@@ -213,7 +207,7 @@
           <!-- Visual Stock Progress Bar -->
           <div class="card" style="margin-bottom: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-              <div style="font-weight: 700; color: var(--dark-brown); font-size: 0.95rem;">Batch Inventory Meter</div>
+              <div style="font-weight: 700; color: var(--dark-brown); font-size: 0.95rem;">Stock Meter</div>
               <div id="stockProgressLabel" style="font-weight: 750; color: var(--orange-accent); font-size: 0.9rem;">24 / 24 pcs remaining</div>
             </div>
             <div style="background: #F1ECE6; border-radius: 999px; height: 16px; overflow: hidden; position: relative;">
@@ -226,13 +220,13 @@
             <!-- Stock Control Card -->
             <div class="card">
               <h2 class="card-title" style="font-size: 1.15rem; margin-bottom: 1rem;">
-                <span>⚙️</span> Set Batch Stock
+                <span>⚙️</span> Set Stock Capacity
               </h2>
               <form onsubmit="handleSaveStock(event)">
                 <div class="form-group">
-                  <label class="form-label">Initial Batch Capacity (pcs)</label>
+                  <label class="form-label">Batch Capacity (pcs)</label>
                   <input type="number" id="inputBatchCapacity" class="form-control" value="24" min="1" max="1000" required>
-                  <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block;">Saved to Firebase. Remaining stock = Capacity − Total Firebase orders.</span>
+                  <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block;">Total tubs prepared for this batch.</span>
                 </div>
 
                 <div style="margin-bottom: 1.25rem;">
@@ -245,7 +239,7 @@
                 </div>
 
                 <button type="submit" id="saveStockBtn" class="btn btn-primary btn-block">
-                  Update Stock Capacity
+                  Save Capacity
                 </button>
               </form>
             </div>
@@ -253,10 +247,10 @@
             <!-- Orders Deducting from Stock -->
             <div class="card">
               <h2 class="card-title" style="font-size: 1.15rem; margin-bottom: 0.5rem;">
-                <span>📋</span> Orders Deducting from Batch Stock
+                <span>📋</span> Orders in Current Batch
               </h2>
               <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-                Live list of customer orders in Firebase counting against the batch stock (excluding Cancelled).
+                Active customer orders reserved for this batch.
               </p>
 
               <div class="table-wrap" style="max-height: 380px; overflow-y: auto;">
@@ -282,8 +276,8 @@
         <!-- 3. SETTINGS TAB -->
         <section id="tabSettings" style="display: none;">
           <div style="margin-bottom: 1.5rem;">
-            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Store & Batch Settings</h1>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Configure your pre-order status, pickup booth, and GCash account.</p>
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Store Settings</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Configure price, pickup location, GCash, and batch schedule.</p>
           </div>
 
           <div class="card" style="max-width: 600px;">
@@ -323,41 +317,41 @@
         <!-- 4. DATA BACKUP TAB -->
         <section id="tabBackup" style="display: none;">
           <div style="margin-bottom: 1.5rem;">
-            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Data Backup & Restore</h1>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Export full Firebase database backups and restore records safely.</p>
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Data Backup</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Save a copy of your store records or restore from a backup file.</p>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
             <!-- Export / Backup Card -->
             <div class="card">
               <h2 class="card-title" style="font-size: 1.2rem; margin-bottom: 0.75rem;">
-                <span>📥</span> Create & Download Backup
+                <span>📥</span> Download Backup
               </h2>
               <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
-                Downloads a complete snapshot of all customer pre-orders, store settings, stock configuration, and inquiries in formatted JSON.
+                Download all order records and store settings to your computer.
               </p>
 
               <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                 <button type="button" onclick="downloadFullBackup()" id="btnDownloadBackup" class="btn btn-primary btn-lg" style="justify-content: center;">
-                  <span>💾 Download Full Database Backup (JSON)</span>
+                  <span>💾 Download Backup File</span>
                 </button>
                 <button type="button" onclick="exportToCSV()" class="btn btn-secondary" style="justify-content: center;">
-                  <span>📊 Export All Orders to CSV / Excel</span>
+                  <span>📊 Download Orders Spreadsheet</span>
                 </button>
               </div>
 
               <div style="margin-top: 1.25rem; padding: 0.85rem 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border); font-size: 0.82rem; color: var(--dark-brown);">
-                💡 <strong>Safety Tip:</strong> Keep regular backups downloaded to your computer to preserve order records offline.
+                💡 <strong>Safety Tip:</strong> Keep regular backups saved on your computer to protect your store data.
               </div>
             </div>
 
             <!-- Restore Backup Card -->
             <div class="card">
               <h2 class="card-title" style="font-size: 1.2rem; margin-bottom: 0.75rem;">
-                <span>📤</span> Restore from Backup File
+                <span>📤</span> Restore from Backup
               </h2>
               <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
-                Upload a previously saved <code>peachy_maja_backup_*.json</code> file to restore orders, store settings, and stock data to Firebase.
+                Upload a backup file from your computer to restore your store data.
               </p>
 
               <div class="form-group">
@@ -366,7 +360,7 @@
               </div>
 
               <button type="button" onclick="handleRestoreBackup()" id="btnRestoreBackup" class="btn btn-sm" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; font-weight: 700; width: 100%; padding: 0.75rem;">
-                ⚠️ Restore Database from Selected File
+                Restore from Backup
               </button>
 
               <div id="restoreStatusBox" style="display: none; margin-top: 1rem; padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;"></div>
@@ -376,15 +370,15 @@
           <!-- Quick Database Snapshot Info -->
           <div class="card">
             <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 1rem;">
-              <span>📊</span> Live Database Summary
+              <span>📊</span> Store Overview
             </h3>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-size: 0.9rem;">
               <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
-                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Orders in Database</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Total Orders</div>
                 <div id="backupStatOrders" style="font-size: 1.4rem; font-weight: 800; color: var(--dark-brown); margin-top: 4px;">0</div>
               </div>
               <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
-                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Current Stock Limit</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Stock Capacity</div>
                 <div id="backupStatStock" style="font-size: 1.4rem; font-weight: 800; color: var(--orange-accent); margin-top: 4px;">24 pcs</div>
               </div>
               <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
@@ -392,7 +386,7 @@
                 <div id="backupStatPrice" style="font-size: 1.4rem; font-weight: 800; color: var(--success-green); margin-top: 4px;">₱15.00</div>
               </div>
               <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
-                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Firebase Sync</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">System Status</div>
                 <div id="backupStatSync" style="font-size: 1.1rem; font-weight: 800; color: var(--success-green); margin-top: 6px;">● Online</div>
               </div>
             </div>
@@ -856,23 +850,23 @@
           }
 
           const orderCount = parsed.data.preorders ? (Array.isArray(parsed.data.preorders) ? parsed.data.preorders.length : Object.keys(parsed.data.preorders).length) : 0;
-          if (!confirm(`Found ${orderCount} order(s) in this backup. Restore and synchronize to Firebase database?`)) {
+          if (!confirm(`Found ${orderCount} order(s) in this backup. Restore store data from this file?`)) {
             return;
           }
 
           btn.disabled = true;
-          btn.textContent = 'Restoring Database...';
+          btn.textContent = 'Restoring...';
           statusBox.style.display = 'block';
           statusBox.style.background = 'var(--cream-bg)';
           statusBox.style.color = 'var(--dark-brown)';
-          statusBox.textContent = 'Restoring database records to Firebase...';
+          statusBox.textContent = 'Restoring records from backup file...';
 
           await DB.restoreDatabase(parsed);
 
           statusBox.style.background = 'var(--success-bg)';
           statusBox.style.color = 'var(--success-green)';
-          statusBox.textContent = `✓ Successfully restored ${orderCount} orders and settings from backup!`;
-          if (window.showToast) window.showToast('Database restore complete!', 'success');
+          statusBox.textContent = `✓ Successfully restored ${orderCount} orders and settings!`;
+          if (window.showToast) window.showToast('Data restore complete!', 'success');
           fileInput.value = '';
           updateBackupSummaryView();
           updateStockManagerView();
@@ -884,7 +878,7 @@
           statusBox.textContent = 'Restore failed: ' + err.message;
         } finally {
           btn.disabled = false;
-          btn.textContent = '⚠️ Restore Database from Selected File';
+          btn.textContent = 'Restore from Backup';
         }
       };
 
@@ -904,8 +898,8 @@
         bPrice.textContent = `₱${(p ? p.value : '15')}.00`;
       }
       if (bSync) {
-        bSync.textContent = DB.isLive ? '● Online (Firebase)' : '○ Local Storage';
-        bSync.style.color = DB.isLive ? 'var(--success-green)' : 'var(--orange-accent)';
+        bSync.textContent = DB.isLive ? '● Connected' : '○ Offline';
+        bSync.style.color = DB.isLive ? 'var(--success-green)' : 'var(--text-muted)';
       }
     }
 
@@ -938,8 +932,8 @@
 
       try {
         await DB.saveSettings(settings);
-        btn.textContent = '✓ Settings Saved!';
-        if (window.showToast) window.showToast('Store & Batch settings saved successfully!', 'success');
+        btn.textContent = '✓ Saved!';
+        if (window.showToast) window.showToast('Store settings saved successfully!', 'success');
         setTimeout(() => {
           btn.disabled = false;
           btn.innerHTML = originalText;
