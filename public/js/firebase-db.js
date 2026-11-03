@@ -69,7 +69,7 @@ const DB = {
           preferredTime: '11:00 AM - 1:00 PM',
           paymentMethod: 'cash_pickup',
           paymentStatus: 'pending',
-          status: 'Pre-Order Received',
+          status: 'Order Received',
           notes: 'Please add extra crispy toasted latik if possible, thank you!',
           createdAt: new Date().toISOString()
         }
@@ -92,7 +92,7 @@ const DB = {
       unitPrice: order.unitPrice || 15,
       totalAmount: order.totalAmount || (order.quantity * (order.unitPrice || 15)),
       paymentStatus: order.paymentMethod === 'gcash' ? 'pending_verification' : 'pending',
-      status: 'Pre-Order Received',
+      status: 'Order Received',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -126,7 +126,7 @@ const DB = {
 
     const order = allOrders.find(o => o.orderRef && o.orderRef.toUpperCase() === cleanRef);
     if (!order) {
-      return { success: false, message: 'No pre-order found with that reference number.' };
+      return { success: false, message: 'No order found with that reference number.' };
     }
 
     // Verify contact matches phone or email
@@ -138,7 +138,7 @@ const DB = {
     if (!phoneMatch && !emailMatch) {
       return {
         success: false,
-        message: 'Security verification failed. The phone number or email does not match our pre-order records.'
+        message: 'Security verification failed. The phone number or email does not match our order records.'
       };
     }
 

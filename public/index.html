@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Peachy Maja — Pre-Order Fresh Homemade Maja Blanca | ₱15 Each</title>
-  <meta name="description" content="Pre-order freshly made homemade Peachy Maja Blanca. Melt-in-your-mouth creamy coconut pudding topped with golden toasted latik and savory cheese. Only ₱15 each order.">
+  <title>Peachy Maja — Order Fresh Homemade Maja Blanca | ₱15 Each</title>
+  <meta name="description" content="Order freshly made homemade Peachy Maja Blanca. Melt-in-your-mouth creamy coconut pudding topped with golden toasted latik and savory cheese. Only ₱15 each order.">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   
   <!-- Google Fonts: Plus Jakarta Sans -->
@@ -72,11 +72,11 @@
               A Little Sweetness in <span>Every Bite!</span>
             </h1>
             <p class="hero-desc">
-              Enjoy the creamy, delicious goodness of Peachy Maja. Made fresh in daily batches to guarantee peak freshness and creaminess. <strong>Pre-order yours today for only ₱15 per order!</strong>
+              Enjoy the creamy, delicious goodness of Peachy Maja. Made fresh in daily batches to guarantee peak freshness and creaminess. <strong>Order yours today for only ₱15 per order!</strong>
             </p>
             <div class="hero-cta">
               <a href="#preorderSection" class="btn btn-primary btn-lg">
-                <span>Reserve Your Pre-Order</span>
+                <span>Place Your Order</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </a>
               <a href="/track.html" class="btn btn-secondary btn-lg">Track Existing Order</a>
@@ -92,7 +92,7 @@
               </div>
               <div class="highlight-item">
                 <div class="highlight-icon">🥣</div>
-                <span>Pre-Order Only</span>
+                <span>Made to Order</span>
               </div>
             </div>
           </div>
@@ -146,7 +146,7 @@
               <li>✓ <strong>Portion:</strong> Individual single-serve tub (~150g).</li>
               <li>✓ <strong>Shelf Life:</strong> 3–4 days refrigerated.</li>
             </ul>
-            <a href="#preorderSection" class="btn btn-primary btn-block">Pre-Order Now (₱15) →</a>
+            <a href="#preorderSection" class="btn btn-primary btn-block">Order Now (₱15) →</a>
           </div>
         </div>
       </div>
@@ -156,10 +156,10 @@
     <section class="section" id="preorderSection" style="background: radial-gradient(circle at 90% 10%, #FFF5ED 0%, #FFFFFF 80%);">
       <div class="container" style="max-width: 900px;">
         <div class="section-header">
-          <span class="section-eyebrow">Customer Pre-Orders</span>
-          <h2 class="section-title">Pre-Order Your Peachy Maja</h2>
+          <span class="section-eyebrow">Customer Orders</span>
+          <h2 class="section-title">Order Your Peachy Maja</h2>
           <p class="section-subtitle">
-            Because our Maja Blanca is cooked fresh daily in limited batches, we accept pre-orders to ensure your orders are reserved and freshly prepared.
+            Because our Maja Blanca is cooked fresh daily in limited batches, we take orders to ensure your orders are reserved and freshly prepared.
           </p>
         </div>
 
@@ -325,7 +325,7 @@
                   Send to: <strong id="gcashNumberDisplay">09292467993</strong> (<span id="gcashNameDisplay">WE***Y SE**N L.</span>)
                 </p>
                 <p style="font-size: 0.82rem; color: #4B5563;">
-                  After submitting your pre-order, you'll receive your reference number. You can verify and track your pre-order status anytime!
+                  After submitting your order, you'll receive your reference number. You can verify and track your order status anytime!
                 </p>
               </div>
             </div>
@@ -337,7 +337,7 @@
             </div>
 
             <button type="submit" id="submitPreOrderBtn" class="btn btn-primary btn-block btn-lg" style="font-size: 1.15rem; padding: 1.1rem;">
-              <span>Submit Pre-Order</span>
+              <span>Submit Order</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </button>
           </form>
@@ -403,8 +403,8 @@
           <h4 class="footer-heading">Quick Links</h4>
           <ul class="footer-links">
             <li><a href="/">Home</a></li>
-            <li><a href="#preorderSection">Pre-Order (₱15)</a></li>
-            <li><a href="/track.html">Track Pre-Order</a></li>
+            <li><a href="#preorderSection">Order (₱15)</a></li>
+            <li><a href="/track.html">Track Order</a></li>
             <li><a href="/about.html">About the Founders</a></li>
             <li><a href="/contact.html">Contact Us</a></li>
           </ul>
@@ -553,9 +553,9 @@
         window.location.href = `/track.html?ref=${encodeURIComponent(savedOrder.orderRef)}&contact=${encodeURIComponent(phone)}&new=1`;
       } catch (err) {
         console.error('Error submitting pre-order', err);
-        alert('Failed to save pre-order. Please try again.');
+        alert('Failed to save order. Please try again.');
         btn.disabled = false;
-        btn.innerHTML = '<span>Submit Pre-Order Now</span>';
+        btn.innerHTML = '<span>Submit Order Now</span>';
       }
     }
 
@@ -635,7 +635,7 @@
 
         if (text) {
           if (remaining === 0) {
-            text.textContent = `Batch fully reserved! Pre-ordering for next batch`;
+            text.textContent = `Batch fully reserved! Ordering for next batch`;
             if (badge) {
               badge.style.background = '#FEE2E2';
               badge.style.color = '#991B1B';

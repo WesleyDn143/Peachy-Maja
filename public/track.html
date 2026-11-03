@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Track Your Pre-Order — Peachy Maja</title>
+  <title>Track Your Order — Peachy Maja</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,7 +73,7 @@
       <!-- Tracking Search Box -->
       <div class="card" style="margin-bottom: 2rem;">
         <h1 class="card-title" style="font-size: 1.35rem;">
-          <span>🔍</span> Track Pre-Order Status
+          <span>🔍</span> Track Order Status
         </h1>
         <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
           Enter your Order Reference Number and the Phone Number used during checkout to check your order progress.
@@ -86,7 +86,7 @@
           </div>
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="trackContact">Phone Number <span class="req">*</span></label>
-            <input type="text" id="trackContact" class="form-control" placeholder="Phone used in pre-order" required>
+            <input type="text" id="trackContact" class="form-control" placeholder="Phone used in order" required>
           </div>
           <button type="submit" id="trackSubmitBtn" class="btn btn-primary" style="height: 48px;">
             Track Order
@@ -106,7 +106,7 @@
     <div class="container">
       <div class="footer-bottom">
         <div>© 2026 Peachy Maja. Handcrafted with love by Seann, Mell, & Marlo in Carmen, Davao del Norte.</div>
-        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Pre-Order (₱15)</a></div>
+        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Order (₱15)</a></div>
       </div>
     </div>
   </footer>
@@ -121,7 +121,7 @@
 
   <script>
     const STATUS_STAGES = [
-      { key: 'Pre-Order Received', label: 'Received', icon: '📝' },
+      { key: 'Order Received', altKey: 'Pre-Order Received', label: 'Received', icon: '📝' },
       { key: 'Confirmed', label: 'Confirmed', icon: '✓' },
       { key: 'Preparing Batch', label: 'Cooking Batch', icon: '🥣' },
       { key: 'Ready for Pickup / Out for Delivery', label: 'Ready / Out', icon: '🛵' },
@@ -146,7 +146,7 @@
         const result = await DB.getPreOrderByRef(ref, contact);
 
         if (!result.success || !result.order) {
-          errorDiv.textContent = result.message || 'Unable to find pre-order. Please double-check your reference and contact number.';
+          errorDiv.textContent = result.message || 'Unable to find order. Please double-check your reference and contact number.';
           errorDiv.style.display = 'block';
           resultContainer.style.display = 'none';
           btn.disabled = false;
@@ -173,7 +173,7 @@
       const isCancelled = order.status === 'Cancelled';
       let activeIndex = 0;
       if (!isCancelled) {
-        const found = STATUS_STAGES.findIndex(s => s.key === order.status);
+        const found = STATUS_STAGES.findIndex(s => s.key === order.status || s.altKey === order.status);
         activeIndex = found >= 0 ? found : 0;
       }
 
@@ -188,7 +188,7 @@
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--peach-border); padding-bottom: 1.25rem;">
             <div>
               <div style="font-size: 0.85rem; font-weight: 700; color: var(--orange-accent); text-transform: uppercase;">
-                Pre-Order Reference
+                Order Reference
               </div>
               <div style="font-size: 1.6rem; font-weight: 800; color: var(--dark-brown);">
                 ${order.orderRef}
@@ -210,8 +210,8 @@
 
           ${isCancelled ? `
             <div style="margin: 2rem 0; padding: 1.5rem; background: var(--danger-bg); border-radius: var(--radius-md); text-align: center; color: var(--danger-red);">
-              <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem;">Pre-Order Cancelled</h3>
-              <p style="font-size: 0.9rem;">${order.statusNotes || 'This pre-order was cancelled. Please contact Peachy Maja support if you have questions.'}</p>
+              <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem;">Order Cancelled</h3>
+              <p style="font-size: 0.9rem;">${order.statusNotes || 'This order was cancelled. Please contact Peachy Maja support if you have questions.'}</p>
             </div>
           ` : `
             <!-- Stepper Progress Bar -->
