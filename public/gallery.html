@@ -119,7 +119,7 @@
           </p>
           <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
             <a href="/#preorderSection" class="btn btn-primary btn-lg">
-              <span>Order Fresh Maja Blanca (₱15)</span>
+              <span id="galleryCtaBtnText">Order Fresh Maja Blanca (<span class="dynamic-price-simple">₱15</span>)</span>
             </a>
             <a href="/contact.html" class="btn btn-secondary btn-lg">
               <span>Send Us Your Photo / Feedback</span>
@@ -148,7 +148,7 @@
             <span>Peachy Maja</span>
           </div>
           <p class="footer-desc">
-            A homegrown dessert business selling creamy, homemade Maja Blanca with sweet corn and toasted latik. Only ₱15 each order.
+            A homegrown dessert business selling creamy, homemade Maja Blanca with sweet corn and toasted latik. Only <span class="dynamic-price-simple">₱15</span> each order.
           </p>
         </div>
 
@@ -156,7 +156,7 @@
           <h4 class="footer-heading">Quick Links</h4>
           <ul class="footer-links">
             <li><a href="/">Home</a></li>
-            <li><a href="/#preorderSection">Order (₱15)</a></li>
+            <li><a href="/#preorderSection">Order (<span class="dynamic-price-simple">₱15</span>)</a></li>
             <li><a href="/#reviewsSection">Customer Reviews</a></li>
             <li><a href="/gallery.html">Satisfied Customers</a></li>
             <li><a href="/track.html">Track Order</a></li>
@@ -188,7 +188,7 @@
 
       <div class="footer-bottom">
         <div>© 2026 Peachy Maja. Handcrafted with love in Carmen, Davao del Norte.</div>
-        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Order (₱15)</a></div>
+        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Order (<span class="dynamic-price-simple">₱15</span>)</a></div>
       </div>
     </div>
   </footer>
@@ -203,6 +203,7 @@
   <script>
     let allGalleryItems = [];
     let activeFilter = 'All';
+    let currentGalleryPrice = 15;
 
     function renderGallery(items) {
       const container = document.getElementById('galleryContainer');
@@ -290,7 +291,7 @@
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
           <button class="btn btn-secondary btn-sm" onclick="closeLightbox()">Close</button>
-          <a href="/#preorderSection" class="btn btn-primary btn-sm">Order This (₱15) →</a>
+          <a href="/#preorderSection" class="btn btn-primary btn-sm">Order This (₱${currentGalleryPrice}) →</a>
         </div>
       `;
 
@@ -313,6 +314,12 @@
       if (typeof DB !== 'undefined' && DB.listenToSettings) {
         DB.listenToSettings((s) => {
           if (!s) return;
+          if (s.price_per_order) {
+            currentGalleryPrice = parseFloat(s.price_per_order) || 15;
+            document.querySelectorAll('.dynamic-price-simple').forEach(el => {
+              el.textContent = `₱${currentGalleryPrice}`;
+            });
+          }
           if (s.pickup_location) {
             const loc = document.getElementById('footerLocationText');
             if (loc) loc.innerHTML = `📍 <strong>Location:</strong> ${s.pickup_location}`;

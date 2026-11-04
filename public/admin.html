@@ -159,7 +159,7 @@
                   <th>Ref #</th>
                   <th>Customer Name</th>
                   <th>Contact Phone</th>
-                  <th>Quantity (₱15 ea)</th>
+                  <th id="adminTableQtyHeader">Quantity</th>
                   <th>Total</th>
                   <th>Fulfillment / Schedule</th>
                   <th>Payment</th>
@@ -1366,8 +1366,11 @@
       const s = await DB.getSettings();
       if (s) {
         if (s.price_per_order) {
-          const validPrice = (s.price_per_order === 25 || s.price_per_order === '25') ? 15 : s.price_per_order;
-          document.getElementById('cfgPrice').value = validPrice;
+          document.getElementById('cfgPrice').value = s.price_per_order;
+          const qh = document.getElementById('adminTableQtyHeader');
+          if (qh) qh.textContent = `Quantity (₱${s.price_per_order} ea)`;
+          const bp = document.getElementById('backupStatPrice');
+          if (bp) bp.textContent = `₱${parseFloat(s.price_per_order).toFixed(2)}`;
         }
         if (s.pickup_location) document.getElementById('cfgPickupLoc').value = s.pickup_location;
         if (s.gcash_number) document.getElementById('cfgGCashNumber').value = s.gcash_number;

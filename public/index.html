@@ -81,7 +81,7 @@
               <span style="color: var(--text-muted); font-weight: 500;">• Loved by Carmen locals</span>
             </div>
             <p class="hero-desc">
-              Enjoy the creamy, delicious goodness of Peachy Maja. Made fresh in daily batches to guarantee peak freshness and creaminess. <strong>Order yours today for only ₱15 per order!</strong>
+              Enjoy the creamy, delicious goodness of Peachy Maja. Made fresh in daily batches to guarantee peak freshness and creaminess. <strong>Order yours today for only <span class="dynamic-price-simple">₱15</span> per order!</strong>
             </p>
             <div class="hero-cta">
               <a href="#preorderSection" class="btn btn-primary btn-lg">
@@ -93,7 +93,7 @@
             <div class="hero-highlights">
               <div class="highlight-item">
                 <div class="highlight-icon">₱</div>
-                <span>₱15 Flat Per Order</span>
+                <span class="dynamic-price-flat">₱15 Flat Per Order</span>
               </div>
               <div class="highlight-item">
                 <div class="highlight-icon">✓</div>
@@ -111,7 +111,7 @@
               <img src="/images/hero_maja.png" alt="Freshly served Peachy Maja Blanca with golden toasted latik">
             </div>
             <div class="hero-floating-badge">
-              <div class="badge-avatar">₱15</div>
+              <div class="badge-avatar dynamic-price-avatar">₱15</div>
               <div>
                 <div class="badge-text-title">Peachy Maja Blanca</div>
                 <div class="badge-text-sub">Melt-in-your-mouth creamy</div>
@@ -384,9 +384,9 @@
 
           <div class="feature-card">
             <div class="feature-icon-box">🏷️</div>
-            <h3 class="feature-title">₱15 For Everyone</h3>
+            <h3 class="feature-title"><span class="dynamic-price-simple">₱15</span> For Everyone</h3>
             <p class="feature-desc">
-              Delicious homemade dessert accessible to everyone! Premium quality at only ₱15 per order.
+              Delicious homemade dessert accessible to everyone! Premium quality at only <span class="dynamic-price-simple">₱15</span> per order.
             </p>
           </div>
         </div>
@@ -516,7 +516,7 @@
             <span>Peachy Maja</span>
           </div>
           <p class="footer-desc">
-            A homegrown dessert business selling creamy, homemade Maja Blanca with sweet corn and toasted latik. Only ₱15 each order.
+            A homegrown dessert business selling creamy, homemade Maja Blanca with sweet corn and toasted latik. Only <span class="dynamic-price-simple">₱15</span> each order.
           </p>
         </div>
 
@@ -524,7 +524,7 @@
           <h4 class="footer-heading">Quick Links</h4>
           <ul class="footer-links">
             <li><a href="/">Home</a></li>
-            <li><a href="#preorderSection">Order (₱15)</a></li>
+            <li><a href="#preorderSection">Order (<span class="dynamic-price-simple">₱15</span>)</a></li>
             <li><a href="#reviewsSection">Customer Reviews</a></li>
             <li><a href="/gallery.html">Satisfied Customers</a></li>
             <li><a href="/track.html">Track Order</a></li>
@@ -699,6 +699,15 @@
           currentUnitPrice = parseFloat(s.price_per_order) || 15;
           document.querySelectorAll('.dynamic-price').forEach(el => {
             el.textContent = `₱${currentUnitPrice.toFixed(2)}`;
+          });
+          document.querySelectorAll('.dynamic-price-simple').forEach(el => {
+            el.textContent = `₱${currentUnitPrice}`;
+          });
+          document.querySelectorAll('.dynamic-price-flat').forEach(el => {
+            el.textContent = `₱${currentUnitPrice} Flat Per Order`;
+          });
+          document.querySelectorAll('.dynamic-price-avatar').forEach(el => {
+            el.textContent = `₱${currentUnitPrice}`;
           });
           document.querySelectorAll('.dynamic-unit-desc').forEach(el => {
             el.textContent = `₱${currentUnitPrice} per order • Freshly cooked & chilled`;

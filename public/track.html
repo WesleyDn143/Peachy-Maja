@@ -110,7 +110,7 @@
     <div class="container">
       <div class="footer-bottom">
         <div>© 2026 Peachy Maja. Handcrafted with love by Seann, Mell, & Marlo in Carmen, Davao del Norte.</div>
-        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Order (₱15)</a></div>
+        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Order (<span class="dynamic-price-simple">₱15</span>)</a></div>
       </div>
     </div>
   </footer>
@@ -502,6 +502,18 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    if (typeof DB !== 'undefined' && DB.listenToSettings) {
+      DB.listenToSettings((s) => {
+        if (!s) return;
+        const currentPrice = s.price_per_order || s.price;
+        if (currentPrice) {
+          document.querySelectorAll('.dynamic-price-simple').forEach(el => {
+            el.textContent = `₱${currentPrice}`;
+          });
+        }
+      });
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('ref');
     const contact = urlParams.get('contact');

@@ -442,27 +442,14 @@ const DB = {
       try {
         const snapshot = await this.dbInstance.ref('settings').once('value');
         const val = snapshot.val();
-        if (val) {
-          if (val.price_per_order === 25 || val.price_per_order === '25') {
-            val.price_per_order = 15;
-            this.dbInstance.ref('settings/price_per_order').set(15).catch(() => {});
-          }
-          return val;
-        }
+        if (val) return val;
       } catch (e) {
         console.warn('Error reading settings from Firebase:', e);
       }
     }
     const local = localStorage.getItem('peachy_settings');
     if (local) {
-      try {
-        const parsed = JSON.parse(local);
-        if (parsed.price_per_order === 25 || parsed.price_per_order === '25') {
-          parsed.price_per_order = 15;
-          localStorage.setItem('peachy_settings', JSON.stringify(parsed));
-        }
-        return parsed;
-      } catch (e) {}
+      try { return JSON.parse(local); } catch (e) {}
     }
     return {
       price_per_order: 15,
@@ -489,10 +476,6 @@ const DB = {
     let current = null;
     try {
       current = JSON.parse(localStorage.getItem('peachy_settings') || 'null');
-      if (current && (current.price_per_order === 25 || current.price_per_order === '25')) {
-        current.price_per_order = 15;
-        localStorage.setItem('peachy_settings', JSON.stringify(current));
-      }
     } catch (e) {}
 
     const defaults = {
@@ -511,10 +494,6 @@ const DB = {
       this.dbInstance.ref('settings').on('value', (snap) => {
         const data = snap.val();
         if (data) {
-          if (data.price_per_order === 25 || data.price_per_order === '25') {
-            data.price_per_order = 15;
-            this.dbInstance.ref('settings/price_per_order').set(15).catch(() => {});
-          }
           localStorage.setItem('peachy_settings', JSON.stringify(data));
           callback(data);
         }
