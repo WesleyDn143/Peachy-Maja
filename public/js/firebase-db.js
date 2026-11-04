@@ -76,6 +76,104 @@ const DB = {
       ];
       localStorage.setItem('peachy_preorders', JSON.stringify(sampleOrders));
     }
+
+    // Seed default reviews if empty
+    if (!localStorage.getItem('peachy_reviews')) {
+      const sampleReviews = [
+        {
+          id: 'rev_1',
+          customerName: 'Bea Alcantara',
+          rating: 5,
+          comment: 'Super creamy and authentic! The toasted coconut latik on top gives it the perfect crunch. 10/10 will definitely order again!',
+          orderRef: 'PM-20261025-BEA1',
+          createdAt: new Date(Date.now() - 2 * 86400000).toISOString()
+        },
+        {
+          id: 'rev_2',
+          customerName: 'Mark Anthony V.',
+          rating: 5,
+          comment: 'The sweetness is just right and not overwhelming. Ordered 5 tubs for our family merienda and everyone loved it.',
+          orderRef: 'PM-20261023-MRK2',
+          createdAt: new Date(Date.now() - 4 * 86400000).toISOString()
+        },
+        {
+          id: 'rev_3',
+          customerName: 'Jessa Mae C.',
+          rating: 5,
+          comment: 'Only ₱15 each for fresh homemade Maja Blanca is such a steal! Fresh coconut aroma, silky smooth, and clean packaging.',
+          orderRef: 'PM-20261020-JES3',
+          createdAt: new Date(Date.now() - 7 * 86400000).toISOString()
+        }
+      ];
+      localStorage.setItem('peachy_reviews', JSON.stringify(sampleReviews));
+    }
+
+    // Seed default customer gallery if empty
+    if (!localStorage.getItem('peachy_gallery')) {
+      const sampleGallery = [
+        {
+          id: 'gal_1',
+          customerName: 'Camille & Friends',
+          tag: 'Campus Merienda',
+          imageUrl: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=700&q=80',
+          caption: 'Ordered 10 fresh tubs for our study group. Super creamy, and the latik crunch is just unmatched!',
+          location: 'Davao del Norte State College',
+          rating: 5,
+          createdAt: new Date(Date.now() - 1 * 86400000).toISOString()
+        },
+        {
+          id: 'gal_2',
+          customerName: 'Sir Dave & Co-Teachers',
+          tag: 'Faculty Merienda',
+          imageUrl: 'https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&w=700&q=80',
+          caption: 'Afternoon faculty break made sweeter! Everyone was raving about how authentic the coconut milk taste is.',
+          location: 'Carmen National High School',
+          rating: 5,
+          createdAt: new Date(Date.now() - 3 * 86400000).toISOString()
+        },
+        {
+          id: 'gal_3',
+          customerName: 'Tita Elena & Family',
+          tag: 'Family Gathering',
+          imageUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=700&q=80',
+          caption: 'Brought 15 tubs for our Sunday lunch gathering. Both the kids and grandparents loved every bite!',
+          location: 'Purok 2 Barangay Asuncion',
+          rating: 5,
+          createdAt: new Date(Date.now() - 5 * 86400000).toISOString()
+        },
+        {
+          id: 'gal_4',
+          customerName: 'Joshua K.',
+          tag: 'Booth Pickup',
+          imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
+          caption: 'Picked up 2 chilled tubs right at the Carmen booth. Freshly cooked this morning!',
+          location: 'Carmen Central Kiosk',
+          rating: 5,
+          createdAt: new Date(Date.now() - 6 * 86400000).toISOString()
+        },
+        {
+          id: 'gal_5',
+          customerName: 'Angela & Ryan',
+          tag: 'Sweet Treats',
+          imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80',
+          caption: 'Best ₱15 dessert in Davao del Norte! Perfectly sweetened with savory cheddar cheese on top.',
+          location: 'Carmen Plaza',
+          rating: 5,
+          createdAt: new Date(Date.now() - 8 * 86400000).toISOString()
+        },
+        {
+          id: 'gal_6',
+          customerName: 'Rhea Mae S.',
+          tag: 'Office Merienda',
+          imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=80',
+          caption: 'Clean, food-safe packaging and sweet corn in every spoonful. Our whole office orders regularly now.',
+          location: 'Carmen Municipal Office',
+          rating: 5,
+          createdAt: new Date(Date.now() - 10 * 86400000).toISOString()
+        }
+      ];
+      localStorage.setItem('peachy_gallery', JSON.stringify(sampleGallery));
+    }
   },
 
   // Save a new customer pre-order
@@ -207,20 +305,164 @@ const DB = {
     }
   },
 
+  // Save Customer Review
+  async saveReview(review) {
+    const revId = 'rev_' + Date.now();
+    const completeReview = {
+      ...review,
+      id: revId,
+      rating: Math.max(1, Math.min(5, parseInt(review.rating, 10) || 5)),
+      customerName: review.customerName || 'Happy Customer',
+      comment: review.comment || '',
+      orderRef: review.orderRef || '',
+      createdAt: new Date().toISOString()
+    };
+
+    if (this.isLive && this.dbInstance) {
+      await this.dbInstance.ref('reviews/' + revId).set(completeReview);
+    } else {
+      const list = JSON.parse(localStorage.getItem('peachy_reviews') || '[]');
+      list.unshift(completeReview);
+      localStorage.setItem('peachy_reviews', JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('reviews-updated', { detail: list }));
+    }
+
+    return completeReview;
+  },
+
+  // Realtime Listener for Customer Reviews
+  listenToReviews(callback) {
+    if (this.isLive && this.dbInstance) {
+      const ref = this.dbInstance.ref('reviews');
+      ref.on('value', (snap) => {
+        const val = snap.val();
+        if (!val) {
+          // If live reviews empty, provide fallback
+          const local = JSON.parse(localStorage.getItem('peachy_reviews') || '[]');
+          callback(local);
+          return;
+        }
+        const list = Object.keys(val).map(k => ({ id: k, ...val[k] }));
+        list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        callback(list);
+      });
+    } else {
+      const emit = () => {
+        const list = JSON.parse(localStorage.getItem('peachy_reviews') || '[]');
+        callback(list);
+      };
+      emit();
+      const handler = () => emit();
+      window.addEventListener('reviews-updated', handler);
+      return () => window.removeEventListener('reviews-updated', handler);
+    }
+  },
+
+  // Admin delete review
+  async deleteReview(reviewId) {
+    if (this.isLive && this.dbInstance) {
+      await this.dbInstance.ref(`reviews/${reviewId}`).remove();
+    } else {
+      let list = JSON.parse(localStorage.getItem('peachy_reviews') || '[]');
+      list = list.filter(r => r.id !== reviewId);
+      localStorage.setItem('peachy_reviews', JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('reviews-updated', { detail: list }));
+    }
+  },
+
+  // Save Customer Gallery Item (Satisfied Customers)
+  async saveGalleryItem(item) {
+    const galId = 'gal_' + Date.now();
+    const completeItem = {
+      ...item,
+      id: galId,
+      customerName: item.customerName || 'Happy Customer',
+      tag: item.tag || 'Satisfied Customer',
+      imageUrl: item.imageUrl || '/images/classic_maja.png',
+      caption: item.caption || 'Enjoying fresh Peachy Maja Blanca!',
+      location: item.location || 'Carmen, Davao del Norte',
+      rating: Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5)),
+      createdAt: new Date().toISOString()
+    };
+
+    if (this.isLive && this.dbInstance) {
+      await this.dbInstance.ref('gallery/' + galId).set(completeItem);
+    } else {
+      const list = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
+      list.unshift(completeItem);
+      localStorage.setItem('peachy_gallery', JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('gallery-updated', { detail: list }));
+    }
+
+    return completeItem;
+  },
+
+  // Realtime Listener for Customer Gallery
+  listenToGallery(callback) {
+    if (this.isLive && this.dbInstance) {
+      const ref = this.dbInstance.ref('gallery');
+      ref.on('value', (snap) => {
+        const val = snap.val();
+        if (!val) {
+          const local = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
+          callback(local);
+          return;
+        }
+        const list = Object.keys(val).map(k => ({ id: k, ...val[k] }));
+        list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        callback(list);
+      });
+    } else {
+      const emit = () => {
+        const list = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
+        callback(list);
+      };
+      emit();
+      const handler = () => emit();
+      window.addEventListener('gallery-updated', handler);
+      return () => window.removeEventListener('gallery-updated', handler);
+    }
+  },
+
+  // Admin delete gallery item
+  async deleteGalleryItem(itemId) {
+    if (this.isLive && this.dbInstance) {
+      await this.dbInstance.ref(`gallery/${itemId}`).remove();
+    } else {
+      let list = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
+      list = list.filter(g => g.id !== itemId);
+      localStorage.setItem('peachy_gallery', JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('gallery-updated', { detail: list }));
+    }
+  },
+
   // Get Store Settings
   async getSettings() {
     if (this.isLive && this.dbInstance) {
       try {
         const snapshot = await this.dbInstance.ref('settings').once('value');
         const val = snapshot.val();
-        if (val) return val;
+        if (val) {
+          if (val.price_per_order === 25 || val.price_per_order === '25') {
+            val.price_per_order = 15;
+            this.dbInstance.ref('settings/price_per_order').set(15).catch(() => {});
+          }
+          return val;
+        }
       } catch (e) {
         console.warn('Error reading settings from Firebase:', e);
       }
     }
     const local = localStorage.getItem('peachy_settings');
     if (local) {
-      try { return JSON.parse(local); } catch (e) {}
+      try {
+        const parsed = JSON.parse(local);
+        if (parsed.price_per_order === 25 || parsed.price_per_order === '25') {
+          parsed.price_per_order = 15;
+          localStorage.setItem('peachy_settings', JSON.stringify(parsed));
+        }
+        return parsed;
+      } catch (e) {}
     }
     return {
       price_per_order: 15,
@@ -247,6 +489,10 @@ const DB = {
     let current = null;
     try {
       current = JSON.parse(localStorage.getItem('peachy_settings') || 'null');
+      if (current && (current.price_per_order === 25 || current.price_per_order === '25')) {
+        current.price_per_order = 15;
+        localStorage.setItem('peachy_settings', JSON.stringify(current));
+      }
     } catch (e) {}
 
     const defaults = {
@@ -265,6 +511,10 @@ const DB = {
       this.dbInstance.ref('settings').on('value', (snap) => {
         const data = snap.val();
         if (data) {
+          if (data.price_per_order === 25 || data.price_per_order === '25') {
+            data.price_per_order = 15;
+            this.dbInstance.ref('settings/price_per_order').set(15).catch(() => {});
+          }
           localStorage.setItem('peachy_settings', JSON.stringify(data));
           callback(data);
         }
@@ -349,22 +599,28 @@ const DB = {
         preorders: {},
         settings: {},
         stock: {},
-        inquiries: {}
+        inquiries: {},
+        reviews: {},
+        gallery: {}
       }
     };
 
     if (this.isLive && this.dbInstance) {
       try {
-        const [ordersSnap, settingsSnap, stockSnap, inqSnap] = await Promise.all([
+        const [ordersSnap, settingsSnap, stockSnap, inqSnap, revSnap, galSnap] = await Promise.all([
           this.dbInstance.ref('preorders').once('value'),
           this.dbInstance.ref('settings').once('value'),
           this.dbInstance.ref('stock').once('value'),
-          this.dbInstance.ref('inquiries').once('value')
+          this.dbInstance.ref('inquiries').once('value'),
+          this.dbInstance.ref('reviews').once('value'),
+          this.dbInstance.ref('gallery').once('value')
         ]);
         backup.data.preorders = ordersSnap.val() || {};
         backup.data.settings = settingsSnap.val() || {};
         backup.data.stock = stockSnap.val() || {};
         backup.data.inquiries = inqSnap.val() || {};
+        backup.data.reviews = revSnap.val() || {};
+        backup.data.gallery = galSnap.val() || {};
       } catch (err) {
         console.warn('Firebase full backup failed, reading local storage:', err);
       }
@@ -380,6 +636,12 @@ const DB = {
     }
     if (!backup.data.stock || Object.keys(backup.data.stock).length === 0) {
       backup.data.stock = JSON.parse(localStorage.getItem('peachy_stock') || '{"initial_stock":24}');
+    }
+    if (!backup.data.reviews || Object.keys(backup.data.reviews).length === 0) {
+      backup.data.reviews = JSON.parse(localStorage.getItem('peachy_reviews') || '[]');
+    }
+    if (!backup.data.gallery || Object.keys(backup.data.gallery).length === 0) {
+      backup.data.gallery = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
     }
 
     return backup;
@@ -408,6 +670,20 @@ const DB = {
       localStorage.setItem('peachy_stock', JSON.stringify(data.stock));
       window.dispatchEvent(new CustomEvent('stock-updated', { detail: data.stock }));
     }
+    if (data.reviews) {
+      const revArray = Array.isArray(data.reviews)
+        ? data.reviews
+        : Object.keys(data.reviews).map(k => ({ id: k, ...data.reviews[k] }));
+      localStorage.setItem('peachy_reviews', JSON.stringify(revArray));
+      window.dispatchEvent(new CustomEvent('reviews-updated', { detail: revArray }));
+    }
+    if (data.gallery) {
+      const galArray = Array.isArray(data.gallery)
+        ? data.gallery
+        : Object.keys(data.gallery).map(k => ({ id: k, ...data.gallery[k] }));
+      localStorage.setItem('peachy_gallery', JSON.stringify(galArray));
+      window.dispatchEvent(new CustomEvent('gallery-updated', { detail: galArray }));
+    }
 
     // 2. Restore to Firebase if live
     if (this.isLive && this.dbInstance) {
@@ -423,6 +699,12 @@ const DB = {
       }
       if (data.inquiries) {
         promises.push(this.dbInstance.ref('inquiries').set(data.inquiries));
+      }
+      if (data.reviews) {
+        promises.push(this.dbInstance.ref('reviews').set(data.reviews));
+      }
+      if (data.gallery) {
+        promises.push(this.dbInstance.ref('gallery').set(data.gallery));
       }
       await Promise.all(promises);
     }

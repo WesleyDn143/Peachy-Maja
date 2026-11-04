@@ -29,6 +29,8 @@
         <ul class="nav-links">
           <li><a href="/" class="nav-link">Home</a></li>
           <li><a href="/#preorderSection" class="nav-link">Order</a></li>
+          <li><a href="/#reviewsSection" class="nav-link">Reviews</a></li>
+          <li><a href="/gallery.html" class="nav-link">Gallery</a></li>
           <li><a href="/track.html" class="nav-link active">Track</a></li>
           <li><a href="/about.html" class="nav-link">About</a></li>
           <li><a href="/contact.html" class="nav-link">Contact</a></li>
@@ -50,6 +52,8 @@
   <div class="mobile-nav" id="mobileNav">
     <a href="/" class="mobile-nav-link">Home <span>→</span></a>
     <a href="/#preorderSection" class="mobile-nav-link">Order <span>→</span></a>
+    <a href="/#reviewsSection" class="mobile-nav-link">Reviews <span>→</span></a>
+    <a href="/gallery.html" class="mobile-nav-link">Gallery <span>→</span></a>
     <a href="/track.html" class="mobile-nav-link active">Track <span>→</span></a>
     <a href="/about.html" class="mobile-nav-link">About <span>→</span></a>
     <a href="/contact.html" class="mobile-nav-link">Contact <span>→</span></a>
@@ -287,31 +291,280 @@
             ` : ''}
           </div>
 
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end;">
-            <button onclick="window.print()" class="btn btn-secondary btn-sm">🖨️ Print Receipt</button>
-            <button onclick="searchOrder()" class="btn btn-primary btn-sm">🔄 Refresh Live Status</button>
+        <!-- Review & Feedback Prompt Card -->
+        <div style="background: linear-gradient(135deg, #FFF9F5 0%, #FFF0E5 100%); border: 1.5px solid var(--soft-peach); border-radius: var(--radius-md); padding: 1.25rem 1.5rem; margin-top: 1.5rem; margin-bottom: 1.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 2rem;">⭐</span>
+            <div>
+              <div style="font-weight: 800; font-size: 1rem; color: var(--dark-brown);">Loved your Peachy Maja?</div>
+              <div style="font-size: 0.84rem; color: var(--text-muted);">Share your star rating & review to support our student dessert business!</div>
+            </div>
+          </div>
+          <button onclick="openTrackReviewModal('${order.orderRef}', '${order.customerName}')" class="btn btn-primary btn-sm">
+            <span>⭐ Write a Review</span>
+          </button>
+        </div>
+
+        <!-- Action Controls -->
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: space-between; align-items: center; border-top: 1px solid var(--peach-border); padding-top: 1.25rem;">
+          <div>
+            <button onclick="toggleReceiptPreview()" class="btn btn-secondary btn-sm" id="btnToggleReceipt">
+              🧾 Show Official Receipt
+            </button>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button onclick="printOrderReceipt()" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+              <span>🖨️ Print Official Receipt</span>
+            </button>
+            <button onclick="searchOrder()" class="btn btn-secondary btn-sm">🔄 Refresh Status</button>
           </div>
         </div>
-      `;
+
+        <!-- Printable Official Receipt Card -->
+        <div id="printableReceipt" style="display: none; margin-top: 2rem;">
+          <div class="receipt-paper">
+            <div class="receipt-header">
+              <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" class="receipt-logo">
+              <div class="receipt-title">Peachy Maja</div>
+              <div class="receipt-subtitle">
+                Homemade Fresh Maja Blanca • Carmen, Davao del Norte<br>
+                Phone / GCash: 09292467993 • orders@peachymaja.ph
+              </div>
+            </div>
+
+            <div class="receipt-ref-banner">
+              <div>
+                <div class="receipt-ref-title">Order Reference</div>
+                <div class="receipt-ref-val">${order.orderRef}</div>
+              </div>
+              <div style="text-align: right;">
+                <div class="receipt-ref-title">Status</div>
+                <div style="font-weight: 800; font-size: 0.88rem; color: #2E7D32;">${order.status}</div>
+              </div>
+            </div>
+
+            <div class="receipt-meta-grid">
+              <div>
+                <div class="receipt-meta-label">Customer</div>
+                <div class="receipt-meta-val">${order.customerName}</div>
+                <div style="font-size: 0.78rem; color: #7A5B45;">${order.customerPhone}</div>
+              </div>
+              <div>
+                <div class="receipt-meta-label">Order Date</div>
+                <div class="receipt-meta-val">${dateStr}</div>
+              </div>
+              <div>
+                <div class="receipt-meta-label">Fulfillment</div>
+                <div class="receipt-meta-val">${order.fulfillmentType === 'pickup' ? 'Booth Pickup' : 'Local Delivery'}</div>
+                <div style="font-size: 0.75rem; color: #7A5B45;">${order.deliveryAddress || 'Pickup at Purok 1 Asuncion'}</div>
+              </div>
+              <div>
+                <div class="receipt-meta-label">Scheduled For</div>
+                <div class="receipt-meta-val">${order.preferredDate}</div>
+                <div style="font-size: 0.75rem; color: #7A5B45;">${order.preferredTime}</div>
+              </div>
+            </div>
+
+            <table class="receipt-table">
+              <thead>
+                <tr>
+                  <th>Item Description</th>
+                  <th style="text-align: center;">Qty</th>
+                  <th style="text-align: right;">Price</th>
+                  <th style="text-align: right;">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Peachy Maja Blanca</strong>
+                    <div style="font-size: 0.75rem; color: #7A5B45;">Single-Serve Tub (~150g)</div>
+                  </td>
+                  <td style="text-align: center; font-weight: 700;">${order.quantity}</td>
+                  <td style="text-align: right;">₱${(order.unitPrice || 15).toFixed(2)}</td>
+                  <td style="text-align: right; font-weight: 700;">₱${(order.totalAmount || order.quantity * (order.unitPrice || 15)).toFixed(2)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="receipt-totals">
+              <div class="receipt-total-row">
+                <span>Subtotal:</span>
+                <span>₱${(order.totalAmount || order.quantity * (order.unitPrice || 15)).toFixed(2)}</span>
+              </div>
+              <div class="receipt-total-row">
+                <span>Fulfillment Fee:</span>
+                <span>₱0.00 (Standard)</span>
+              </div>
+              <div class="receipt-total-row grand-total">
+                <span>TOTAL AMOUNT:</span>
+                <span>₱${(order.totalAmount || order.quantity * (order.unitPrice || 15)).toFixed(2)}</span>
+              </div>
+            </div>
+
+            <div style="background: #FDF8F5; border: 1px dashed #E5D5C8; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; font-size: 0.8rem; margin-bottom: 1rem;">
+              <div><strong>Payment Method:</strong> ${order.paymentMethod === 'gcash' ? 'GCash (09292467993)' : 'Cash Upon Fulfillment'}</div>
+              ${order.notes ? `<div style="margin-top: 3px;"><strong>Special Notes:</strong> "${order.notes}"</div>` : ''}
+            </div>
+
+            <div class="receipt-barcode">
+              ||| | |||| | ||| |||| | |||
+            </div>
+            <div style="text-align: center; font-size: 0.7rem; color: #8C6F5B; font-family: monospace; margin-bottom: 0.75rem;">
+              ${order.orderRef}
+            </div>
+
+            <div class="receipt-footer-msg">
+              <strong>Salamat sa pagpalit! ❤️</strong><br>
+              Handcrafted fresh daily with pure coconut milk & golden latik.<br>
+              Keep refrigerated for up to 3–4 days.
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function toggleReceiptPreview() {
+    const el = document.getElementById('printableReceipt');
+    const btn = document.getElementById('btnToggleReceipt');
+    if (!el) return;
+    if (el.style.display === 'none') {
+      el.style.display = 'block';
+      btn.textContent = 'Hide Receipt';
+    } else {
+      el.style.display = 'none';
+      btn.textContent = '🧾 Show Official Receipt';
+    }
+  }
+
+  function printOrderReceipt() {
+    const el = document.getElementById('printableReceipt');
+    if (el) el.style.display = 'block';
+    window.print();
+  }
+
+  // Star Rating & Review Modal for Track Page
+  function openTrackReviewModal(ref, name) {
+    document.getElementById('trackRevOrderRef').value = ref || '';
+    document.getElementById('trackRevCustomerName').value = name || '';
+    document.getElementById('trackReviewModal').classList.add('open');
+  }
+
+  function closeTrackReviewModal() {
+    document.getElementById('trackReviewModal').classList.remove('open');
+  }
+
+  function updateTrackStarLabel(val) {
+    const labels = {
+      5: "5 Stars — Melt-in-your-mouth delicious!",
+      4: "4 Stars — Very good & tasty!",
+      3: "3 Stars — Good dessert",
+      2: "2 Stars — Fair",
+      1: "1 Star — Needs improvement"
+    };
+    const lbl = document.getElementById('trackStarLabel');
+    if (lbl) lbl.textContent = labels[val] || `${val} Stars`;
+  }
+
+  async function handleTrackReviewSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('trackSubmitReviewBtn');
+    const name = document.getElementById('trackRevCustomerName').value.trim();
+    const ref = document.getElementById('trackRevOrderRef').value.trim();
+    const comment = document.getElementById('trackRevComment').value.trim();
+    const ratingInput = document.querySelector('input[name="trackReviewRating"]:checked');
+    const rating = ratingInput ? parseInt(ratingInput.value, 10) : 5;
+
+    if (!name || !comment) {
+      alert('Please fill out your name and review.');
+      return;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const ref = urlParams.get('ref');
-      const contact = urlParams.get('contact');
-      const isNew = urlParams.get('new');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
 
-      if (isNew) {
-        document.getElementById('newOrderBanner').style.display = 'block';
-      }
+    try {
+      await DB.saveReview({
+        customerName: name,
+        orderRef: ref,
+        comment: comment,
+        rating: rating
+      });
+      if (window.showToast) window.showToast('Thank you for your rating & review!', 'success');
+      closeTrackReviewModal();
+    } catch (err) {
+      alert('Error submitting review: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit Review';
+    }
+  }
 
-      if (ref) document.getElementById('trackRef').value = ref;
-      if (contact) document.getElementById('trackContact').value = contact;
+  document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    const contact = urlParams.get('contact');
+    const isNew = urlParams.get('new');
 
-      if (ref && contact) {
-        searchOrder();
-      }
-    });
-  </script>
+    if (isNew) {
+      document.getElementById('newOrderBanner').style.display = 'block';
+    }
+
+    if (ref) document.getElementById('trackRef').value = ref;
+    if (contact) document.getElementById('trackContact').value = contact;
+
+    if (ref && contact) {
+      searchOrder();
+    }
+  });
+</script>
+
+<!-- Track Page Review Modal -->
+<div class="modal-overlay" id="trackReviewModal">
+  <div class="modal-content" style="max-width: 500px; padding: 2rem;">
+    <button class="modal-close-btn" onclick="closeTrackReviewModal()">×</button>
+    <div style="text-align: center; margin-bottom: 1.25rem;">
+      <span style="font-size: 2.2rem;">⭐</span>
+      <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--dark-brown); margin-top: 0.25rem;">Rate Your Peachy Maja</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 3px;">
+        How did you enjoy your fresh Maja Blanca?
+      </p>
+    </div>
+
+    <form onsubmit="handleTrackReviewSubmit(event)">
+      <div class="form-group" style="text-align: center; margin-bottom: 1rem;">
+        <label class="form-label" style="display: block; font-weight: 700;">Star Rating <span class="req">*</span></label>
+        <div class="star-rating-input">
+          <input type="radio" id="trkStar5" name="trackReviewRating" value="5" checked onchange="updateTrackStarLabel(5)"><label for="trkStar5">★</label>
+          <input type="radio" id="trkStar4" name="trackReviewRating" value="4" onchange="updateTrackStarLabel(4)"><label for="trkStar4">★</label>
+          <input type="radio" id="trkStar3" name="trackReviewRating" value="3" onchange="updateTrackStarLabel(3)"><label for="trkStar3">★</label>
+          <input type="radio" id="trkStar2" name="trackReviewRating" value="2" onchange="updateTrackStarLabel(2)"><label for="trkStar2">★</label>
+          <input type="radio" id="trkStar1" name="trackReviewRating" value="1" onchange="updateTrackStarLabel(1)"><label for="trkStar1">★</label>
+        </div>
+        <div id="trackStarLabel" style="font-size: 0.82rem; font-weight: 700; color: #D95B16;">5 Stars — Melt-in-your-mouth delicious!</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your Name <span class="req">*</span></label>
+        <input type="text" id="trackRevCustomerName" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Order Reference</label>
+        <input type="text" id="trackRevOrderRef" class="form-control" readonly style="background: var(--cream-bg); font-family: monospace;">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your Review & Feedback <span class="req">*</span></label>
+        <textarea id="trackRevComment" class="form-control" rows="3" placeholder="How was the taste, texture, and latik topping?" required></textarea>
+      </div>
+
+      <button type="submit" id="trackSubmitReviewBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: 1rem;">
+        Submit Review
+      </button>
+    </form>
+  </div>
+</div>
 </body>
 </html>

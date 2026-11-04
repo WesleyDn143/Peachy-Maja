@@ -22,6 +22,11 @@
   to = "/contact.html"
   status = 200
 
+[[redirects]]
+  from = "/gallery"
+  to = "/gallery.html"
+  status = 200
+
 # Security and cache headers
 [[headers]]
   for = "/*"

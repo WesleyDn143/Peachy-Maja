@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Satisfied Customers & Photo Gallery — Peachy Maja</title>
+  <meta name="description" content="See happy moments and satisfied customers enjoying fresh homemade Peachy Maja Blanca across Carmen, Davao del Norte.">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="/" class="brand-logo-link">
+        <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja Logo" class="brand-logo-img">
+        <div class="brand-text">
+          <span class="brand-title">Peachy Maja</span>
+          <span class="brand-subtitle">Homemade Desserts</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/#preorderSection" class="nav-link">Order</a></li>
+          <li><a href="/#reviewsSection" class="nav-link">Reviews</a></li>
+          <li><a href="/gallery.html" class="nav-link active">Gallery</a></li>
+          <li><a href="/track.html" class="nav-link">Track</a></li>
+          <li><a href="/about.html" class="nav-link">About</a></li>
+          <li><a href="/contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="/#preorderSection" class="btn btn-primary btn-sm">
+          <span>Order Now</span>
+        </a>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="/" class="mobile-nav-link">Home <span>→</span></a>
+    <a href="/#preorderSection" class="mobile-nav-link">Order <span>→</span></a>
+    <a href="/#reviewsSection" class="mobile-nav-link">Reviews <span>→</span></a>
+    <a href="/gallery.html" class="mobile-nav-link active">Gallery <span>→</span></a>
+    <a href="/track.html" class="mobile-nav-link">Track <span>→</span></a>
+    <a href="/about.html" class="mobile-nav-link">About <span>→</span></a>
+    <a href="/contact.html" class="mobile-nav-link">Contact <span>→</span></a>
+  </div>
+
+  <main>
+    <!-- Gallery Hero Banner -->
+    <section class="section section-peach-light" style="padding: 4rem 0 3rem; text-align: center;">
+      <div class="container" style="max-width: 860px;">
+        <span class="section-eyebrow">Real Smiles & Sweet Moments</span>
+        <h1 class="section-title">Satisfied Customers Gallery</h1>
+        <p style="font-size: 1.15rem; color: var(--dark-brown); line-height: 1.7; margin-top: 1rem;">
+          From school campus meriendas to family gatherings, see the genuine smiles and sweet moments our homemade Maja Blanca brings to Carmen, Davao del Norte!
+        </p>
+
+        <!-- Stats Bar -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 680px; margin: 2rem auto 0; text-align: center;">
+          <div style="background: var(--white); border: 1.5px solid var(--peach-border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: var(--orange-accent);">500+</div>
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Tubs Enjoyed</div>
+          </div>
+          <div style="background: var(--white); border: 1.5px solid var(--peach-border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: #F59E0B;">5.0 ★</div>
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Average Rating</div>
+          </div>
+          <div style="background: var(--white); border: 1.5px solid var(--peach-border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: var(--success-green);">100%</div>
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Fresh Daily</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Photo Gallery Showcase Section -->
+    <section class="section">
+      <div class="container">
+        <!-- Filter Tabs -->
+        <div class="gallery-filter-bar">
+          <button class="gallery-filter-btn active" onclick="filterGallery('All', this)">All Moments</button>
+          <button class="gallery-filter-btn" onclick="filterGallery('Campus Merienda', this)">🏫 Campus</button>
+          <button class="gallery-filter-btn" onclick="filterGallery('Family Gathering', this)">👨‍👩‍👧‍👦 Family Lunch</button>
+          <button class="gallery-filter-btn" onclick="filterGallery('Booth Pickup', this)">📍 Booth Pickup</button>
+          <button class="gallery-filter-btn" onclick="filterGallery('Office Merienda', this)">🏢 Office Sharing</button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="customer-gallery-grid" id="galleryContainer">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+            Loading customer moments...
+          </div>
+        </div>
+
+        <!-- Share Your Moment Call to Action -->
+        <div style="margin-top: 4rem; background: linear-gradient(135deg, #FFF0E5 0%, #FFE3CC 100%); border: 2px solid var(--soft-peach); border-radius: var(--radius-lg); padding: 2.5rem 2rem; text-align: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📸</div>
+          <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 0.5rem;">
+            Share Your Peachy Maja Moment!
+          </h2>
+          <p style="font-size: 1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem; line-height: 1.6;">
+            Got a picture enjoying your single-serve tub with family or friends? Send your photo to our Facebook page or through our contact form to get featured on our wall!
+          </p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/#preorderSection" class="btn btn-primary btn-lg">
+              <span>Order Fresh Maja Blanca (₱15)</span>
+            </a>
+            <a href="/contact.html" class="btn btn-secondary btn-lg">
+              <span>Send Us Your Photo / Feedback</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Photo Lightbox Modal -->
+  <div class="modal-overlay" id="lightboxModal" onclick="closeLightbox(event)">
+    <div class="modal-content" style="max-width: 620px; padding: 1.5rem; background: #FFFFFF; border-radius: var(--radius-lg);" onclick="event.stopPropagation()">
+      <button class="modal-close-btn" onclick="closeLightbox()">×</button>
+      <div id="lightboxContent"></div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-title">
+            <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja Logo" style="height: 38px; width: auto; filter: brightness(1.1);">
+            <span>Peachy Maja</span>
+          </div>
+          <p class="footer-desc">
+            A homegrown dessert business selling creamy, homemade Maja Blanca with sweet corn and toasted latik. Only ₱15 each order.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/#preorderSection">Order (₱15)</a></li>
+            <li><a href="/#reviewsSection">Customer Reviews</a></li>
+            <li><a href="/gallery.html">Satisfied Customers</a></li>
+            <li><a href="/track.html">Track Order</a></li>
+            <li><a href="/about.html">About the Founders</a></li>
+            <li><a href="/contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Business Hours</h4>
+          <ul class="footer-links" style="font-size: 0.88rem; color: #CBB4A2;">
+            <li id="footerLocationText">📍 <strong>Location:</strong> Purok 1 Barangay Asuncion, Carmen, Davao del Norte</li>
+            <li id="footerHoursText">⏰ <strong>Hours:</strong> Daily fresh batches cooked every morning! Pickup 10:00 AM - 5:00 PM.</li>
+            <li id="footerPhoneText">📞 <strong>Phone / GCash:</strong> 09292467993</li>
+            <li>✉️ <strong>Email:</strong> orders@peachymaja.ph</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Founders</h4>
+          <p class="footer-desc" style="font-size: 0.85rem;">
+            Founded & operated with passion by:
+            <br>• <strong>Seann Li</strong> (Finances & Calculations)
+            <br>• <strong>Mell Cordevilla</strong> (Head Cook & Recipe)
+            <br>• <strong>Marlo Tiempo</strong> (Sales & Negotiations)
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Peachy Maja. Handcrafted with love in Carmen, Davao del Norte.</div>
+        <div><a href="/#preorderSection" style="color: var(--primary-peach);">Order (₱15)</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="/js/firebase-config.js"></script>
+  <script src="/js/firebase-db.js"></script>
+  <script src="/js/app.js"></script>
+
+  <script>
+    let allGalleryItems = [];
+    let activeFilter = 'All';
+
+    function renderGallery(items) {
+      const container = document.getElementById('galleryContainer');
+      if (!container) return;
+
+      let filtered = items;
+      if (activeFilter !== 'All') {
+        filtered = items.filter(i => (i.tag && i.tag.toLowerCase().includes(activeFilter.toLowerCase())));
+      }
+
+      if (!filtered || filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+            No customer photos in this category yet. Be the first to share your moment!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const rating = Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5));
+        let starsHtml = '';
+        for (let s = 1; s <= 5; s++) {
+          starsHtml += s <= rating ? '★' : '<span style="color: #D1D5DB;">★</span>';
+        }
+        const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently';
+
+        return `
+          <div class="customer-photo-card" onclick="openLightbox('${item.id}')">
+            <div class="customer-photo-wrap">
+              <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="${item.customerName || 'Happy Customer'}" class="customer-photo-img" loading="lazy">
+              <span class="customer-photo-tag">${item.tag || 'Satisfied Customer'}</span>
+              <div class="customer-photo-zoom-hint" title="Click to view full photo">🔍</div>
+            </div>
+            <div class="customer-card-content">
+              <div class="customer-meta-row">
+                <span class="customer-card-name">${item.customerName || 'Happy Customer'}</span>
+                <span style="color: #F59E0B; font-size: 0.95rem;">${starsHtml}</span>
+              </div>
+              <div class="customer-card-loc">
+                <span>📍</span> ${item.location || 'Carmen, Davao del Norte'}
+              </div>
+              <p class="customer-card-quote">"${item.caption || 'Delicious and creamy!'}"</p>
+              <div class="customer-card-footer">
+                <span>✓ Verified Customer</span>
+                <span>${dateStr}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterGallery(category, btn) {
+      activeFilter = category;
+      document.querySelectorAll('.gallery-filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderGallery(allGalleryItems);
+    }
+
+    function openLightbox(id) {
+      const item = allGalleryItems.find(i => i.id === id);
+      if (!item) return;
+
+      const content = document.getElementById('lightboxContent');
+      const rating = Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5));
+      let starsHtml = '';
+      for (let s = 1; s <= 5; s++) {
+        starsHtml += s <= rating ? '★' : '<span style="color: #D1D5DB;">★</span>';
+      }
+
+      content.innerHTML = `
+        <div style="border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1rem; max-height: 420px; background: #000;">
+          <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="${item.customerName}" style="width: 100%; max-height: 420px; object-fit: contain; display: block; margin: 0 auto;">
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <div style="font-weight: 800; font-size: 1.25rem; color: var(--dark-brown);">${item.customerName}</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">📍 ${item.location || 'Carmen, Davao del Norte'} • <span style="color: var(--orange-accent); font-weight: 700;">${item.tag}</span></div>
+          </div>
+          <div style="color: #F59E0B; font-size: 1.15rem;">${starsHtml}</div>
+        </div>
+        <div style="background: var(--cream-bg); padding: 1rem 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--peach-border); font-size: 0.95rem; color: #4A3528; line-height: 1.6; margin-bottom: 1.25rem; font-style: italic;">
+          "${item.caption}"
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button class="btn btn-secondary btn-sm" onclick="closeLightbox()">Close</button>
+          <a href="/#preorderSection" class="btn btn-primary btn-sm">Order This (₱15) →</a>
+        </div>
+      `;
+
+      document.getElementById('lightboxModal').classList.add('open');
+    }
+
+    function closeLightbox(e) {
+      if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close-btn')) return;
+      document.getElementById('lightboxModal').classList.remove('open');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof DB !== 'undefined' && DB.listenToGallery) {
+        DB.listenToGallery((items) => {
+          allGalleryItems = items || [];
+          renderGallery(allGalleryItems);
+        });
+      }
+
+      if (typeof DB !== 'undefined' && DB.listenToSettings) {
+        DB.listenToSettings((s) => {
+          if (!s) return;
+          if (s.pickup_location) {
+            const loc = document.getElementById('footerLocationText');
+            if (loc) loc.innerHTML = `📍 <strong>Location:</strong> ${s.pickup_location}`;
+          }
+          if (s.gcash_number) {
+            const ph = document.getElementById('footerPhoneText');
+            if (ph) ph.innerHTML = `📞 <strong>Phone / GCash:</strong> ${s.gcash_number}`;
+          }
+          if (s.batch_schedule) {
+            const hrs = document.getElementById('footerHoursText');
+            if (hrs) hrs.innerHTML = `⏰ <strong>Hours:</strong> ${s.batch_schedule}`;
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

@@ -33,6 +33,8 @@
         <ul class="nav-links">
           <li><a href="/" class="nav-link active" id="navLinkHome">Home</a></li>
           <li><a href="#preorderSection" class="nav-link" id="navLinkOrder">Order</a></li>
+          <li><a href="#reviewsSection" class="nav-link" id="navLinkReviews">Reviews</a></li>
+          <li><a href="/gallery.html" class="nav-link" id="navLinkGallery">Gallery</a></li>
           <li><a href="/track.html" class="nav-link" id="navLinkTrack">Track</a></li>
           <li><a href="/about.html" class="nav-link" id="navLinkAbout">About</a></li>
           <li><a href="/contact.html" class="nav-link" id="navLinkContact">Contact</a></li>
@@ -54,6 +56,8 @@
   <div class="mobile-nav" id="mobileNav">
     <a href="/" class="mobile-nav-link active" id="mobileNavLinkHome">Home <span>→</span></a>
     <a href="#preorderSection" class="mobile-nav-link" id="mobileNavLinkOrder">Order <span>→</span></a>
+    <a href="#reviewsSection" class="mobile-nav-link">Reviews <span>→</span></a>
+    <a href="/gallery.html" class="mobile-nav-link">Gallery <span>→</span></a>
     <a href="/track.html" class="mobile-nav-link">Track <span>→</span></a>
     <a href="/about.html" class="mobile-nav-link">About <span>→</span></a>
     <a href="/contact.html" class="mobile-nav-link">Contact <span>→</span></a>
@@ -71,6 +75,11 @@
             <h1 class="hero-title">
               A Little Sweetness in <span>Every Bite!</span>
             </h1>
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.92rem; font-weight: 700; color: var(--dark-brown);">
+              <span style="color: #F59E0B; font-size: 1.15rem; letter-spacing: 1px;">★★★★★</span>
+              <span>5.0 Star Rating</span>
+              <span style="color: var(--text-muted); font-weight: 500;">• Loved by Carmen locals</span>
+            </div>
             <p class="hero-desc">
               Enjoy the creamy, delicious goodness of Peachy Maja. Made fresh in daily batches to guarantee peak freshness and creaminess. <strong>Order yours today for only ₱15 per order!</strong>
             </p>
@@ -146,7 +155,7 @@
               <li>✓ <strong>Portion:</strong> Individual single-serve tub (~150g).</li>
               <li>✓ <strong>Shelf Life:</strong> 3–4 days refrigerated.</li>
             </ul>
-            <a href="#preorderSection" class="btn btn-primary btn-block">Order Now (₱15) →</a>
+            <a href="#preorderSection" class="btn btn-primary btn-block" id="spotlightOrderBtn">Order Now (₱15) →</a>
           </div>
         </div>
       </div>
@@ -383,7 +392,119 @@
         </div>
       </div>
     </section>
+
+    <!-- Customer Reviews & Star Ratings Section -->
+    <section class="section" id="reviewsSection" style="background: linear-gradient(180deg, #FFFFFF 0%, #FFF8F2 100%); border-top: 1px solid var(--peach-border);">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Customer Love</span>
+          <h2 class="section-title">Customer Reviews & Star Ratings</h2>
+          <p class="section-subtitle">
+            Authentic reviews from dessert lovers in Carmen, Davao del Norte.
+          </p>
+        </div>
+
+        <!-- Rating Summary Box -->
+        <div class="reviews-summary-card">
+          <div class="reviews-score-block">
+            <div class="reviews-big-score" id="avgRatingDisplay">5.0</div>
+            <div>
+              <div class="reviews-meta-title" id="avgStarsDisplay">
+                <span style="color: #F59E0B; font-size: 1.35rem; letter-spacing: 2px;">★★★★★</span>
+              </div>
+              <div class="reviews-meta-sub" id="reviewsCountDisplay">
+                Loading verified customer reviews...
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <button onclick="openReviewModal()" class="btn btn-primary" style="padding: 0.85rem 1.6rem; font-size: 0.95rem;">
+              <span>⭐ Leave a Review</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Reviews Grid -->
+        <div class="reviews-grid" id="reviewsContainer">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Satisfied Customers Photo Section -->
+    <section class="section" id="customerGallerySection" style="background: var(--white); border-top: 1px solid var(--peach-border);">
+      <div class="container">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.25rem;">
+          <div>
+            <span class="section-eyebrow">Real Smiles, Sweet Moments</span>
+            <h2 class="section-title">Satisfied Customers & Highlights</h2>
+            <p class="section-subtitle" style="margin-bottom: 0;">
+              See dessert lovers across Carmen, Davao del Norte enjoying their freshly prepared Peachy Maja Blanca!
+            </p>
+          </div>
+          <div>
+            <a href="/gallery.html" class="btn btn-secondary btn-sm" style="font-weight: 700;">
+              <span>View Full Photo Gallery (6+) →</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="customer-gallery-grid" id="homeGalleryContainer">
+          <!-- Loaded dynamically from DB -->
+        </div>
+      </div>
+    </section>
   </main>
+
+  <!-- Write a Customer Review Modal -->
+  <div class="modal-overlay" id="reviewModal">
+    <div class="modal-content" style="max-width: 520px; padding: 2.25rem;">
+      <button class="modal-close-btn" onclick="closeReviewModal()">×</button>
+      
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <span style="font-size: 2.2rem;">⭐</span>
+        <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--dark-brown); margin-top: 0.25rem;">Write a Customer Review</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 4px;">
+          How was your Peachy Maja Blanca? We appreciate your genuine rating and feedback!
+        </p>
+      </div>
+
+      <form id="reviewForm" onsubmit="handleReviewSubmit(event)">
+        <!-- Star Rating Input -->
+        <div class="form-group" style="text-align: center; margin-bottom: 1.25rem;">
+          <label class="form-label" style="display: block; font-weight: 700; margin-bottom: 0.2rem;">Your Star Rating <span class="req">*</span></label>
+          <div class="star-rating-input">
+            <input type="radio" id="star5" name="reviewRating" value="5" checked onchange="updateStarLabel(5)"><label for="star5" title="5 stars - Super Delicious!">★</label>
+            <input type="radio" id="star4" name="reviewRating" value="4" onchange="updateStarLabel(4)"><label for="star4" title="4 stars - Very Good">★</label>
+            <input type="radio" id="star3" name="reviewRating" value="3" onchange="updateStarLabel(3)"><label for="star3" title="3 stars - Good">★</label>
+            <input type="radio" id="star2" name="reviewRating" value="2" onchange="updateStarLabel(2)"><label for="star2" title="2 stars - Fair">★</label>
+            <input type="radio" id="star1" name="reviewRating" value="1" onchange="updateStarLabel(1)"><label for="star1" title="1 star - Poor">★</label>
+          </div>
+          <div id="starRatingLabel" style="font-size: 0.85rem; font-weight: 700; color: #D95B16;">5 Stars — Melt-in-your-mouth delicious!</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="revCustomerName">Your Name <span class="req">*</span></label>
+          <input type="text" id="revCustomerName" class="form-control" placeholder="e.g. Maria Santos" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="revOrderRef">Order Reference (Optional)</label>
+          <input type="text" id="revOrderRef" class="form-control" placeholder="e.g. PM-20261104-XXXX" style="text-transform: uppercase;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="revComment">Your Experience & Feedback <span class="req">*</span></label>
+          <textarea id="revComment" class="form-control" rows="4" placeholder="Tell us about the creaminess, sweetness, golden latik, and service..." required></textarea>
+        </div>
+
+        <button type="submit" id="submitReviewBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: 1rem;">
+          <span>Submit Review</span>
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- Site Footer -->
   <footer class="site-footer">
@@ -404,6 +525,8 @@
           <ul class="footer-links">
             <li><a href="/">Home</a></li>
             <li><a href="#preorderSection">Order (₱15)</a></li>
+            <li><a href="#reviewsSection">Customer Reviews</a></li>
+            <li><a href="/gallery.html">Satisfied Customers</a></li>
             <li><a href="/track.html">Track Order</a></li>
             <li><a href="/about.html">About the Founders</a></li>
             <li><a href="/contact.html">Contact Us</a></li>
@@ -580,6 +703,8 @@
           document.querySelectorAll('.dynamic-unit-desc').forEach(el => {
             el.textContent = `₱${currentUnitPrice} per order • Freshly cooked & chilled`;
           });
+          const spotlightBtn = document.getElementById('spotlightOrderBtn');
+          if (spotlightBtn) spotlightBtn.textContent = `Order Now (₱${currentUnitPrice}) →`;
           const qHead = document.getElementById('qtyHeaderPrice');
           if (qHead) qHead.textContent = `₱${currentUnitPrice} each`;
           const qBtn1 = document.getElementById('qBtn1');
@@ -679,8 +804,181 @@
         });
       }
 
+      // Connect to Live Reviews
+      if (typeof DB !== 'undefined' && DB.listenToReviews) {
+        DB.listenToReviews(renderReviewsList);
+      }
+
+      // Connect to Live Customer Photo Gallery
+      if (typeof DB !== 'undefined' && DB.listenToGallery) {
+        DB.listenToGallery((items) => {
+          const container = document.getElementById('homeGalleryContainer');
+          if (!container) return;
+          const displayItems = (items || []).slice(0, 3);
+          if (displayItems.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1/-1;">Customer photos coming soon!</p>';
+            return;
+          }
+          container.innerHTML = displayItems.map(item => {
+            const rating = Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5));
+            let stars = '';
+            for (let s = 1; s <= 5; s++) stars += s <= rating ? '★' : '<span style="color:#D1D5DB;">★</span>';
+            return `
+              <div class="customer-photo-card">
+                <div class="customer-photo-wrap" onclick="window.location.href='/gallery.html'">
+                  <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="${item.customerName}" class="customer-photo-img" loading="lazy">
+                  <span class="customer-photo-tag">${item.tag || 'Satisfied Customer'}</span>
+                  <div class="customer-photo-zoom-hint" title="View Full Gallery">🔍</div>
+                </div>
+                <div class="customer-card-content">
+                  <div class="customer-meta-row">
+                    <span class="customer-card-name">${item.customerName}</span>
+                    <span style="color: #F59E0B; font-size: 0.95rem;">${stars}</span>
+                  </div>
+                  <div class="customer-card-loc">📍 ${item.location || 'Carmen, Davao del Norte'}</div>
+                  <p class="customer-card-quote">"${item.caption}"</p>
+                  <div class="customer-card-footer">
+                    <span>✓ Verified Customer</span>
+                    <a href="/gallery.html" style="color: var(--orange-accent); font-weight: 700;">View Story →</a>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        });
+      }
+
       recalcTotal();
     });
+
+    // Review System Functions
+    const STAR_LABELS = {
+      5: "5 Stars — Melt-in-your-mouth delicious!",
+      4: "4 Stars — Very good & tasty!",
+      3: "3 Stars — Good dessert",
+      2: "2 Stars — Fair",
+      1: "1 Star — Needs improvement"
+    };
+
+    function updateStarLabel(val) {
+      const lbl = document.getElementById('starRatingLabel');
+      if (lbl) lbl.textContent = STAR_LABELS[val] || `${val} Stars`;
+    }
+
+    function openReviewModal(defaultRef = '', defaultName = '') {
+      const modal = document.getElementById('reviewModal');
+      if (modal) {
+        if (defaultRef) document.getElementById('revOrderRef').value = defaultRef;
+        if (defaultName) document.getElementById('revCustomerName').value = defaultName;
+        modal.classList.add('open');
+      }
+    }
+
+    function closeReviewModal() {
+      const modal = document.getElementById('reviewModal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function handleReviewSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitReviewBtn');
+      const name = document.getElementById('revCustomerName').value.trim();
+      const orderRef = document.getElementById('revOrderRef').value.trim();
+      const comment = document.getElementById('revComment').value.trim();
+      const ratingInput = document.querySelector('input[name="reviewRating"]:checked');
+      const rating = ratingInput ? parseInt(ratingInput.value, 10) : 5;
+
+      if (!name || !comment) {
+        alert('Please fill out your name and review message.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>Submitting Review...</span>';
+
+      try {
+        await DB.saveReview({
+          customerName: name,
+          orderRef: orderRef,
+          comment: comment,
+          rating: rating
+        });
+
+        if (window.showToast) window.showToast('Thank you! Your review has been published.', 'success');
+        document.getElementById('reviewForm').reset();
+        closeReviewModal();
+      } catch (err) {
+        console.error('Failed to submit review:', err);
+        alert('Could not submit review: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Submit Review</span>';
+      }
+    }
+
+    function renderReviewsList(reviews) {
+      const container = document.getElementById('reviewsContainer');
+      const scoreDisp = document.getElementById('avgRatingDisplay');
+      const starsDisp = document.getElementById('avgStarsDisplay');
+      const countDisp = document.getElementById('reviewsCountDisplay');
+      if (!container) return;
+
+      if (!reviews || reviews.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+            No reviews yet. Be the first to share your Peachy Maja experience!
+          </div>
+        `;
+        if (scoreDisp) scoreDisp.textContent = '5.0';
+        if (countDisp) countDisp.textContent = '0 customer reviews';
+        return;
+      }
+
+      const totalStars = reviews.reduce((sum, r) => sum + (parseInt(r.rating, 10) || 5), 0);
+      const avg = (totalStars / reviews.length).toFixed(1);
+
+      if (scoreDisp) scoreDisp.textContent = avg;
+      if (starsDisp) {
+        const fullStars = Math.round(parseFloat(avg));
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+          starsHtml += i <= fullStars ? '★' : '<span style="color: #D1D5DB;">★</span>';
+        }
+        starsDisp.innerHTML = `<span style="color: #F59E0B; font-size: 1.35rem; letter-spacing: 2px;">${starsHtml}</span>`;
+      }
+      if (countDisp) {
+        countDisp.textContent = `Based on ${reviews.length} verified customer review${reviews.length > 1 ? 's' : ''} • 100% recommended`;
+      }
+
+      container.innerHTML = reviews.map(r => {
+        const initial = (r.customerName || 'U').charAt(0).toUpperCase();
+        const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently';
+        const starsCount = Math.max(1, Math.min(5, parseInt(r.rating, 10) || 5));
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+          starsHtml += i <= starsCount ? '★' : '<span class="star-empty">★</span>';
+        }
+
+        return `
+          <div class="review-card">
+            <div class="review-card-top">
+              <div class="review-avatar">${initial}</div>
+              <div style="flex: 1;">
+                <div class="review-author-name">
+                  <span>${r.customerName}</span>
+                  <span class="verified-badge">✓ Verified Buyer</span>
+                </div>
+                <div class="review-date">${dateStr}${r.orderRef ? ` • <span style="font-family: monospace;">${r.orderRef}</span>` : ''}</div>
+              </div>
+            </div>
+            <div class="star-rating" style="margin-bottom: 0.5rem;">
+              ${starsHtml}
+            </div>
+            <p class="review-body">"${r.comment}"</p>
+          </div>
+        `;
+      }).join('');
+    }
   </script>
 </body>
 </html>

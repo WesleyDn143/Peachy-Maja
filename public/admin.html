@@ -83,6 +83,12 @@
         <div class="admin-nav-item" onclick="switchAdminTab('stock', this)">
           <span>📦</span> Stock Manager
         </div>
+        <div class="admin-nav-item" onclick="switchAdminTab('reviews', this)">
+          <span>⭐</span> Customer Reviews
+        </div>
+        <div class="admin-nav-item" onclick="switchAdminTab('gallery', this)">
+          <span>📸</span> Customer Photos
+        </div>
         <div class="admin-nav-item" onclick="switchAdminTab('settings', this)">
           <span>⚙️</span> Settings
         </div>
@@ -393,6 +399,145 @@
           </div>
         </section>
 
+        <!-- 5. CUSTOMER REVIEWS TAB -->
+        <section id="tabReviews" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Customer Reviews & Star Ratings</h1>
+              <p style="color: var(--text-muted); font-size: 0.95rem;">Monitor customer feedback, ratings, and satisfaction.</p>
+            </div>
+          </div>
+
+          <!-- Review Summary Metrics -->
+          <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 2rem;">
+            <div class="stat-card">
+              <div class="stat-title">Average Star Rating</div>
+              <div class="stat-value" id="adminRevAvgScore" style="color: #F59E0B;">5.0 ★</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Total Published Reviews</div>
+              <div class="stat-value" id="adminRevTotalCount">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">5-Star Reviews</div>
+              <div class="stat-value" id="adminRevFiveStarCount" style="color: var(--success-green);">0</div>
+            </div>
+          </div>
+
+          <!-- Reviews Table -->
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Rating</th>
+                  <th>Customer Name</th>
+                  <th>Order Ref</th>
+                  <th>Customer Review</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminReviewsTableBody">
+                <tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading reviews...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 6. CUSTOMER PHOTOS & GALLERY TAB -->
+        <section id="tabGallery" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Customer Photos & Moments</h1>
+              <p style="color: var(--text-muted); font-size: 0.95rem;">Manage satisfied customer photos, captions, and highlights on the website gallery.</p>
+            </div>
+            <div>
+              <a href="/gallery.html" target="_blank" class="btn btn-secondary btn-sm">
+                <span>View Public Gallery Page ↗</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Add Photo Form -->
+          <div class="card" style="margin-bottom: 2rem; border: 2px solid var(--soft-peach);">
+            <h2 class="card-title" style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+              <span>📸</span> Add Satisfied Customer Photo
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+              Upload a picture from your device or paste an image URL. Photos display on the Homepage and Gallery page!
+            </p>
+
+            <form id="adminGalleryForm" onsubmit="handleAdminAddGallery(event)">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Customer / Group Name <span class="req">*</span></label>
+                  <input type="text" id="galName" class="form-control" placeholder="e.g. Camille & Friends" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Category / Occasion Tag</label>
+                  <select id="galTag" class="form-control">
+                    <option value="Campus Merienda">🏫 Campus Merienda</option>
+                    <option value="Family Gathering">👨‍👩‍👧‍👦 Family Gathering</option>
+                    <option value="Booth Pickup">📍 Booth Pickup</option>
+                    <option value="Office Merienda">🏢 Office Merienda</option>
+                    <option value="Event Catering">🎉 Event Catering</option>
+                    <option value="Satisfied Customer">⭐ Satisfied Customer</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Location (Carmen / School / Purok)</label>
+                  <input type="text" id="galLocation" class="form-control" placeholder="e.g. DNSC Campus, Carmen">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Star Rating</label>
+                  <select id="galRating" class="form-control">
+                    <option value="5">★★★★★ (5 Stars)</option>
+                    <option value="4">★★★★☆ (4 Stars)</option>
+                    <option value="3">★★★☆☆ (3 Stars)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label class="form-label">Photo Source <span class="req">*</span></label>
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                  <input type="text" id="galImageUrl" class="form-control" placeholder="Paste image URL (https://...)" style="flex: 1; min-width: 250px;">
+                  <span style="font-weight: 700; color: var(--text-muted); font-size: 0.85rem;">OR</span>
+                  <label class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0; white-space: nowrap;">
+                    <span>📁 Upload from Device</span>
+                    <input type="file" id="galFileInput" accept="image/*" style="display: none;" onchange="handleGalleryFileUpload(event)">
+                  </label>
+                </div>
+                <div id="galUploadPreviewBox" style="display: none; margin-top: 0.75rem;">
+                  <img id="galUploadPreviewImg" src="" alt="Preview" style="height: 100px; border-radius: var(--radius-sm); border: 1px solid var(--peach-border); object-fit: cover;">
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label class="form-label">Customer Quote / Caption <span class="req">*</span></label>
+                <textarea id="galCaption" class="form-control" rows="2" placeholder="e.g. Ordered 10 tubs for our barkada merienda. Super creamy and fresh!" required></textarea>
+              </div>
+
+              <button type="submit" id="btnAdminAddGal" class="btn btn-primary">
+                <span>Add Photo to Gallery</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Existing Gallery Photos Grid -->
+          <div style="margin-bottom: 1rem;">
+            <h2 style="font-size: 1.3rem; font-weight: 800; color: var(--dark-brown);">Current Customer Photos</h2>
+          </div>
+          <div class="customer-gallery-grid" id="adminGalleryGrid">
+            <!-- Rendered dynamically -->
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
@@ -405,6 +550,9 @@
     </div>
   </div>
 
+  <!-- Printable Official Receipt Container -->
+  <div id="printableReceipt" style="display: none;"></div>
+
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -415,6 +563,8 @@
 
   <script>
     let allPreOrders = [];
+    let allReviews = [];
+    let allGalleryItems = [];
     let currentStock = { initial_stock: 24 };
 
     function checkAdminAuth() {
@@ -424,6 +574,8 @@
         document.getElementById('adminWorkspace').style.display = 'block';
         initAdminData();
         initStockData();
+        initReviewsData();
+        initGalleryData();
         loadSettingsForm();
       } else {
         document.getElementById('adminLoginScreen').style.display = 'flex';
@@ -463,6 +615,8 @@
 
       document.getElementById('tabPreorders').style.display = tab === 'preorders' ? 'block' : 'none';
       document.getElementById('tabStock').style.display = tab === 'stock' ? 'block' : 'none';
+      document.getElementById('tabReviews').style.display = tab === 'reviews' ? 'block' : 'none';
+      document.getElementById('tabGallery').style.display = tab === 'gallery' ? 'block' : 'none';
       document.getElementById('tabSettings').style.display = tab === 'settings' ? 'block' : 'none';
       document.getElementById('tabBackup').style.display = tab === 'backup' ? 'block' : 'none';
 
@@ -739,13 +893,194 @@
           <input type="text" id="orderModalNotes" class="form-control" value="${order.statusNotes || ''}" placeholder="e.g. Your order is freshly cooked and ready for pickup!">
         </div>
 
-        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
-          <button class="btn btn-secondary" onclick="closeOrderModal()">Close</button>
-          <button class="btn btn-primary" onclick="saveOrderNotes('${order.id}')">Save Message</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="printAdminReceipt('${order.id}')" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            <span>🖨️ Print Receipt Slip</span>
+          </button>
+          <div style="display: flex; gap: 0.75rem;">
+            <button class="btn btn-secondary" onclick="closeOrderModal()">Close</button>
+            <button class="btn btn-primary" onclick="saveOrderNotes('${order.id}')">Save Message</button>
+          </div>
         </div>
       `;
 
       modal.classList.add('open');
+    }
+
+    function printAdminReceipt(orderId) {
+      const order = allPreOrders.find(o => o.id === orderId);
+      if (!order) return;
+      const dateStr = new Date(order.createdAt).toLocaleString('en-US', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      });
+
+      const receiptContainer = document.getElementById('printableReceipt');
+      receiptContainer.innerHTML = `
+        <div class="receipt-paper">
+          <div class="receipt-header">
+            <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" class="receipt-logo">
+            <div class="receipt-title">Peachy Maja</div>
+            <div class="receipt-subtitle">
+              Homemade Fresh Maja Blanca • Carmen, Davao del Norte<br>
+              Phone / GCash: 09292467993 • orders@peachymaja.ph
+            </div>
+          </div>
+
+          <div class="receipt-ref-banner">
+            <div>
+              <div class="receipt-ref-title">Order Reference</div>
+              <div class="receipt-ref-val">${order.orderRef}</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="receipt-ref-title">Status</div>
+              <div style="font-weight: 800; font-size: 0.88rem; color: #2E7D32;">${order.status}</div>
+            </div>
+          </div>
+
+          <div class="receipt-meta-grid">
+            <div>
+              <div class="receipt-meta-label">Customer</div>
+              <div class="receipt-meta-val">${order.customerName}</div>
+              <div style="font-size: 0.78rem; color: #7A5B45;">${order.customerPhone}</div>
+            </div>
+            <div>
+              <div class="receipt-meta-label">Order Date</div>
+              <div class="receipt-meta-val">${dateStr}</div>
+            </div>
+            <div>
+              <div class="receipt-meta-label">Fulfillment</div>
+              <div class="receipt-meta-val">${order.fulfillmentType === 'pickup' ? 'Booth Pickup' : 'Local Delivery'}</div>
+              <div style="font-size: 0.75rem; color: #7A5B45;">${order.deliveryAddress || 'Pickup at Purok 1 Asuncion'}</div>
+            </div>
+            <div>
+              <div class="receipt-meta-label">Scheduled For</div>
+              <div class="receipt-meta-val">${order.preferredDate}</div>
+              <div style="font-size: 0.75rem; color: #7A5B45;">${order.preferredTime}</div>
+            </div>
+          </div>
+
+          <table class="receipt-table">
+            <thead>
+              <tr>
+                <th>Item Description</th>
+                <th style="text-align: center;">Qty</th>
+                <th style="text-align: right;">Price</th>
+                <th style="text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Peachy Maja Blanca</strong>
+                  <div style="font-size: 0.75rem; color: #7A5B45;">Single-Serve Tub (~150g)</div>
+                </td>
+                <td style="text-align: center; font-weight: 700;">${order.quantity}</td>
+                <td style="text-align: right;">₱${(order.unitPrice || 15).toFixed(2)}</td>
+                <td style="text-align: right; font-weight: 700;">₱${(order.totalAmount || order.quantity * (order.unitPrice || 15)).toFixed(2)}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="receipt-totals">
+            <div class="receipt-total-row">
+              <span>Subtotal:</span>
+              <span>₱${(order.totalAmount || order.quantity * (order.unitPrice || 15)).toFixed(2)}</span>
+            </div>
+            <div class="receipt-total-row">
+              <span>Fulfillment Fee:</span>
+              <span>₱0.00 (Standard)</span>
+            </div>
+            <div class="receipt-total-row grand-total">
+              <span>TOTAL AMOUNT:</span>
+              <span>₱${(order.totalAmount || order.quantity * (order.unitPrice || 15)).toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div style="background: #FDF8F5; border: 1px dashed #E5D5C8; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; font-size: 0.8rem; margin-bottom: 1rem;">
+            <div><strong>Payment Method:</strong> ${order.paymentMethod === 'gcash' ? 'GCash (09292467993)' : 'Cash Upon Fulfillment'}</div>
+            ${order.notes ? `<div style="margin-top: 3px;"><strong>Special Notes:</strong> "${order.notes}"</div>` : ''}
+            ${order.statusNotes ? `<div style="margin-top: 3px;"><strong>Kitchen Note:</strong> "${order.statusNotes}"</div>` : ''}
+          </div>
+
+          <div class="receipt-barcode">
+            ||| | |||| | ||| |||| | |||
+          </div>
+          <div style="text-align: center; font-size: 0.7rem; color: #8C6F5B; font-family: monospace; margin-bottom: 0.75rem;">
+            ${order.orderRef}
+          </div>
+
+          <div class="receipt-footer-msg">
+            <strong>Official Kitchen & Packing Receipt</strong><br>
+            Peachy Maja Homemade Desserts • Carmen, Davao del Norte
+          </div>
+        </div>
+      `;
+
+      receiptContainer.style.display = 'block';
+      window.print();
+    }
+
+    // Review Management for Admin
+    function initReviewsData() {
+      if (typeof DB !== 'undefined' && DB.listenToReviews) {
+        DB.listenToReviews((reviews) => {
+          allReviews = reviews || [];
+          renderAdminReviews(allReviews);
+        });
+      }
+    }
+
+    function renderAdminReviews(reviews) {
+      const tbody = document.getElementById('adminReviewsTableBody');
+      const avgScoreEl = document.getElementById('adminRevAvgScore');
+      const countEl = document.getElementById('adminRevTotalCount');
+      const fiveStarEl = document.getElementById('adminRevFiveStarCount');
+      if (!tbody) return;
+
+      if (!reviews || reviews.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">No customer reviews recorded yet.</td></tr>';
+        if (avgScoreEl) avgScoreEl.textContent = '5.0 ★';
+        if (countEl) countEl.textContent = '0';
+        if (fiveStarEl) fiveStarEl.textContent = '0';
+        return;
+      }
+
+      const totalStars = reviews.reduce((sum, r) => sum + (parseInt(r.rating, 10) || 5), 0);
+      const avg = (totalStars / reviews.length).toFixed(1);
+      const fiveCount = reviews.filter(r => (parseInt(r.rating, 10) || 5) === 5).length;
+
+      if (avgScoreEl) avgScoreEl.textContent = `${avg} ★`;
+      if (countEl) countEl.textContent = `${reviews.length}`;
+      if (fiveStarEl) fiveStarEl.textContent = `${fiveCount}`;
+
+      tbody.innerHTML = reviews.map(r => {
+        const rating = Math.max(1, Math.min(5, parseInt(r.rating, 10) || 5));
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+          starsHtml += i <= rating ? '★' : '<span style="color: #D1D5DB;">★</span>';
+        }
+        const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently';
+
+        return `
+          <tr>
+            <td style="white-space: nowrap;"><span style="color: #F59E0B; font-size: 1.05rem;">${starsHtml}</span> <strong style="font-size: 0.85rem; color: var(--dark-brown);">(${rating}/5)</strong></td>
+            <td><strong style="font-size: 0.95rem; color: var(--dark-brown);">${r.customerName || 'Anonymous'}</strong></td>
+            <td><span style="font-family: monospace; font-size: 0.85rem; color: var(--text-muted);">${r.orderRef || '—'}</span></td>
+            <td style="max-width: 320px; font-size: 0.88rem; color: #4A3528;">"${r.comment || ''}"</td>
+            <td style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">${dateStr}</td>
+            <td>
+              <button class="btn btn-sm" style="background: #FCE8E6; color: var(--danger-red); border: 1px solid #FAD2CF;" onclick="deleteAdminReview('${r.id}')" title="Delete Review">✕ Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function deleteAdminReview(id) {
+      if (!confirm('Are you sure you want to delete this customer review?')) return;
+      await DB.deleteReview(id);
+      if (window.showToast) window.showToast('Customer review removed', 'info');
     }
 
     async function saveOrderNotes(id) {
@@ -907,10 +1242,133 @@
       }
     }
 
+    // Admin Customer Photo Gallery Management
+    let galleryUploadDataUrl = '';
+
+    function handleGalleryFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        galleryUploadDataUrl = event.target.result;
+        const previewBox = document.getElementById('galUploadPreviewBox');
+        const previewImg = document.getElementById('galUploadPreviewImg');
+        if (previewBox && previewImg) {
+          previewImg.src = galleryUploadDataUrl;
+          previewBox.style.display = 'block';
+        }
+        document.getElementById('galImageUrl').value = '';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function handleAdminAddGallery(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnAdminAddGal');
+      const name = document.getElementById('galName').value.trim();
+      const tag = document.getElementById('galTag').value;
+      const location = document.getElementById('galLocation').value.trim() || 'Carmen, Davao del Norte';
+      const rating = parseInt(document.getElementById('galRating').value, 10) || 5;
+      const caption = document.getElementById('galCaption').value.trim();
+      let imageUrl = document.getElementById('galImageUrl').value.trim();
+
+      if (galleryUploadDataUrl) {
+        imageUrl = galleryUploadDataUrl;
+      }
+
+      if (!imageUrl) {
+        alert('Please choose an image file from your device or paste an image URL.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Saving Photo...';
+
+      try {
+        await DB.saveGalleryItem({
+          customerName: name,
+          tag: tag,
+          location: location,
+          rating: rating,
+          caption: caption,
+          imageUrl: imageUrl
+        });
+
+        if (window.showToast) window.showToast('Customer photo added to gallery!', 'success');
+        document.getElementById('adminGalleryForm').reset();
+        galleryUploadDataUrl = '';
+        const previewBox = document.getElementById('galUploadPreviewBox');
+        if (previewBox) previewBox.style.display = 'none';
+      } catch (err) {
+        console.error('Failed to add gallery photo:', err);
+        alert('Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Add Photo to Gallery';
+      }
+    }
+
+    function initGalleryData() {
+      if (typeof DB !== 'undefined' && DB.listenToGallery) {
+        DB.listenToGallery((items) => {
+          allGalleryItems = items || [];
+          renderAdminGallery(allGalleryItems);
+        });
+      }
+    }
+
+    function renderAdminGallery(items) {
+      const grid = document.getElementById('adminGalleryGrid');
+      if (!grid) return;
+
+      if (!items || items.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1/-1; padding: 2rem;">No customer photos added yet.</p>';
+        return;
+      }
+
+      grid.innerHTML = items.map(item => {
+        const rating = Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5));
+        let stars = '';
+        for (let s = 1; s <= 5; s++) stars += s <= rating ? '★' : '<span style="color:#D1D5DB;">★</span>';
+        const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently';
+
+        return `
+          <div class="customer-photo-card" style="box-shadow: none;">
+            <div class="customer-photo-wrap" style="height: 180px;">
+              <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="${item.customerName}" class="customer-photo-img">
+              <span class="customer-photo-tag">${item.tag || 'Customer'}</span>
+            </div>
+            <div class="customer-card-content" style="padding: 1rem;">
+              <div class="customer-meta-row" style="margin-bottom: 0.25rem;">
+                <span class="customer-card-name" style="font-size: 0.95rem;">${item.customerName}</span>
+                <span style="color: #F59E0B; font-size: 0.85rem;">${stars}</span>
+              </div>
+              <div class="customer-card-loc" style="font-size: 0.74rem;">📍 ${item.location || 'Carmen, Davao del Norte'}</div>
+              <p class="customer-card-quote" style="font-size: 0.82rem; margin-bottom: 0.6rem;">"${item.caption}"</p>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--peach-border); padding-top: 0.5rem;">
+                <span style="font-size: 0.72rem; color: var(--text-muted);">${dateStr}</span>
+                <button class="btn btn-sm" style="background: #FCE8E6; color: var(--danger-red); border: 1px solid #FAD2CF; padding: 2px 8px !important;" onclick="deleteAdminGalleryPhoto('${item.id}')">✕ Delete</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function deleteAdminGalleryPhoto(id) {
+      if (!confirm('Are you sure you want to delete this photo from the gallery?')) return;
+      await DB.deleteGalleryItem(id);
+      if (window.showToast) window.showToast('Photo removed from gallery', 'info');
+    }
+
     async function loadSettingsForm() {
       const s = await DB.getSettings();
       if (s) {
-        if (s.price_per_order) document.getElementById('cfgPrice').value = s.price_per_order;
+        if (s.price_per_order) {
+          const validPrice = (s.price_per_order === 25 || s.price_per_order === '25') ? 15 : s.price_per_order;
+          document.getElementById('cfgPrice').value = validPrice;
+        }
         if (s.pickup_location) document.getElementById('cfgPickupLoc').value = s.pickup_location;
         if (s.gcash_number) document.getElementById('cfgGCashNumber').value = s.gcash_number;
         if (s.gcash_name) document.getElementById('cfgGCashName').value = s.gcash_name;
