@@ -89,22 +89,13 @@
       </div>
     </section>
 
-    <!-- Photo Gallery Showcase Section -->
+    <!-- Photo Gallery Showcase Section (Pictures Only) -->
     <section class="section">
       <div class="container">
-        <!-- Filter Tabs -->
-        <div class="gallery-filter-bar">
-          <button class="gallery-filter-btn active" onclick="filterGallery('All', this)">All Moments</button>
-          <button class="gallery-filter-btn" onclick="filterGallery('Campus Merienda', this)">🏫 Campus</button>
-          <button class="gallery-filter-btn" onclick="filterGallery('Family Gathering', this)">👨‍👩‍👧‍👦 Family Lunch</button>
-          <button class="gallery-filter-btn" onclick="filterGallery('Booth Pickup', this)">📍 Booth Pickup</button>
-          <button class="gallery-filter-btn" onclick="filterGallery('Office Merienda', this)">🏢 Office Sharing</button>
-        </div>
-
         <!-- Gallery Grid -->
-        <div class="customer-gallery-grid" id="galleryContainer">
+        <div class="customer-pure-gallery-grid" id="galleryContainer">
           <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
-            Loading customer moments...
+            Loading customer pictures...
           </div>
         </div>
 
@@ -202,66 +193,27 @@
 
   <script>
     let allGalleryItems = [];
-    let activeFilter = 'All';
     let currentGalleryPrice = 15;
 
     function renderGallery(items) {
       const container = document.getElementById('galleryContainer');
       if (!container) return;
 
-      let filtered = items;
-      if (activeFilter !== 'All') {
-        filtered = items.filter(i => (i.tag && i.tag.toLowerCase().includes(activeFilter.toLowerCase())));
-      }
-
-      if (!filtered || filtered.length === 0) {
+      if (!items || items.length === 0) {
         container.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
-            No customer photos in this category yet. Be the first to share your moment!
+            No customer pictures uploaded yet. Be the first to share your moment!
           </div>
         `;
         return;
       }
 
-      container.innerHTML = filtered.map(item => {
-        const rating = Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5));
-        let starsHtml = '';
-        for (let s = 1; s <= 5; s++) {
-          starsHtml += s <= rating ? '★' : '<span style="color: #D1D5DB;">★</span>';
-        }
-        const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently';
-
-        return `
-          <div class="customer-photo-card" onclick="openLightbox('${item.id}')">
-            <div class="customer-photo-wrap">
-              <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="${item.customerName || 'Happy Customer'}" class="customer-photo-img" loading="lazy">
-              <span class="customer-photo-tag">${item.tag || 'Satisfied Customer'}</span>
-              <div class="customer-photo-zoom-hint" title="Click to view full photo">🔍</div>
-            </div>
-            <div class="customer-card-content">
-              <div class="customer-meta-row">
-                <span class="customer-card-name">${item.customerName || 'Happy Customer'}</span>
-                <span style="color: #F59E0B; font-size: 0.95rem;">${starsHtml}</span>
-              </div>
-              <div class="customer-card-loc">
-                <span>📍</span> ${item.location || 'Carmen, Davao del Norte'}
-              </div>
-              <p class="customer-card-quote">"${item.caption || 'Delicious and creamy!'}"</p>
-              <div class="customer-card-footer">
-                <span>✓ Verified Customer</span>
-                <span>${dateStr}</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function filterGallery(category, btn) {
-      activeFilter = category;
-      document.querySelectorAll('.gallery-filter-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      renderGallery(allGalleryItems);
+      container.innerHTML = items.map(item => `
+        <div class="customer-pure-card" onclick="openLightbox('${item.id}')" title="Click to view full picture">
+          <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="Satisfied Peachy Maja Customer" loading="lazy">
+          <div class="customer-pure-zoom-icon">🔍</div>
+        </div>
+      `).join('');
     }
 
     function openLightbox(id) {
@@ -269,29 +221,13 @@
       if (!item) return;
 
       const content = document.getElementById('lightboxContent');
-      const rating = Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5));
-      let starsHtml = '';
-      for (let s = 1; s <= 5; s++) {
-        starsHtml += s <= rating ? '★' : '<span style="color: #D1D5DB;">★</span>';
-      }
-
       content.innerHTML = `
-        <div style="border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1rem; max-height: 420px; background: #000;">
-          <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="${item.customerName}" style="width: 100%; max-height: 420px; object-fit: contain; display: block; margin: 0 auto;">
+        <div style="border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1rem; background: #000; text-align: center;">
+          <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="Satisfied Customer" style="width: 100%; max-height: 520px; object-fit: contain; display: block; margin: 0 auto;">
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-          <div>
-            <div style="font-weight: 800; font-size: 1.25rem; color: var(--dark-brown);">${item.customerName}</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted);">📍 ${item.location || 'Carmen, Davao del Norte'} • <span style="color: var(--orange-accent); font-weight: 700;">${item.tag}</span></div>
-          </div>
-          <div style="color: #F59E0B; font-size: 1.15rem;">${starsHtml}</div>
-        </div>
-        <div style="background: var(--cream-bg); padding: 1rem 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--peach-border); font-size: 0.95rem; color: #4A3528; line-height: 1.6; margin-bottom: 1.25rem; font-style: italic;">
-          "${item.caption}"
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
           <button class="btn btn-secondary btn-sm" onclick="closeLightbox()">Close</button>
-          <a href="/#preorderSection" class="btn btn-primary btn-sm">Order This (₱${currentGalleryPrice}) →</a>
+          <a href="/#preorderSection" class="btn btn-primary btn-sm">Order Fresh Maja Blanca (₱${currentGalleryPrice}) →</a>
         </div>
       `;
 

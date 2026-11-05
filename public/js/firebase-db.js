@@ -113,62 +113,32 @@ const DB = {
       const sampleGallery = [
         {
           id: 'gal_1',
-          customerName: 'Camille & Friends',
-          tag: 'Campus Merienda',
           imageUrl: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=700&q=80',
-          caption: 'Ordered 10 fresh tubs for our study group. Super creamy, and the latik crunch is just unmatched!',
-          location: 'Davao del Norte State College',
-          rating: 5,
           createdAt: new Date(Date.now() - 1 * 86400000).toISOString()
         },
         {
           id: 'gal_2',
-          customerName: 'Sir Dave & Co-Teachers',
-          tag: 'Faculty Merienda',
           imageUrl: 'https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&w=700&q=80',
-          caption: 'Afternoon faculty break made sweeter! Everyone was raving about how authentic the coconut milk taste is.',
-          location: 'Carmen National High School',
-          rating: 5,
           createdAt: new Date(Date.now() - 3 * 86400000).toISOString()
         },
         {
           id: 'gal_3',
-          customerName: 'Tita Elena & Family',
-          tag: 'Family Gathering',
           imageUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=700&q=80',
-          caption: 'Brought 15 tubs for our Sunday lunch gathering. Both the kids and grandparents loved every bite!',
-          location: 'Purok 2 Barangay Asuncion',
-          rating: 5,
           createdAt: new Date(Date.now() - 5 * 86400000).toISOString()
         },
         {
           id: 'gal_4',
-          customerName: 'Joshua K.',
-          tag: 'Booth Pickup',
           imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
-          caption: 'Picked up 2 chilled tubs right at the Carmen booth. Freshly cooked this morning!',
-          location: 'Carmen Central Kiosk',
-          rating: 5,
           createdAt: new Date(Date.now() - 6 * 86400000).toISOString()
         },
         {
           id: 'gal_5',
-          customerName: 'Angela & Ryan',
-          tag: 'Sweet Treats',
           imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80',
-          caption: 'Best ₱15 dessert in Davao del Norte! Perfectly sweetened with savory cheddar cheese on top.',
-          location: 'Carmen Plaza',
-          rating: 5,
           createdAt: new Date(Date.now() - 8 * 86400000).toISOString()
         },
         {
           id: 'gal_6',
-          customerName: 'Rhea Mae S.',
-          tag: 'Office Merienda',
           imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=80',
-          caption: 'Clean, food-safe packaging and sweet corn in every spoonful. Our whole office orders regularly now.',
-          location: 'Carmen Municipal Office',
-          rating: 5,
           createdAt: new Date(Date.now() - 10 * 86400000).toISOString()
         }
       ];
@@ -370,18 +340,12 @@ const DB = {
     }
   },
 
-  // Save Customer Gallery Item (Satisfied Customers)
+  // Save Customer Gallery Item (Satisfied Customers - Pictures Only)
   async saveGalleryItem(item) {
     const galId = 'gal_' + Date.now();
     const completeItem = {
-      ...item,
       id: galId,
-      customerName: item.customerName || 'Happy Customer',
-      tag: item.tag || 'Satisfied Customer',
       imageUrl: item.imageUrl || '/images/classic_maja.png',
-      caption: item.caption || 'Enjoying fresh Peachy Maja Blanca!',
-      location: item.location || 'Carmen, Davao del Norte',
-      rating: Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5)),
       createdAt: new Date().toISOString()
     };
 

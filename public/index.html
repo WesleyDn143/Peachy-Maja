@@ -450,7 +450,7 @@
           </div>
         </div>
 
-        <div class="customer-gallery-grid" id="homeGalleryContainer">
+        <div class="customer-pure-gallery-grid" id="homeGalleryContainer">
           <!-- Loaded dynamically from DB -->
         </div>
       </div>
@@ -828,32 +828,12 @@
             container.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1/-1;">Customer photos coming soon!</p>';
             return;
           }
-          container.innerHTML = displayItems.map(item => {
-            const rating = Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5));
-            let stars = '';
-            for (let s = 1; s <= 5; s++) stars += s <= rating ? '★' : '<span style="color:#D1D5DB;">★</span>';
-            return `
-              <div class="customer-photo-card">
-                <div class="customer-photo-wrap" onclick="window.location.href='/gallery.html'">
-                  <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="${item.customerName}" class="customer-photo-img" loading="lazy">
-                  <span class="customer-photo-tag">${item.tag || 'Satisfied Customer'}</span>
-                  <div class="customer-photo-zoom-hint" title="View Full Gallery">🔍</div>
-                </div>
-                <div class="customer-card-content">
-                  <div class="customer-meta-row">
-                    <span class="customer-card-name">${item.customerName}</span>
-                    <span style="color: #F59E0B; font-size: 0.95rem;">${stars}</span>
-                  </div>
-                  <div class="customer-card-loc">📍 ${item.location || 'Carmen, Davao del Norte'}</div>
-                  <p class="customer-card-quote">"${item.caption}"</p>
-                  <div class="customer-card-footer">
-                    <span>✓ Verified Customer</span>
-                    <a href="/gallery.html" style="color: var(--orange-accent); font-weight: 700;">View Story →</a>
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('');
+          container.innerHTML = displayItems.map(item => `
+            <div class="customer-pure-card" onclick="window.location.href='/gallery.html'" title="View Full Photo Gallery">
+              <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="Satisfied Customer" loading="lazy">
+              <div class="customer-pure-zoom-icon">🔍</div>
+            </div>
+          `).join('');
         });
       }
 

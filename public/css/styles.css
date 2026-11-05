@@ -1720,6 +1720,39 @@ textarea.form-control {
   margin-bottom: 2.5rem;
 }
 
+.stats-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.admin-stock-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+}
+
+.admin-backup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 992px) {
+  .admin-stock-grid,
+  .admin-backup-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .stats-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 .stat-card {
   background: var(--white);
   border: 1px solid var(--peach-border);
@@ -2047,22 +2080,66 @@ textarea.form-control {
   }
 
   /* Admin Dashboard on Mobile */
+  .admin-top-header {
+    padding: 0.75rem 1rem !important;
+  }
+  .admin-brand-logo {
+    height: 32px !important;
+  }
+  .admin-brand-title {
+    font-size: 0.98rem !important;
+  }
   .admin-main {
-    padding: 1.25rem 0.75rem;
+    padding: 1rem 0.75rem !important;
   }
   .admin-sidebar {
-    padding: 0.75rem 0.5rem;
-    gap: 0.35rem;
+    padding: 0.65rem 0.6rem !important;
+    gap: 0.45rem !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background: #44220C !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+  .admin-sidebar::-webkit-scrollbar {
+    display: none !important;
   }
   .admin-nav-item {
-    font-size: 0.8rem;
-    padding: 0.45rem 0.75rem;
-    white-space: nowrap;
-    border-radius: var(--radius-sm);
+    font-size: 0.8rem !important;
+    padding: 0.45rem 0.75rem !important;
+    white-space: nowrap !important;
+    border-radius: var(--radius-full) !important;
+    flex: 0 0 auto !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  .admin-nav-item.active {
+    background: var(--orange-accent) !important;
+    color: #FFFFFF !important;
+    border-color: var(--orange-accent) !important;
+    font-weight: 700 !important;
+  }
+  .table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: var(--radius-md) !important;
+  }
+  .admin-table {
+    min-width: 650px !important;
   }
   .admin-table th, .admin-table td {
-    padding: 0.6rem 0.65rem;
-    font-size: 0.82rem;
+    padding: 0.6rem 0.65rem !important;
+    font-size: 0.82rem !important;
+    white-space: nowrap !important;
+  }
+  .mobile-table-hint {
+    display: block !important;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    font-style: italic;
   }
 
   /* Storefront Stock Badge & Headers */
@@ -2615,6 +2692,138 @@ textarea.form-control {
   padding-top: 0.65rem;
   font-size: 0.78rem;
   color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Pure Customer Photo Gallery & Admin Dropzone (Pictures Only)
+   ========================================================================== */
+.photo-upload-dropzone {
+  border: 2px dashed var(--orange-accent);
+  background: var(--cream-bg);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.photo-upload-dropzone:hover {
+  background: var(--light-peach);
+  border-color: var(--primary-peach);
+  transform: translateY(-2px);
+}
+
+.admin-pure-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 576px) {
+  .admin-pure-photo-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+.admin-pure-photo-card {
+  position: relative;
+  background: var(--white);
+  border: 1.5px solid var(--peach-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-pure-photo-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  background: #f4ede6;
+}
+
+.admin-pure-photo-actions {
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  border-top: 1px solid var(--peach-border);
+}
+
+.customer-pure-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .customer-pure-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .customer-pure-gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.customer-pure-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1.5px solid var(--peach-border);
+  background: var(--cream-bg);
+  box-shadow: var(--shadow-sm);
+  aspect-ratio: 4 / 3;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.customer-pure-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--orange-accent);
+}
+
+.customer-pure-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.customer-pure-card:hover img {
+  transform: scale(1.06);
+}
+
+.customer-pure-zoom-icon {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--dark-brown);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  opacity: 0.9;
+  transition: transform 0.2s ease;
+}
+
+.customer-pure-card:hover .customer-pure-zoom-icon {
+  transform: scale(1.1);
 }
 
 /* ==========================================================================

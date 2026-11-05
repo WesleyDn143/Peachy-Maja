@@ -51,24 +51,24 @@
   <!-- Authenticated Admin Workspace -->
   <div id="adminWorkspace" style="display: none;">
     <!-- Admin Top Nav -->
-    <header style="background: var(--white); border-bottom: 1px solid var(--peach-border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;">
-      <div style="display: flex; align-items: center; gap: 1rem;">
+    <header class="admin-top-header">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
         <a href="/" target="_blank" title="View Storefront">
-          <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" style="height: 42px;">
+          <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" class="admin-brand-logo" style="height: 40px;">
         </a>
         <div>
-          <div style="font-weight: 800; font-size: 1.15rem; color: var(--dark-brown);">Peachy Maja Admin</div>
+          <div class="admin-brand-title" style="font-weight: 800; font-size: 1.12rem; color: var(--dark-brown);">Peachy Maja Admin</div>
           <div id="dbStatusBadge" style="font-size: 0.75rem; color: var(--success-green); font-weight: 700;">
             ● Online
           </div>
         </div>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 1.25rem;">
-        <a href="/" target="_blank" class="btn btn-secondary btn-sm">
-          <span>View Storefront</span> ↗
+      <div class="admin-header-actions" style="display: flex; align-items: center; gap: 0.75rem;">
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" style="white-space: nowrap;">
+          <span>Storefront</span> ↗
         </a>
-        <button onclick="handleAdminLogout()" class="btn btn-sm" style="background: #F8D7DA; color: #842029; border: 1px solid #F5C2C7;">
+        <button onclick="handleAdminLogout()" class="btn btn-sm" style="background: #F8D7DA; color: #842029; border: 1px solid #F5C2C7; white-space: nowrap;">
           Sign Out
         </button>
       </div>
@@ -113,7 +113,7 @@
           </div>
 
           <!-- Stats Overview -->
-          <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
+          <div class="stats-grid" style="margin-bottom: 2rem;">
             <div class="stat-card">
               <div class="stat-title">Total Orders</div>
               <div class="stat-value" id="statTotalOrders">0</div>
@@ -187,7 +187,7 @@
           </div>
 
           <!-- Stock Metric Overview -->
-          <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
+          <div class="stats-grid" style="margin-bottom: 2rem;">
             <div class="stat-card">
               <div class="stat-title">Batch Capacity</div>
               <div class="stat-value" id="stockMetricInitial">24 pcs</div>
@@ -222,7 +222,7 @@
           </div>
 
           <!-- Stock Controls Card & Deduction List Grid -->
-          <div style="display: grid; grid-template-columns: 380px 1fr; gap: 1.5rem; align-items: flex-start;">
+          <div class="admin-stock-grid" style="gap: 1.5rem; align-items: flex-start; margin-bottom: 2rem;">
             <!-- Stock Control Card -->
             <div class="card">
               <h2 class="card-title" style="font-size: 1.15rem; margin-bottom: 1rem;">
@@ -327,7 +327,7 @@
             <p style="color: var(--text-muted); font-size: 0.95rem;">Save a copy of your store records or restore from a backup file.</p>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+          <div class="admin-backup-grid" style="gap: 1.5rem; margin-bottom: 2rem;">
             <!-- Export / Backup Card -->
             <div class="card">
               <h2 class="card-title" style="font-size: 1.2rem; margin-bottom: 0.75rem;">
@@ -378,7 +378,7 @@
             <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 1rem;">
               <span>📊</span> Store Overview
             </h3>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-size: 0.9rem;">
+            <div class="stats-grid" style="gap: 1rem; font-size: 0.9rem; margin-bottom: 0;">
               <div style="padding: 1rem; background: var(--cream-bg); border-radius: var(--radius-sm); border: 1px solid var(--peach-border);">
                 <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Total Orders</div>
                 <div id="backupStatOrders" style="font-size: 1.4rem; font-weight: 800; color: var(--dark-brown); margin-top: 4px;">0</div>
@@ -409,7 +409,7 @@
           </div>
 
           <!-- Review Summary Metrics -->
-          <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 2rem;">
+          <div class="stats-grid stats-grid-3" style="margin-bottom: 2rem;">
             <div class="stat-card">
               <div class="stat-title">Average Star Rating</div>
               <div class="stat-value" id="adminRevAvgScore" style="color: #F59E0B;">5.0 ★</div>
@@ -444,12 +444,12 @@
           </div>
         </section>
 
-        <!-- 6. CUSTOMER PHOTOS & GALLERY TAB -->
+        <!-- 6. CUSTOMER PHOTOS & GALLERY TAB (PICTURES ONLY) -->
         <section id="tabGallery" style="display: none;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
             <div>
-              <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--dark-brown);">Customer Photos & Moments</h1>
-              <p style="color: var(--text-muted); font-size: 0.95rem;">Manage satisfied customer photos, captions, and highlights on the website gallery.</p>
+              <h1 style="font-size: 1.6rem; font-weight: 800; color: var(--dark-brown);">Customer Pictures Gallery</h1>
+              <p style="color: var(--text-muted); font-size: 0.92rem;">Upload pictures of happy customers to showcase on the website.</p>
             </div>
             <div>
               <a href="/gallery.html" target="_blank" class="btn btn-secondary btn-sm">
@@ -458,82 +458,57 @@
             </div>
           </div>
 
-          <!-- Add Photo Form -->
+          <!-- Add Photo Form (Pictures Only) -->
           <div class="card" style="margin-bottom: 2rem; border: 2px solid var(--soft-peach);">
-            <h2 class="card-title" style="font-size: 1.2rem; margin-bottom: 0.5rem;">
-              <span>📸</span> Add Satisfied Customer Photo
+            <h2 class="card-title" style="font-size: 1.15rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>📸</span> Add Customer Picture
             </h2>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-              Upload a picture from your device or paste an image URL. Photos display on the Homepage and Gallery page!
+              Select a picture from your phone camera / photo library or paste an image link. Photos are saved directly to Firebase!
             </p>
 
             <form id="adminGalleryForm" onsubmit="handleAdminAddGallery(event)">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Customer / Group Name <span class="req">*</span></label>
-                  <input type="text" id="galName" class="form-control" placeholder="e.g. Camille & Friends" required>
+              <!-- Upload Dropzone / Button -->
+              <div class="photo-upload-dropzone" onclick="document.getElementById('galFileInput').click()">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📸</div>
+                <div style="font-weight: 700; color: var(--dark-brown); font-size: 1.05rem; margin-bottom: 0.25rem;">
+                  Tap to Choose Picture from Device / Camera
                 </div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">
+                  PNG, JPG, WEBP, or HEIC • Automatically compressed for instant Firebase loading
+                </div>
+                <input type="file" id="galFileInput" accept="image/*" style="display: none;" onchange="handleGalleryFileUpload(event)">
+              </div>
 
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Category / Occasion Tag</label>
-                  <select id="galTag" class="form-control">
-                    <option value="Campus Merienda">🏫 Campus Merienda</option>
-                    <option value="Family Gathering">👨‍👩‍👧‍👦 Family Gathering</option>
-                    <option value="Booth Pickup">📍 Booth Pickup</option>
-                    <option value="Office Merienda">🏢 Office Merienda</option>
-                    <option value="Event Catering">🎉 Event Catering</option>
-                    <option value="Satisfied Customer">⭐ Satisfied Customer</option>
-                  </select>
+              <!-- Upload Status & Preview Box -->
+              <div id="galUploadStatus" style="font-size: 0.82rem; font-weight: 700; color: var(--orange-accent); margin-top: 0.5rem; text-align: center;"></div>
+              
+              <div id="galUploadPreviewBox" style="display: none; margin: 1.25rem 0; text-align: center;">
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Preview before upload:</div>
+                <div style="position: relative; display: inline-block; max-width: 100%; border-radius: var(--radius-md); overflow: hidden; border: 2px solid var(--peach-border); box-shadow: var(--shadow-md);">
+                  <img id="galUploadPreviewImg" src="" alt="Selected Customer Photo" style="max-height: 240px; max-width: 100%; object-fit: contain; display: block;">
+                  <button type="button" onclick="clearSelectedGalleryFile()" title="Cancel and remove picture" style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 14px; font-weight: bold;">✕</button>
                 </div>
               </div>
 
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Location (Carmen / School / Purok)</label>
-                  <input type="text" id="galLocation" class="form-control" placeholder="e.g. DNSC Campus, Carmen">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Star Rating</label>
-                  <select id="galRating" class="form-control">
-                    <option value="5">★★★★★ (5 Stars)</option>
-                    <option value="4">★★★★☆ (4 Stars)</option>
-                    <option value="3">★★★☆☆ (3 Stars)</option>
-                  </select>
-                </div>
+              <!-- Option to Paste URL -->
+              <div style="margin: 1.25rem 0 1.25rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">OR paste image URL:</span>
+                <input type="url" id="galImageUrl" class="form-control" placeholder="https://example.com/customer-photo.jpg" style="flex: 1; min-width: 220px;" oninput="handleImageUrlInput()">
               </div>
 
-              <div class="form-group" style="margin-bottom: 1rem;">
-                <label class="form-label">Photo Source <span class="req">*</span></label>
-                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                  <input type="text" id="galImageUrl" class="form-control" placeholder="Paste image URL (https://...)" style="flex: 1; min-width: 250px;">
-                  <span style="font-weight: 700; color: var(--text-muted); font-size: 0.85rem;">OR</span>
-                  <label class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0; white-space: nowrap;">
-                    <span>📁 Upload from Device</span>
-                    <input type="file" id="galFileInput" accept="image/*" style="display: none;" onchange="handleGalleryFileUpload(event)">
-                  </label>
-                </div>
-                <div id="galUploadPreviewBox" style="display: none; margin-top: 0.75rem;">
-                  <img id="galUploadPreviewImg" src="" alt="Preview" style="height: 100px; border-radius: var(--radius-sm); border: 1px solid var(--peach-border); object-fit: cover;">
-                </div>
-              </div>
-
-              <div class="form-group" style="margin-bottom: 1.25rem;">
-                <label class="form-label">Customer Quote / Caption <span class="req">*</span></label>
-                <textarea id="galCaption" class="form-control" rows="2" placeholder="e.g. Ordered 10 tubs for our barkada merienda. Super creamy and fresh!" required></textarea>
-              </div>
-
-              <button type="submit" id="btnAdminAddGal" class="btn btn-primary">
-                <span>Add Photo to Gallery</span>
+              <button type="submit" id="btnAdminAddGal" class="btn btn-primary btn-block" style="padding: 0.85rem 1.5rem; font-size: 1rem;">
+                <span>📸 Upload Picture to Gallery</span>
               </button>
             </form>
           </div>
 
           <!-- Existing Gallery Photos Grid -->
-          <div style="margin-bottom: 1rem;">
-            <h2 style="font-size: 1.3rem; font-weight: 800; color: var(--dark-brown);">Current Customer Photos</h2>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--dark-brown);">Current Customer Pictures</h2>
+            <span id="adminGalleryCount" style="font-size: 0.82rem; font-weight: 700; color: var(--orange-accent); background: var(--light-peach); padding: 4px 10px; border-radius: var(--radius-full);">0 pictures</span>
           </div>
-          <div class="customer-gallery-grid" id="adminGalleryGrid">
+          <div class="admin-pure-photo-grid" id="adminGalleryGrid">
             <!-- Rendered dynamically -->
           </div>
         </section>
@@ -1242,70 +1217,127 @@
       }
     }
 
-    // Admin Customer Photo Gallery Management
+    // Admin Customer Photo Gallery Management (Pictures Only)
     let galleryUploadDataUrl = '';
 
-    function handleGalleryFileUpload(e) {
+    // HTML5 Canvas Client-Side Image Optimizer
+    function compressImage(file, maxDimension = 1080, quality = 0.78) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+              if (width > maxDimension) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              }
+            } else {
+              if (height > maxDimension) {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleGalleryFileUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        galleryUploadDataUrl = event.target.result;
-        const previewBox = document.getElementById('galUploadPreviewBox');
-        const previewImg = document.getElementById('galUploadPreviewImg');
+      const previewBox = document.getElementById('galUploadPreviewBox');
+      const previewImg = document.getElementById('galUploadPreviewImg');
+      const statusEl = document.getElementById('galUploadStatus');
+      if (statusEl) statusEl.textContent = '⏳ Optimizing picture for Firebase...';
+
+      try {
+        galleryUploadDataUrl = await compressImage(file, 1080, 0.78);
         if (previewBox && previewImg) {
           previewImg.src = galleryUploadDataUrl;
           previewBox.style.display = 'block';
         }
         document.getElementById('galImageUrl').value = '';
-      };
-      reader.readAsDataURL(file);
+        if (statusEl) statusEl.textContent = '✓ Picture ready to upload!';
+      } catch (err) {
+        console.warn('Canvas compression error, using direct reader:', err);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          galleryUploadDataUrl = event.target.result;
+          if (previewBox && previewImg) {
+            previewImg.src = galleryUploadDataUrl;
+            previewBox.style.display = 'block';
+          }
+          if (statusEl) statusEl.textContent = '✓ Picture selected!';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearSelectedGalleryFile() {
+      galleryUploadDataUrl = '';
+      const fileInput = document.getElementById('galFileInput');
+      if (fileInput) fileInput.value = '';
+      const previewBox = document.getElementById('galUploadPreviewBox');
+      if (previewBox) previewBox.style.display = 'none';
+      const statusEl = document.getElementById('galUploadStatus');
+      if (statusEl) statusEl.textContent = '';
+    }
+
+    function handleImageUrlInput() {
+      const url = document.getElementById('galImageUrl').value.trim();
+      const previewBox = document.getElementById('galUploadPreviewBox');
+      const previewImg = document.getElementById('galUploadPreviewImg');
+      const statusEl = document.getElementById('galUploadStatus');
+      if (url) {
+        galleryUploadDataUrl = '';
+        previewImg.src = url;
+        previewBox.style.display = 'block';
+        if (statusEl) statusEl.textContent = '✓ Image URL provided';
+      } else {
+        previewBox.style.display = 'none';
+        if (statusEl) statusEl.textContent = '';
+      }
     }
 
     async function handleAdminAddGallery(e) {
       e.preventDefault();
       const btn = document.getElementById('btnAdminAddGal');
-      const name = document.getElementById('galName').value.trim();
-      const tag = document.getElementById('galTag').value;
-      const location = document.getElementById('galLocation').value.trim() || 'Carmen, Davao del Norte';
-      const rating = parseInt(document.getElementById('galRating').value, 10) || 5;
-      const caption = document.getElementById('galCaption').value.trim();
-      let imageUrl = document.getElementById('galImageUrl').value.trim();
-
-      if (galleryUploadDataUrl) {
-        imageUrl = galleryUploadDataUrl;
-      }
+      let imageUrl = galleryUploadDataUrl || document.getElementById('galImageUrl').value.trim();
 
       if (!imageUrl) {
-        alert('Please choose an image file from your device or paste an image URL.');
+        alert('Please choose a customer picture from your device or enter an image URL.');
         return;
       }
 
       btn.disabled = true;
-      btn.textContent = 'Saving Photo...';
+      btn.textContent = 'Uploading to Firebase...';
 
       try {
-        await DB.saveGalleryItem({
-          customerName: name,
-          tag: tag,
-          location: location,
-          rating: rating,
-          caption: caption,
-          imageUrl: imageUrl
-        });
+        await DB.saveGalleryItem({ imageUrl: imageUrl });
 
-        if (window.showToast) window.showToast('Customer photo added to gallery!', 'success');
+        if (window.showToast) window.showToast('Customer picture uploaded successfully!', 'success');
         document.getElementById('adminGalleryForm').reset();
-        galleryUploadDataUrl = '';
-        const previewBox = document.getElementById('galUploadPreviewBox');
-        if (previewBox) previewBox.style.display = 'none';
+        clearSelectedGalleryFile();
       } catch (err) {
-        console.error('Failed to add gallery photo:', err);
+        console.error('Failed to save gallery photo:', err);
         alert('Error: ' + err.message);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Add Photo to Gallery';
+        btn.textContent = '📸 Upload Picture to Gallery';
       }
     }
 
@@ -1320,36 +1352,25 @@
 
     function renderAdminGallery(items) {
       const grid = document.getElementById('adminGalleryGrid');
+      const countEl = document.getElementById('adminGalleryCount');
       if (!grid) return;
 
+      if (countEl) countEl.textContent = `${items ? items.length : 0} picture${items && items.length === 1 ? '' : 's'}`;
+
       if (!items || items.length === 0) {
-        grid.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1/-1; padding: 2rem;">No customer photos added yet.</p>';
+        grid.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1/-1; padding: 2.5rem 1rem;">No customer pictures yet. Tap above to upload your first picture!</p>';
         return;
       }
 
       grid.innerHTML = items.map(item => {
-        const rating = Math.max(1, Math.min(5, parseInt(item.rating, 10) || 5));
-        let stars = '';
-        for (let s = 1; s <= 5; s++) stars += s <= rating ? '★' : '<span style="color:#D1D5DB;">★</span>';
         const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently';
 
         return `
-          <div class="customer-photo-card" style="box-shadow: none;">
-            <div class="customer-photo-wrap" style="height: 180px;">
-              <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="${item.customerName}" class="customer-photo-img">
-              <span class="customer-photo-tag">${item.tag || 'Customer'}</span>
-            </div>
-            <div class="customer-card-content" style="padding: 1rem;">
-              <div class="customer-meta-row" style="margin-bottom: 0.25rem;">
-                <span class="customer-card-name" style="font-size: 0.95rem;">${item.customerName}</span>
-                <span style="color: #F59E0B; font-size: 0.85rem;">${stars}</span>
-              </div>
-              <div class="customer-card-loc" style="font-size: 0.74rem;">📍 ${item.location || 'Carmen, Davao del Norte'}</div>
-              <p class="customer-card-quote" style="font-size: 0.82rem; margin-bottom: 0.6rem;">"${item.caption}"</p>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--peach-border); padding-top: 0.5rem;">
-                <span style="font-size: 0.72rem; color: var(--text-muted);">${dateStr}</span>
-                <button class="btn btn-sm" style="background: #FCE8E6; color: var(--danger-red); border: 1px solid #FAD2CF; padding: 2px 8px !important;" onclick="deleteAdminGalleryPhoto('${item.id}')">✕ Delete</button>
-              </div>
+          <div class="admin-pure-photo-card">
+            <img src="${item.imageUrl || '/images/classic_maja.png'}" alt="Customer Photo" class="admin-pure-photo-thumb" loading="lazy">
+            <div class="admin-pure-photo-actions">
+              <span style="font-size: 0.72rem; color: var(--text-muted);">${dateStr}</span>
+              <button class="btn btn-sm" style="background: #FCE8E6; color: var(--danger-red); border: 1px solid #FAD2CF; padding: 3px 8px !important; font-size: 0.75rem;" onclick="deleteAdminGalleryPhoto('${item.id}')">✕ Delete</button>
             </div>
           </div>
         `;
@@ -1357,9 +1378,9 @@
     }
 
     async function deleteAdminGalleryPhoto(id) {
-      if (!confirm('Are you sure you want to delete this photo from the gallery?')) return;
+      if (!confirm('Are you sure you want to remove this picture from the customer gallery?')) return;
       await DB.deleteGalleryItem(id);
-      if (window.showToast) window.showToast('Photo removed from gallery', 'info');
+      if (window.showToast) window.showToast('Picture removed from gallery', 'info');
     }
 
     async function loadSettingsForm() {
