@@ -9,14 +9,22 @@ const DB = {
   isLive: false,
 
   init() {
+    if (this._initialized) return;
     if (window.isFirebaseConfigured && window.isFirebaseConfigured()) {
       try {
         if (!firebase.apps.length) {
           firebase.initializeApp(window.FIREBASE_CONFIG);
         }
         this.dbInstance = firebase.database();
-        this.authInstance = firebase.auth();
+        if (typeof firebase.auth === 'function') {
+          try {
+            this.authInstance = firebase.auth();
+          } catch (e) {
+            console.warn('Firebase auth instance warning:', e);
+          }
+        }
         this.isLive = true;
+        this._initialized = true;
         console.log('🔥 Connected to live Firebase Realtime Database!');
 
         // Purge any legacy sample Unsplash photos from Firebase RTDB gallery
@@ -38,6 +46,8 @@ const DB = {
             localStorage.removeItem('peachy_gallery');
           }
         } catch (e) {}
+
+        window.dispatchEvent(new CustomEvent('peachy-db-ready', { detail: { isLive: true } }));
       } catch (err) {
         console.warn('Firebase initialization error, using local fallback:', err);
         this.initLocal();
@@ -346,35 +356,58 @@ const DB = {
 
   // Realtime Listener for Customer Gallery (Direct from Firebase Realtime Database)
   listenToGallery(callback) {
-    if (this.isLive && this.dbInstance) {
-      const ref = this.dbInstance.ref('gallery');
-      ref.on('value', (snap) => {
-        const val = snap.val();
-        if (!val) {
-          localStorage.removeItem('peachy_gallery');
-          callback([]);
-          return;
+    if (!this._initialized) this.init();
+
+    // 1. Immediate local cache emit so UI renders instantaneously without blank flash
+    const cached = (JSON.parse(localStorage.getItem('peachy_gallery') || '[]'))
+      .filter(item => item && item.imageUrl && !item.imageUrl.includes('unsplash.com'));
+    if (cached.length > 0) {
+      callback(cached);
+    }
+
+    const attachFirebaseListener = () => {
+      if (this.isLive && this.dbInstance) {
+        const ref = this.dbInstance.ref('gallery');
+        ref.on('value', (snap) => {
+          const val = snap.val();
+          if (!val) {
+            localStorage.removeItem('peachy_gallery');
+            callback([]);
+            return;
+          }
+          // Extract real pictures from Firebase RTDB and filter out any legacy stock URLs
+          const list = Object.keys(val)
+            .map(k => ({ id: k, ...val[k] }))
+            .filter(item => item && item.imageUrl && !item.imageUrl.includes('unsplash.com'));
+          list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+          localStorage.setItem('peachy_gallery', JSON.stringify(list));
+          callback(list);
+        }, (err) => {
+          console.warn('Firebase gallery read error:', err);
+          callback(cached);
+        });
+        return true;
+      }
+      return false;
+    };
+
+    if (!attachFirebaseListener()) {
+      // Retry connecting if DB is initializing
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        if (attachFirebaseListener() || attempts >= 30) {
+          clearInterval(interval);
         }
-        // Extract real pictures from Firebase RTDB and filter out any legacy stock URLs
-        const list = Object.keys(val)
-          .map(k => ({ id: k, ...val[k] }))
-          .filter(item => item && item.imageUrl && !item.imageUrl.includes('unsplash.com'));
-        list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-        localStorage.setItem('peachy_gallery', JSON.stringify(list));
-        callback(list);
-      }, (err) => {
-        console.warn('Firebase gallery read error:', err);
-        const local = (JSON.parse(localStorage.getItem('peachy_gallery') || '[]'))
-          .filter(item => item && item.imageUrl && !item.imageUrl.includes('unsplash.com'));
-        callback(local);
-      });
-    } else {
+      }, 100);
+
+      window.addEventListener('peachy-db-ready', () => attachFirebaseListener());
+
       const emit = () => {
         const list = (JSON.parse(localStorage.getItem('peachy_gallery') || '[]'))
           .filter(item => item && item.imageUrl && !item.imageUrl.includes('unsplash.com'));
         callback(list);
       };
-      emit();
       const handler = () => emit();
       window.addEventListener('gallery-updated', handler);
       return () => window.removeEventListener('gallery-updated', handler);
@@ -678,6 +711,7 @@ const DB = {
   }
 };
 
-// Initialize DB on script load
+// Initialize DB immediately on script parse as well as DOMContentLoaded fallback
+try { DB.init(); } catch (e) {}
 document.addEventListener('DOMContentLoaded', () => DB.init());
 window.DB = DB;

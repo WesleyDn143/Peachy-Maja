@@ -52,47 +52,85 @@
   <div id="adminWorkspace" style="display: none;">
     <!-- Admin Top Nav -->
     <header class="admin-top-header">
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <a href="/" target="_blank" title="View Storefront">
-          <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" class="admin-brand-logo" style="height: 40px;">
+      <div class="admin-header-left">
+        <a href="/" target="_blank" title="View Storefront" class="admin-brand-link">
+          <img src="/Peachy_Maja_Logo.png" alt="Peachy Maja" class="admin-brand-logo">
         </a>
-        <div>
-          <div class="admin-brand-title" style="font-weight: 800; font-size: 1.12rem; color: var(--dark-brown);">Peachy Maja Admin</div>
-          <div id="dbStatusBadge" style="font-size: 0.75rem; color: var(--success-green); font-weight: 700;">
-            ● Online
+        <div class="admin-brand-meta">
+          <div class="admin-brand-title">Peachy Maja Admin</div>
+          <div id="dbStatusBadge" class="admin-status-badge">
+            <span class="status-dot"></span> Online
           </div>
         </div>
       </div>
 
-      <div class="admin-header-actions" style="display: flex; align-items: center; gap: 0.75rem;">
-        <a href="/" target="_blank" class="btn btn-secondary btn-sm" style="white-space: nowrap;">
+      <div class="admin-header-actions">
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm admin-desktop-action" style="white-space: nowrap;">
           <span>Storefront</span> ↗
         </a>
-        <button onclick="handleAdminLogout()" class="btn btn-sm" style="background: #F8D7DA; color: #842029; border: 1px solid #F5C2C7; white-space: nowrap;">
+        <button onclick="handleAdminLogout()" class="btn btn-sm admin-desktop-action" style="background: #F8D7DA; color: #842029; border: 1px solid #F5C2C7; white-space: nowrap;">
           Sign Out
+        </button>
+        <!-- Mobile Hamburger Button (Same as Customer Page) -->
+        <button class="hamburger-btn" id="adminHamburgerBtn" onclick="toggleAdminMobileNav()" aria-label="Toggle admin navigation menu">
+          <span></span><span></span><span></span>
         </button>
       </div>
     </header>
 
+    <!-- Mobile Navigation Drawer for Admin (Matches Customer Page Design) -->
+    <div class="mobile-nav admin-mobile-nav" id="adminMobileNav">
+      <div class="admin-mobile-nav-header">
+        <span class="admin-mobile-nav-title">Navigation Menu</span>
+        <span class="admin-mobile-nav-badge">Admin</span>
+      </div>
+      <a href="javascript:void(0)" class="mobile-nav-link active" data-tab="preorders" onclick="switchAdminTab('preorders'); closeAdminMobileNav();">
+        <span>📋 Customer Orders</span> <span>→</span>
+      </a>
+      <a href="javascript:void(0)" class="mobile-nav-link" data-tab="stock" onclick="switchAdminTab('stock'); closeAdminMobileNav();">
+        <span>📦 Stock Manager</span> <span>→</span>
+      </a>
+      <a href="javascript:void(0)" class="mobile-nav-link" data-tab="reviews" onclick="switchAdminTab('reviews'); closeAdminMobileNav();">
+        <span>⭐ Customer Reviews</span> <span>→</span>
+      </a>
+      <a href="javascript:void(0)" class="mobile-nav-link" data-tab="gallery" onclick="switchAdminTab('gallery'); closeAdminMobileNav();">
+        <span>📸 Customer Photos</span> <span>→</span>
+      </a>
+      <a href="javascript:void(0)" class="mobile-nav-link" data-tab="settings" onclick="switchAdminTab('settings'); closeAdminMobileNav();">
+        <span>⚙️ Store Settings</span> <span>→</span>
+      </a>
+      <a href="javascript:void(0)" class="mobile-nav-link" data-tab="backup" onclick="switchAdminTab('backup'); closeAdminMobileNav();">
+        <span>💾 Data Backup</span> <span>→</span>
+      </a>
+      <div class="admin-mobile-nav-footer">
+        <a href="/" target="_blank" class="btn btn-secondary btn-block" style="justify-content: center;">
+          <span>View Storefront</span> ↗
+        </a>
+        <button onclick="handleAdminLogout()" class="btn btn-block" style="background: #F8D7DA; color: #842029; border: 1px solid #F5C2C7; justify-content: center;">
+          Sign Out
+        </button>
+      </div>
+    </div>
+
     <div class="admin-layout">
-      <!-- Admin Sidebar Navigation -->
+      <!-- Admin Sidebar Navigation (Desktop) -->
       <aside class="admin-sidebar">
-        <div class="admin-nav-item active" onclick="switchAdminTab('preorders', this)">
+        <div class="admin-nav-item active" data-tab="preorders" onclick="switchAdminTab('preorders', this)">
           <span>📋</span> Orders
         </div>
-        <div class="admin-nav-item" onclick="switchAdminTab('stock', this)">
+        <div class="admin-nav-item" data-tab="stock" onclick="switchAdminTab('stock', this)">
           <span>📦</span> Stock Manager
         </div>
-        <div class="admin-nav-item" onclick="switchAdminTab('reviews', this)">
+        <div class="admin-nav-item" data-tab="reviews" onclick="switchAdminTab('reviews', this)">
           <span>⭐</span> Customer Reviews
         </div>
-        <div class="admin-nav-item" onclick="switchAdminTab('gallery', this)">
+        <div class="admin-nav-item" data-tab="gallery" onclick="switchAdminTab('gallery', this)">
           <span>📸</span> Customer Photos
         </div>
-        <div class="admin-nav-item" onclick="switchAdminTab('settings', this)">
+        <div class="admin-nav-item" data-tab="settings" onclick="switchAdminTab('settings', this)">
           <span>⚙️</span> Settings
         </div>
-        <div class="admin-nav-item" onclick="switchAdminTab('backup', this)">
+        <div class="admin-nav-item" data-tab="backup" onclick="switchAdminTab('backup', this)">
           <span>💾</span> Data Backup
         </div>
       </aside>
@@ -584,9 +622,31 @@
       window.location.reload();
     }
 
+    function toggleAdminMobileNav() {
+      const btn = document.getElementById('adminHamburgerBtn');
+      const nav = document.getElementById('adminMobileNav');
+      if (btn && nav) {
+        btn.classList.toggle('open');
+        nav.classList.toggle('open');
+      }
+    }
+
+    function closeAdminMobileNav() {
+      const btn = document.getElementById('adminHamburgerBtn');
+      const nav = document.getElementById('adminMobileNav');
+      if (btn && nav) {
+        btn.classList.remove('open');
+        nav.classList.remove('open');
+      }
+    }
+
     function switchAdminTab(tab, el) {
-      document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
-      if (el) el.classList.add('active');
+      document.querySelectorAll('.admin-nav-item').forEach(i => {
+        i.classList.toggle('active', i.getAttribute('data-tab') === tab);
+      });
+      document.querySelectorAll('#adminMobileNav .mobile-nav-link').forEach(i => {
+        i.classList.toggle('active', i.getAttribute('data-tab') === tab);
+      });
 
       document.getElementById('tabPreorders').style.display = tab === 'preorders' ? 'block' : 'none';
       document.getElementById('tabStock').style.display = tab === 'stock' ? 'block' : 'none';
