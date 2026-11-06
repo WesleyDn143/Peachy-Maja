@@ -18,6 +18,26 @@ const DB = {
         this.authInstance = firebase.auth();
         this.isLive = true;
         console.log('🔥 Connected to live Firebase Realtime Database!');
+
+        // Purge any legacy sample Unsplash photos from Firebase RTDB gallery
+        this.dbInstance.ref('gallery').once('value').then(snap => {
+          const data = snap.val();
+          if (data) {
+            Object.keys(data).forEach(k => {
+              if (data[k].imageUrl && data[k].imageUrl.includes('unsplash.com')) {
+                this.dbInstance.ref('gallery/' + k).remove();
+              }
+            });
+          }
+        }).catch(() => {});
+
+        // Purge legacy sample photos from local cache
+        try {
+          const cachedGal = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
+          if (Array.isArray(cachedGal) && cachedGal.some(item => item.imageUrl && item.imageUrl.includes('unsplash.com'))) {
+            localStorage.removeItem('peachy_gallery');
+          }
+        } catch (e) {}
       } catch (err) {
         console.warn('Firebase initialization error, using local fallback:', err);
         this.initLocal();
@@ -106,43 +126,6 @@ const DB = {
         }
       ];
       localStorage.setItem('peachy_reviews', JSON.stringify(sampleReviews));
-    }
-
-    // Seed default customer gallery if empty
-    if (!localStorage.getItem('peachy_gallery')) {
-      const sampleGallery = [
-        {
-          id: 'gal_1',
-          imageUrl: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=700&q=80',
-          createdAt: new Date(Date.now() - 1 * 86400000).toISOString()
-        },
-        {
-          id: 'gal_2',
-          imageUrl: 'https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&w=700&q=80',
-          createdAt: new Date(Date.now() - 3 * 86400000).toISOString()
-        },
-        {
-          id: 'gal_3',
-          imageUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=700&q=80',
-          createdAt: new Date(Date.now() - 5 * 86400000).toISOString()
-        },
-        {
-          id: 'gal_4',
-          imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
-          createdAt: new Date(Date.now() - 6 * 86400000).toISOString()
-        },
-        {
-          id: 'gal_5',
-          imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80',
-          createdAt: new Date(Date.now() - 8 * 86400000).toISOString()
-        },
-        {
-          id: 'gal_6',
-          imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=80',
-          createdAt: new Date(Date.now() - 10 * 86400000).toISOString()
-        }
-      ];
-      localStorage.setItem('peachy_gallery', JSON.stringify(sampleGallery));
     }
   },
 
@@ -340,7 +323,7 @@ const DB = {
     }
   },
 
-  // Save Customer Gallery Item (Satisfied Customers - Pictures Only)
+  // Save Customer Gallery Item (Satisfied Customers - Pictures Only to Firebase Realtime Database)
   async saveGalleryItem(item) {
     const galId = 'gal_' + Date.now();
     const completeItem = {
@@ -351,34 +334,44 @@ const DB = {
 
     if (this.isLive && this.dbInstance) {
       await this.dbInstance.ref('gallery/' + galId).set(completeItem);
-    } else {
-      const list = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
-      list.unshift(completeItem);
-      localStorage.setItem('peachy_gallery', JSON.stringify(list));
-      window.dispatchEvent(new CustomEvent('gallery-updated', { detail: list }));
     }
+    const list = (JSON.parse(localStorage.getItem('peachy_gallery') || '[]'))
+      .filter(i => i && i.imageUrl && !i.imageUrl.includes('unsplash.com'));
+    list.unshift(completeItem);
+    localStorage.setItem('peachy_gallery', JSON.stringify(list));
+    window.dispatchEvent(new CustomEvent('gallery-updated', { detail: list }));
 
     return completeItem;
   },
 
-  // Realtime Listener for Customer Gallery
+  // Realtime Listener for Customer Gallery (Direct from Firebase Realtime Database)
   listenToGallery(callback) {
     if (this.isLive && this.dbInstance) {
       const ref = this.dbInstance.ref('gallery');
       ref.on('value', (snap) => {
         const val = snap.val();
         if (!val) {
-          const local = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
-          callback(local);
+          localStorage.removeItem('peachy_gallery');
+          callback([]);
           return;
         }
-        const list = Object.keys(val).map(k => ({ id: k, ...val[k] }));
+        // Extract real pictures from Firebase RTDB and filter out any legacy stock URLs
+        const list = Object.keys(val)
+          .map(k => ({ id: k, ...val[k] }))
+          .filter(item => item && item.imageUrl && !item.imageUrl.includes('unsplash.com'));
         list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        localStorage.setItem('peachy_gallery', JSON.stringify(list));
         callback(list);
+      }, (err) => {
+        console.warn('Firebase gallery read error:', err);
+        const local = (JSON.parse(localStorage.getItem('peachy_gallery') || '[]'))
+          .filter(item => item && item.imageUrl && !item.imageUrl.includes('unsplash.com'));
+        callback(local);
       });
     } else {
       const emit = () => {
-        const list = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
+        const list = (JSON.parse(localStorage.getItem('peachy_gallery') || '[]'))
+          .filter(item => item && item.imageUrl && !item.imageUrl.includes('unsplash.com'));
         callback(list);
       };
       emit();
@@ -392,12 +385,11 @@ const DB = {
   async deleteGalleryItem(itemId) {
     if (this.isLive && this.dbInstance) {
       await this.dbInstance.ref(`gallery/${itemId}`).remove();
-    } else {
-      let list = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
-      list = list.filter(g => g.id !== itemId);
-      localStorage.setItem('peachy_gallery', JSON.stringify(list));
-      window.dispatchEvent(new CustomEvent('gallery-updated', { detail: list }));
     }
+    let list = JSON.parse(localStorage.getItem('peachy_gallery') || '[]');
+    list = list.filter(g => g.id !== itemId);
+    localStorage.setItem('peachy_gallery', JSON.stringify(list));
+    window.dispatchEvent(new CustomEvent('gallery-updated', { detail: list }));
   },
 
   // Get Store Settings

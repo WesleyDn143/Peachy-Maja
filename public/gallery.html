@@ -201,8 +201,17 @@
 
       if (!items || items.length === 0) {
         container.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
-            No customer pictures uploaded yet. Be the first to share your moment!
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1.5rem; background: var(--cream-bg); border-radius: var(--radius-lg); border: 2px dashed var(--peach-border); max-width: 600px; margin: 2rem auto;">
+            <div style="font-size: 3rem; margin-bottom: 0.75rem;">📸</div>
+            <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 0.5rem;">
+              No Customer Pictures Yet
+            </h3>
+            <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+              Real customer pictures uploaded through the Admin panel will automatically appear here live from Firebase Realtime Database!
+            </p>
+            <a href="/#preorderSection" class="btn btn-primary btn-sm">
+              <span>Order Fresh Maja Blanca (₱${currentGalleryPrice}) →</span>
+            </a>
           </div>
         `;
         return;
